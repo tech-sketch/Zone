@@ -3,3 +3,4 @@ Data
 Apps/Zone_app/migrations
 my_venv
 __pycache__
+Apps/Zone_app/management/commands/secret.txt

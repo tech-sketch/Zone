@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+DEFAULT_NOMAD_ID = 1
+
 # Create your models here.
 class Nomad(AbstractUser):
     GENDER_CHOICES = (
@@ -15,9 +17,9 @@ class Nomad(AbstractUser):
     )
 
     nickname = models.CharField(max_length=40)
-    gender = models.CharField(max_length=2, choices=GENDER_CHOICES, null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     age = models.IntegerField(validators=[MinValueValidator(7), MaxValueValidator(99)], null=True, blank=True)
-    job = models.CharField(max_length=2, choices=JOB_CHOICES, null=True, blank=True)
+    job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
 
 
 class Place(models.Model):
@@ -27,7 +29,7 @@ class Place(models.Model):
     )
     CATEGORY_CHOICES = (
         ('cafe', 'カフェ'),
-        ('restaurant', 'レストランと'),
+        ('restaurant', 'レストラン'),
         ('bar', 'バー'),
         ('park', '公園'),
         ('other', 'その他')
@@ -35,7 +37,7 @@ class Place(models.Model):
 
     google_id = models.CharField(max_length=100)
     nomad = models.ForeignKey(Nomad)
-    category = models.CharField(max_length=2, choices=CATEGORY_CHOICES, null=True, blank=True)
+    category = models.CharField(max_length=100, null=True, blank=True)
     name = models.CharField(max_length=100, null=True, blank=True)
     name_kana = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
