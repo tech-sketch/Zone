@@ -1,6 +1,9 @@
 .idea
 Data
-Apps/Zone_app/migrations
+Apps/Zone_app/migrations/*.py
+!Apps/Zone_app/migrations/__init__.py
+
 my_venv
 __pycache__
 Apps/Zone_app/management/commands/secret.txt
+Apps/Zone_app/management/commands/outputfile.txt

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import logging
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from Apps.Zone_app.models import Place
 import requests
 
@@ -12,7 +11,7 @@ def get_googledata(name, address):
         api_key = f.readline()
 
     url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=35.6919496,139.6857137&' \
-          'radius=1000&name=' + name + '&keyword =' + address + '&key=' + api_key
+          'radius=5000&name=' + name + '&keyword =' + address + '&key=' + api_key
     re = requests.get(url)
 
     return re.json()['results']
@@ -36,27 +35,19 @@ class PlaceManager(object):
         place.latitude = result['geometry']['location']['lat']
         #self.place.tell =''
         place.wifi_softbank = 'y'
-
-        print(place.google_id)
-        print(place.category)
-        print(place.name)
-        print(place.address)
-        print(result['name'])
-        print(result['vicinity'])
-        print(place.longitude)
-        print(place.latitude)
-        print(place.tell)
-        print(place.wifi_softbank)
+        with open('Apps/Zone_app/management/commands/outputfile.txt', mode='a', encoding='UTF-8') as out_file:
+            out_file.write("google_id".ljust(15, " ") + ':' + place.google_id + '\n')
+            out_file.write("category:".ljust(15, " ") +  + place.category + '\n')
+            out_file.write("search_name:" + place.name + '\n')
+            out_file.write("search_address:" + place.address)
+            out_file.write("result_name:" + result['name'] + '\n')
+            out_file.write("result_address:" + result['vicinity'] + '\n')
+            out_file.write("longitude:" + str(place.longitude) + '\n')
+            out_file.write("latitude:" + str(place.latitude) + '\n')
+            out_file.write("wifi_softbank:" + place.wifi_softbank + '\n')
+            out_file.write('----------------------------------------------\n')
 
         #self.place.save()
-
-
-
-    """
-    def _SetJason(self, js):
-        return json.loads(js)
-    """
-
 
 
 class Command(BaseCommand):
