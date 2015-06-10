@@ -56,7 +56,7 @@ ROOT_URLCONF = 'Zone.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['Zone_app/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,7 +79,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'Zone',
-        'USER': 'postgres',
+        'USER': 'admin',
         'PASSWORD': 'admin',
     }
 }
