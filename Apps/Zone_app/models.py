@@ -55,11 +55,11 @@ class Place(models.Model):
     open_time = models.CharField(max_length=100, null=True, blank=True)
     holiday = models.CharField(max_length=100, null=True, blank=True)
     PR = models.CharField(max_length=400, null=True, blank=True)
-    add_date = models.TimeField(auto_now_add=True, null=True)
+    add_date = models.TimeField(auto_now_add=True)
 
 
 class Picture(models.Model):
     place = models.ForeignKey(Place)
     nomad = models.ForeignKey(Nomad)
-    data = models.ImageField(upload_to='images')
+    data = models.ImageField()
     add_date = models.TimeField(auto_now_add=True)

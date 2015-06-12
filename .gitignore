@@ -1,5 +1,6 @@
 .idea
-Data
+Data/media/*.jpg
+Data/*.csv
 Apps/Zone_app/migrations/*.py
 !Apps/Zone_app/migrations/__init__.py
 my_venv
