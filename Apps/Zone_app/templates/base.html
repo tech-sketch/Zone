@@ -8,8 +8,14 @@
     <link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet">
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqx3ox6iSZ3599nPe314NQNkbxfg-aXC0">
+    </script>
+    <script src="{% static 'js/map.js' %}"></script>
+
     {% block extrahead %}{% endblock %}
     <style>
+        html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
         textarea {
             resize: none;
         }
