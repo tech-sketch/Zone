@@ -1,12 +1,37 @@
 var geocoder;
 var map;
-function initialize() {
+function start(){
+    getLocation();
+}
+function getLocation(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+    }else{
+        alert('ブラウザが位置情報取得に対応しておりません');
+    }
+}
+function successCallback(position){
+    initialize(position.coords.latitude, position.coords.longitude);
+}
+function errorCallback(error){
+    alert('位置情報が取得できません');
+}
+function initialize(x, y) {
     geocoder = new google.maps.Geocoder();
+    var myLatlng = new google.maps.LatLng(x,y);
     var mapOptions = {
-        center: { lat: -34.397, lng: 150.644},
-        zoom: 8
+        center: myLatlng,
+        zoom: 17
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    var userMarker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title:"Your position"
+    });
+    new google.maps.InfoWindow({
+                content: "現在地"
+              }).open(map, userMarker)
 }
 function codeAddress() {
     var address = document.getElementById('address').value;
@@ -27,4 +52,4 @@ function codeAddress() {
         }
     });
 }
-google.maps.event.addDomListener(window, 'load', initialize);
+google.maps.event.addDomListener(window, 'load', start);
