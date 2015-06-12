@@ -23,6 +23,9 @@ class Nomad(AbstractUser):
 
 
 class Place(models.Model):
+    def __str__(self):
+        return self.name + '(' + self.address + ')'
+
     EXISTENCE_CHOICES = (
         ('y', 'with'),
         ('n', 'without')
@@ -52,4 +55,11 @@ class Place(models.Model):
     open_time = models.CharField(max_length=100, null=True, blank=True)
     holiday = models.CharField(max_length=100, null=True, blank=True)
     PR = models.CharField(max_length=400, null=True, blank=True)
+    add_date = models.TimeField(auto_now_add=True, null=True)
 
+
+class Picture(models.Model):
+    place = models.ForeignKey(Place)
+    nomad = models.ForeignKey(Nomad)
+    data = models.ImageField(upload_to='images')
+    add_date = models.TimeField(auto_now_add=True)

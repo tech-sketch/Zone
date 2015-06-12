@@ -19,13 +19,14 @@ def get_googledata(name, address):
 class PlaceManager(object):
     def __init__(self, line):
         self.line = line.split(',')
-        self.name = self.line[0]
-        self.address = self.line[2]
+        self.name = self.line[0].strip('\"')
+        self.address = self.line[2].strip().strip('\"')
         self.json = get_googledata(self.name, self.address)
 
     def save(self):
         if len(self.json) == 0:
             return
+
         result = self.json[0]
         place = Place(google_id=result['id'])
         place.category = ','.join(result['types'])
@@ -35,16 +36,17 @@ class PlaceManager(object):
         place.latitude = result['geometry']['location']['lat']
         #self.place.tell =''
         place.wifi_softbank = 'y'
+
         with open('Apps/Zone_app/management/commands/outputfile.txt', mode='a', encoding='UTF-8') as out_file:
             out_file.write("google_id".ljust(15, " ") + ':' + place.google_id + '\n')
-            out_file.write("category:".ljust(15, " ") +  + place.category + '\n')
-            out_file.write("search_name:" + place.name + '\n')
-            out_file.write("search_address:" + place.address)
-            out_file.write("result_name:" + result['name'] + '\n')
-            out_file.write("result_address:" + result['vicinity'] + '\n')
-            out_file.write("longitude:" + str(place.longitude) + '\n')
-            out_file.write("latitude:" + str(place.latitude) + '\n')
-            out_file.write("wifi_softbank:" + place.wifi_softbank + '\n')
+            out_file.write("category".ljust(15, " ") + ':' + place.category + '\n')
+            out_file.write("search_name".ljust(15, " ") + ':' + place.name + '\n')
+            out_file.write("search_address".ljust(15, " ") + ':' + place.address + '\n')
+            out_file.write("result_name".ljust(15, " ") + ':' + result['name'] + '\n')
+            out_file.write("result_address".ljust(15, " ") + ':' + result['vicinity'] + '\n')
+            out_file.write("longitude".ljust(15, " ") + ':' + str(place.longitude) + '\n')
+            out_file.write("latitude:".ljust(15, " ") + ':' + str(place.latitude) + '\n')
+            out_file.write("wifi_softbank".ljust(15, " ") + ':' + place.wifi_softbank + '\n')
             out_file.write('----------------------------------------------\n')
 
         #self.place.save()
@@ -61,7 +63,6 @@ class Command(BaseCommand):
             in_file.readline()
 
             for line in in_file:
-                print(line)
                 placemanager = PlaceManager(line)
                 placemanager.save()
 
