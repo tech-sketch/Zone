@@ -1,37 +1,36 @@
 {% extends "base.html" %}
 {% block title %}LIST{% endblock title %}
-{% block content %}
-{%for item in items %}
-<div class="home_recent_post">
 
-			<div class="entry" style="float:left;width:306px;height:330px;margin-bottom:28px; ">
+{% block content %}
+<div id="wrapper">
+<div id="main">
+
+{%for item in items %}
+
+			<div class="entry" style="float:left;width:306px;height:300px;margin-bottom:28px; ">
 				<div id="entries">
                     <div style="width:270px;height:180px;">
-                        <img src="{{ item.image.url }}">
+                        <img src="{{ item.image.url }}" alt={{ item.name }} width="270" height="180">
 					</div>
 
 
 					<div id="entrytitle">
-                        {{ item.name }}
+                        1{{ item.name }}{{ item.wifi_sb }}
 					</div>
 
 					<div style="width:230px;height:43px;margin:9px 16px 10px 20px;line-height:22px;">
-                        <span style="font-size:12px;">{{ item.wifi_sb }}</span>
+                        <span style="font-size:12px;"></span>
                     </div>
 
 					<div style="float:right;font-size:11px;margin:0px 13px 9px 0px;">
 						東京・西新宿
 					</div>
-
-					<div style="clear:both;"></div>
 				</div>
-
-				<div style="clear:both;"></div>
-
 			</div>
 
-		</div>
-
 {% endfor %}
+	
+</div>
+</div>
 
 {% endblock content %}
