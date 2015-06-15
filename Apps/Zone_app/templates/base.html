@@ -2,7 +2,7 @@
 <html lang="{{ LANGUAGE_CODE|default:" en-us" }}">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}日報管理システム{% endblock %}</title>
+    <title>{% block title %}Zone{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet">
@@ -12,10 +12,37 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqx3ox6iSZ3599nPe314NQNkbxfg-aXC0">
     </script>
     <script src="{% static 'js/map.js' %}"></script>
-
+    <script src="{% static 'js/place-api.js' %}"></script>
     {% block extrahead %}{% endblock %}
     <style>
-        html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+        .location_table{
+            width: 100%
+        }
+        #select{
+            float: left;
+            overflow: auto;
+            width: 20%;
+            height: 100%;
+        }
+        .banner_image{
+            text-align: center;
+        }
+        p.banner_image img {
+            -webkit-filter: brightness(60%);
+            width: 100%;
+        }
+        .banner_text{
+            position: absolute;
+            top: 100px;
+            font-size: xx-large;
+            color: #ffffff;
+        }
+        #map-canvas {
+            width: 80%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
         textarea {
             resize: none;
         }
@@ -60,10 +87,10 @@
         </ul>
     </div>
 </nav>
-<div class="container">
-    {% block content %}
-    {{ content }}
-    {% endblock %}
-</div>
+
+{% block content %}
+{{ content }}
+{% endblock %}
+
 </body>
 </html>
