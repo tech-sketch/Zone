@@ -5,5 +5,22 @@
     <input id="address" type="textbox" value="Sydney, NSW">
     <input type="button" value="Geocode" onclick="codeAddress()">
 </div>
-<div id="map-canvas"></div>
+<div class="map_box">
+    <div id="select">
+        {% for place in places %}
+            <div class="location_card">
+                    <h3>{{place.name}}</h3>
+                    <div id="info">
+                        {{place.address}}<br/>
+                        {% if place.wifi_softbank == 'y' %}
+                            wi-fi: softbank<br/>
+                        {% endif %}
+                    </div>
+                    <a href="#">詳細</a>
+                </div>
+        {% endfor %}
+    </div>
+    <div id="map-canvas"></div>
+</div>
+
 {% endblock content %}
