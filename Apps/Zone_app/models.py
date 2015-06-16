@@ -2,10 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-DEFAULT_NOMAD_ID = 1
+DEFAULT_NOMADUSER_ID = 1
 
 # Create your models here.
-class Nomad(AbstractUser):
+class NomadUser(AbstractUser):
     GENDER_CHOICES = (
         ('M', '男'),
         ('F', '女'),
@@ -38,8 +38,8 @@ class Place(models.Model):
         ('other', 'その他')
     )
 
-    google_id = models.CharField(max_length=100)
-    nomad = models.ForeignKey(Nomad)
+    google_id = models.CharField(max_length=100, null=True, blank=True)
+    nomad = models.ForeignKey(NomadUser)
     category = models.CharField(max_length=100, null=True, blank=True)
     name = models.CharField(max_length=100, null=True, blank=True)
     name_kana = models.CharField(max_length=100, null=True, blank=True)
@@ -48,6 +48,7 @@ class Place(models.Model):
     latitude = models.FloatField(null=True, blank=True)
     tell = models.CharField(max_length=15, null=True, blank=True)
     wifi_softbank = models.CharField(max_length=2, choices=EXISTENCE_CHOICES, null=True, blank=True)
+    wifi_free = models.CharField(max_length=2, choices=EXISTENCE_CHOICES, null=True, blank=True)
     outlet = models.CharField(max_length=2, choices=EXISTENCE_CHOICES, null=True, blank=True)
     seats_num = models.IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
     URL_PC = models.CharField(max_length=200, null=True, blank=True)
@@ -60,6 +61,6 @@ class Place(models.Model):
 
 class Picture(models.Model):
     place = models.ForeignKey(Place)
-    nomad = models.ForeignKey(Nomad)
+    nomad = models.ForeignKey(NomadUser)
     data = models.ImageField()
     add_date = models.TimeField(auto_now_add=True)

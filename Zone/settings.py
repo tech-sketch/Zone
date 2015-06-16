@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'Zone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Zone',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
+        'NAME': 'xxxxxxxx',
+        'USER': 'xxxxxxxx',
+        'PASSWORD': 'xxxxxxxxx',
     }
 }
 
@@ -104,5 +104,9 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'Zone_app.Nomad'
-MEDIA_ROOT = 'Data'
+AUTH_USER_MODEL = 'Zone_app.NomadUser'
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'Data', 'media')
+MEDIA_URL = '/media/'
