@@ -1,0 +1,124 @@
+@charset "utf-8";
+
+
+#entrytitle {
+    height:18px;
+    font-size:16px;
+    margin:18px 5px 0px 10px;
+}
+
+#entrytitle img{
+    vertical-align: middle;
+}
+
+
+html { margin-top: 0px !important; }
+
+
+a:link{
+	color:black;
+
+}
+
+.entry a:link{
+	color:blackh;
+}
+
+.entry a:visited{
+	color:gray;
+}
+
+
+a:link { /*未訪問リンクの設定*/
+   text-decoration : none ;/*下線を消す*/
+}
+
+a:visited { /*訪問済みリンクの設定*/
+   text-decoration : none;/*下線を消す*/
+	color:gray;
+}
+
+a:active { /*クリックしたときの設定*/
+   text-decoration : none;/*下線を消す*/
+}
+
+a:hover { /*マウスが乗ったときの設定*/
+   color : #333333;/*色の設定*/
+//   background-color : #ddddff;/*背景の設定*/
+   text-decoration : underline ;/*underline 下線*/
+}
+
+
+a:hover img
+{
+opacity:0.8;
+filter: alpha(opacity=80);
+-ms-filter: "alpha( opacity=80 )";
+background: #fff;
+}
+
+body {
+	text-align: center; /* center on ie */
+    width: 100%;
+	font-size: 75.0%; /* Resets 1em to 10px */
+	font-family: 'Quicksand', "游ゴシック体", "Yu Gothic", YuGothic, "ヒラギノ角ゴシック Pro", "Hiragino Kaku Gothic Pro", 'メイリオ' , Meiryo , Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+	color: #333;
+	background-color:#FFFFFF;
+	}
+
+
+#wrapper {
+	width:1000px;
+	margin:0 auto;
+	background-color:#FFFFFF;
+    text-align: left;
+    margin: 0 auto; /* center on everything else */
+	}
+
+
+#main {
+	float:left;
+	margin-left:50px;
+	margin-right:50px;
+	margin-top:36px;
+	width:1000px;
+    margin-bottom:100px;
+    //height:2920px;
+	}
+
+#contents{
+	margin-top:0px;
+	padding-top:0px;
+	float:left;
+//	width:610px;
+}
+
+
+#entries{
+	border:1px #CCC solid;
+	width:270px;
+	height:304px;
+//	float:left;
+	margin:0px 20px 0px 20px;
+	background-color:#FFFFFF;
+    font-size:90%;
+}
+
+
+
+/* Begin Lists
+
+	Special stylized non-IE bullets
+	Do not work in Internet Explorer, which merely default to normal bullets. */
+
+html>body .entry ul {
+	margin-left: 0px;
+	padding: 0 0 0 30px;
+	list-style: none;
+	padding-left: 10px;
+	text-indent: -10px;
+	}
+
+html>body .entry li {
+	margin: 7px 0 8px 10px;
+	}
