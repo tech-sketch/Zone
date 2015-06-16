@@ -2,7 +2,7 @@
 {% block title %}MAP{% endblock title %}
 {% block content %}
 <div id="panel">
-    <input id="address" type="textbox" value="Sydney, NSW">
+    <input id="address" type="textbox" value="Tokyo">
     <input type="button" value="Geocode" onclick="codeAddress()">
 </div>
 <div class="map_box">
@@ -12,8 +12,12 @@
                     <h3>{{place.name}}</h3>
                     <div id="info">
                         {{place.address}}<br/>
+                        wi-fi:
                         {% if place.wifi_softbank == 'y' %}
-                            wi-fi: softbank<br/>
+                             softbank
+                        {% endif %}
+                        {% if place.wifi_free == 'y' %}
+                             free<br/>
                         {% endif %}
                     </div>
                     <a href="#">詳細</a>

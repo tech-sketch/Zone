@@ -20,7 +20,7 @@ def list(request):
     for place in Place.objects.all():
         for picture in Picture.objects.all():
             if picture.place_id == place.id:
-                items.append({'image': picture.data, 'name': place.name, 'wifi_sb': place.wifi_softbank})
+                items.append({'image': picture.data, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free})
 
     return render_to_response('list.html', {'items': items}, context_instance=RequestContext(request))
 
