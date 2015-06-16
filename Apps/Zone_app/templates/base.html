@@ -15,14 +15,30 @@
     <script src="{% static 'js/place-api.js' %}"></script>
     {% block extrahead %}{% endblock %}
     <style>
-        .location_table{
-            width: 100%
+        #info{
+            color:#999;
+        }
+        .location_card{
+            width: 99%;
+            margin: 6 auto;
+            padding: 4px;
+            background-color: #fefefe;
+            border-right: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            box-shadow: 0 4px 5px 0 #ddd;
+        }
+        .location_card:hover {
+            background-color: #f1f1f1;
         }
         #select{
             float: left;
             overflow: auto;
             width: 20%;
             height: 100%;
+            border: 1px #ccc solid;
+
         }
         .banner_image{
             text-align: center;
