@@ -7,6 +7,7 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/list.css' %}" rel="stylesheet">
+    <link href="{% static 'css/map.css' %}" rel="stylesheet">
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript"
@@ -16,31 +17,7 @@
     <script src="{% static 'js/place-api.js' %}"></script>
     {% block extrahead %}{% endblock %}
     <style>
-        #info{
-            color:#999;
-        }
-        .location_card{
-            width: 99%;
-            margin: 6 auto;
-            padding: 4px;
-            background-color: #fefefe;
-            border-right: 1px solid #ccc;
-            border-left: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            border-top: 1px solid #ccc;
-            box-shadow: 0 4px 5px 0 #ddd;
-        }
-        .location_card:hover {
-            background-color: #f1f1f1;
-        }
-        #select{
-            float: left;
-            overflow: auto;
-            width: 20%;
-            height: 100%;
-            border: 1px #ccc solid;
 
-        }
         .banner_image{
             text-align: center;
         }
@@ -54,15 +31,7 @@
             font-size: xx-large;
             color: #ffffff;
         }
-        #map-canvas {
-            width: 80%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        textarea {
-            resize: none;
-        }
+
         .block_white {
             padding: 20px;
             background: #fff;
