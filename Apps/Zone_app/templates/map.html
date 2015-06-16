@@ -9,6 +9,10 @@
     <div id="select">
         {% for place in places %}
             <div class="location_card">
+                    <hidden type="input" id="name" value="{{place.name}}"></hidden>
+                    <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
+                    <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
+
                     <h3>{{place.name}}</h3>
                     <div id="info">
                         {{place.address}}<br/>
