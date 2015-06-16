@@ -30,3 +30,20 @@
     border: 1px #ccc solid;
 
 }
+
+#overlay_text{
+    color: #000;
+    text-shadow:
+        0 1px 0 #fff,
+        1px 0 0 #fff,
+        0 -1px 0 #fff,
+        -1px 0 0 #fff,
+        -1px -1px 0 #fff,
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff
+        ;
+    font: 'Century Gothic';
+    font-weight: 900;
+    //-webkit-text-stroke: 0.1px #ffffff;
+}

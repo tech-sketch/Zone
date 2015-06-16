@@ -53,11 +53,16 @@ function initialize(x, y) {
 
 function makePlacePin() {
     for(var i = 0; i < $("[id = name]").length; i++){
-        var placeLatlng = new google.maps.LatLng( $($("[id = latitude]")[i]).attr("value"), $($("[id=longitude]")[i]).attr("value"));
+        var name = $($("[id = name]")[i]).attr("value");
+        var lat = $($("[id = latitude]")[i]).attr("value");
+        var lng = $($("[id=longitude]")[i]).attr("value");
+        var placeLatlng = new google.maps.LatLng(lat, lng);
+        overlayText(name, lat, lng);
+
         new google.maps.Marker({
             position: placeLatlng,
             map: map,
-            title: $($("[id = name]")[i]).attr("value"),
+            title: name,
     });
     }
     $("[id = name]").each(function(index,data){
@@ -69,6 +74,48 @@ function makePlacePin() {
     $("[id = latitude]").each(function(index,data){
         console.log($(data).attr("value"));
     });
+}
+
+function overlayText(name, lat, lng){
+    function NameMarker(map, lat, lng){
+        this.lat_ = lat;
+        this.lng_ = lng;
+        this.setMap(map);
+    }
+    NameMarker.prototype = new google.maps.OverlayView();
+
+    NameMarker.prototype.draw = function() {
+        // 何度も呼ばれる可能性があるので、div_が未設定の場合のみ要素生成
+        if (!this.div_) {
+          // 出力したい要素生成
+          this.div_ = document.createElement( "div" );
+          this.div_.style.position = "absolute";
+          this.div_.style.fontSize = "200%";
+          this.div_.innerHTML = name;
+          // 要素を追加する子を取得
+          var panes = this.getPanes();
+          // 要素追加
+          panes.overlayLayer.appendChild( this.div_ );
+        }
+
+        // 緯度、軽度の情報を、Pixel（google.maps.Point）に変換
+        var point = this.getProjection().fromLatLngToDivPixel( new google.maps.LatLng( this.lat_, this.lng_ ) );
+
+        // 取得したPixel情報の座標に、要素の位置を設定
+        // これで35.5, 140.0の位置を左上の座標とする位置に要素が設定される
+        this.div_.style.left = point.x + 'px';
+        this.div_.style.top = point.y + 'px';
+        this.div_.id = "overlay_text";
+      }
+
+      /* 削除処理の実装 */
+      NameMarker.prototype.remove = function() {
+        if (this.div_) {
+          this.div_.parentNode.removeChild(this.div_);
+          this.div_ = null;
+        }
+      }
+     new NameMarker(map, lat, lng);
 }
 
 function codeAddress() {
