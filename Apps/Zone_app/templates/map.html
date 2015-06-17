@@ -12,7 +12,8 @@
                 <hidden type="input" id="name" value="{{place.name}}"></hidden>
                 <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
                 <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
-                <h3>{{place.name}}</h3>
+                <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
+                <h3><a href="/detail/{{place.id}}">{{place.name}}</a></h3>
                 <div id="info">
                     {{place.address}}<br/>
                     wi-fi:
@@ -23,7 +24,6 @@
                         free
                     {% endif %}
                 </div>
-                <a href="#">詳細</a>
             </div>
         {% endfor %}
     </div>

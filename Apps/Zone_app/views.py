@@ -32,3 +32,6 @@ def places_api(request):
     # result = str(re.json()
     result = "json"
     return HttpResponse(result)
+
+def detail(request, place_id):
+    return render_to_response('detail.html', {}, context_instance=RequestContext(request))

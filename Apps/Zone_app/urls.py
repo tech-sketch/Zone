@@ -6,8 +6,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'map/$', views.map, name='map'),
-    url(r'list/$', views.list, name='list'),
-    url(r'places_api/$', views.places_api, name='places_api'),
+    url(r'^map/$', views.map, name='map'),
+    url(r'^list/$', views.list, name='list'),
+    url(r'^detail/(?P<place_id>[0-9]+)$', views.detail, name='detail'),
+    url(r'^places_api/$', views.places_api, name='places_api'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
