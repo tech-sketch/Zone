@@ -25,18 +25,15 @@ function initialize(x, y) {
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
-                // マーカーの画像URL
-                "http://127.0.0.1:8000/static/images/man.png",
-
-                // マーカーのサイズ
-                new google.maps.Size(32, 32),
-
-                // 画像の基準位置
-                new google.maps.Point(0, 0),
-
-                // Anchorポイント
-                new google.maps.Point(10, 24)
-            );
+        // マーカーの画像URL
+        "http://127.0.0.1:8000/static/images/man.png",
+        // マーカーのサイズ
+        new google.maps.Size(32, 32),
+        // 画像の基準位置
+        new google.maps.Point(0, 0),
+        // Anchorポイント
+        new google.maps.Point(10, 24)
+    );
 
 
     var userMarker = new google.maps.Marker({
@@ -63,7 +60,7 @@ function makePlacePin() {
             position: placeLatlng,
             map: map,
             title: name,
-    });
+        });
     }
     $("[id = name]").each(function(index,data){
         console.log($(data).attr("value"));
@@ -87,32 +84,31 @@ function overlayText(name, lat, lng){
     NameMarker.prototype.draw = function() {
         // 何度も呼ばれる可能性があるので、div_が未設定の場合のみ要素生成
         if (!this.div_) {
-          // 出力したい要素生成
-          this.div_ = document.createElement( "div" );
-          this.div_.style.position = "absolute";
-          this.div_.style.fontSize = "200%";
-          this.div_.innerHTML = name;
-          // 要素を追加する子を取得
-          var panes = this.getPanes();
-          // 要素追加
-          panes.overlayLayer.appendChild( this.div_ );
+            // 出力したい要素生成
+            this.div_ = document.createElement( "div" );
+            this.div_.style.position = "absolute";
+            this.div_.style.fontSize = "200%";
+            this.div_.innerHTML = name;
+            // 要素を追加する子を取得
+            var panes = this.getPanes();
+            // 要素追加
+            panes.overlayLayer.appendChild( this.div_ );
         }
 
         // 緯度、軽度の情報を、Pixel（google.maps.Point）に変換
         var point = this.getProjection().fromLatLngToDivPixel( new google.maps.LatLng( this.lat_, this.lng_ ) );
 
         // 取得したPixel情報の座標に、要素の位置を設定
-        // これで35.5, 140.0の位置を左上の座標とする位置に要素が設定される
         this.div_.style.left = point.x + 'px';
         this.div_.style.top = point.y + 'px';
         this.div_.id = "overlay_text";
-      }
+    }
 
       /* 削除処理の実装 */
       NameMarker.prototype.remove = function() {
         if (this.div_) {
-          this.div_.parentNode.removeChild(this.div_);
-          this.div_ = null;
+            this.div_.parentNode.removeChild(this.div_);
+            this.div_ = null;
         }
       }
      new NameMarker(map, lat, lng);
@@ -123,16 +119,16 @@ function codeAddress() {
     geocoder.geocode( { 'address': address, region: 'JP'}, function(results, status) {
         for(i in results){
             if (status == google.maps.GeocoderStatus.OK) {
-              map.setCenter(results[i].geometry.location);
-              var latlng = results[i].geometry.location;
-              new google.maps.InfoWindow({
-                content: results[i].formatted_address + "<br>(Lat, Lng) = " + latlng.toString()
-              }).open(map, new google.maps.Marker({
-                position: latlng,
-                map: map
-              }));
+                map.setCenter(results[i].geometry.location);
+                var latlng = results[i].geometry.location;
+                new google.maps.InfoWindow({
+                    content: results[i].formatted_address + "<br>(Lat, Lng) = " + latlng.toString()
+                }).open(map, new google.maps.Marker({
+                    position: latlng,
+                    map: map
+                }));
             } else {
-              alert('Geocode was not successful for the following reason: ' + status);
+                alert('Geocode was not successful for the following reason: ' + status);
             }
         }
     });
