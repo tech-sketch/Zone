@@ -56,23 +56,24 @@ function makePlacePin() {
         var name = $($("[id=name]")[i]).attr("value");
         var lat = $($("[id=latitude]")[i]).attr("value");
         var lng = $($("[id=longitude]")[i]).attr("value");
+        var placeId = $($("[id=place_id]")[i]).attr("value");
         var locationCard = $($("[class=location_card]")[i]);
         var placeLatlng = new google.maps.LatLng(lat, lng);
 
 
         overlayText(name, lat, lng);
 
-        addInfoListener( new google.maps.Marker({
+        addListener( new google.maps.Marker({
             position: placeLatlng,
             map: map,
             title: name,
         }), new google.maps.InfoWindow({
                 content: name + "<br/>" + lat + "," + lng
-        }), locationCard)
+        }), locationCard, placeId)
     }
 }
 
-function addInfoListener(placeMarker, placeInfoWindow, locationCard){
+function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     var openInfoWindow = function(){
         placeInfoWindow.open(map, placeMarker);
     };
@@ -80,7 +81,9 @@ function addInfoListener(placeMarker, placeInfoWindow, locationCard){
         placeInfoWindow.close(map, placeMarker);
     };
 
-
+    locationCard.on("click", function(){
+        location.href = "/detail/" + placeId;
+    });
     locationCard.hover(openInfoWindow, closeInfoWindow);
     google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
     google.maps.event.addListener(placeMarker, "mouseout", closeInfoWindow);
@@ -99,10 +102,11 @@ function overlayText(name, lat, lng){
         if (this.div_) {
             this.div_.parentNode.removeChild(this.div_);
         }
+
         // 出力したい要素生成
         this.div_ = document.createElement( "div" );
         this.div_.style.position = "absolute";
-        this.div_.style.fontSize = map.getZoom() * 18 + "%";
+        this.div_.style.fontSize = map.getZoom() * 12 + "%";
         this.div_.innerHTML = name;
         // 要素を追加する子を取得
         var panes = this.getPanes();
