@@ -42,35 +42,48 @@ function initialize(x, y) {
             title:"Your position",
             icon: markerImg,
     });
+    makePlacePin();
     new google.maps.InfoWindow({
                 content: "現在地"
               }).open(map, userMarker)
-    makePlacePin();
 }
 
 function makePlacePin() {
-    for(var i = 0; i < $("[id = name]").length; i++){
-        var name = $($("[id = name]")[i]).attr("value");
-        var lat = $($("[id = latitude]")[i]).attr("value");
+
+    var length = $("[id = name]").length
+
+    for(var i = 0; i < length; i++){
+        var name = $($("[id=name]")[i]).attr("value");
+        var lat = $($("[id=latitude]")[i]).attr("value");
         var lng = $($("[id=longitude]")[i]).attr("value");
+        var locationCard = $($("[class=location_card]")[i]);
         var placeLatlng = new google.maps.LatLng(lat, lng);
+
+
         overlayText(name, lat, lng);
 
-        new google.maps.Marker({
+        addInfoListener( new google.maps.Marker({
             position: placeLatlng,
             map: map,
             title: name,
-        });
+        }), new google.maps.InfoWindow({
+                content: name + "<br/>" + lat + "," + lng
+        }), locationCard)
     }
-    $("[id = name]").each(function(index,data){
-        console.log($(data).attr("value"));
-    });
-    $("[id = longitude]").each(function(index,data){
-        console.log($(data).attr("value"));
-    });
-    $("[id = latitude]").each(function(index,data){
-        console.log($(data).attr("value"));
-    });
+}
+
+function addInfoListener(placeMarker, placeInfoWindow, locationCard){
+    var openInfoWindow = function(){
+        placeInfoWindow.open(map, placeMarker);
+    };
+    var closeInfoWindow = function(){
+        placeInfoWindow.close(map, placeMarker);
+    };
+
+
+    locationCard.hover(openInfoWindow, closeInfoWindow);
+    google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
+    google.maps.event.addListener(placeMarker, "mouseout", closeInfoWindow);
 }
 
 function overlayText(name, lat, lng){
@@ -134,4 +147,5 @@ function codeAddress() {
         }
     });
 }
+
 google.maps.event.addDomListener(window, 'load', start);
