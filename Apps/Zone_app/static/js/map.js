@@ -106,13 +106,13 @@ function overlayText(name, lat, lng){
     }
 
       /* 削除処理の実装 */
-      NameMarker.prototype.remove = function() {
+    NameMarker.prototype.remove = function() {
         if (this.div_) {
             this.div_.parentNode.removeChild(this.div_);
             this.div_ = null;
         }
-      }
-     new NameMarker(map, lat, lng);
+    }
+    new NameMarker(map, lat, lng);
 }
 
 function codeAddress() {
