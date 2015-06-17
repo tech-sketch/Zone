@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block title %}TOP{% endblock title %}
 {% block content %}
-
+{% load staticfiles %}
+<p class="banner_image" style="position: relative; ">
+    <img src="{% static 'images/banner.jpg' %}" />
+    <span class="banner_text">
+      あなたに最適な作業場を推薦します。
+   </span>
+</p>
 {% endblock content %}

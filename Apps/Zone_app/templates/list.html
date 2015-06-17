@@ -15,11 +15,19 @@
 
 
 					<div id="entrytitle">
-                        1{{ item.name }}{{ item.wifi_sb }}
+                        {{ item.name }}
 					</div>
 
 					<div style="width:230px;height:43px;margin:9px 16px 10px 20px;line-height:22px;">
-                        <span style="font-size:12px;"></span>
+                        <span style="font-size:12px;">
+							wi-fi:
+                        {% if item.wifi_softbank == 'y' %}
+                             softbank
+                        {% endif %}
+                        {% if item.wifi_free == 'y' %}
+                             free
+                        {% endif %}
+						</span>
                     </div>
 
 					<div style="float:right;font-size:11px;margin:0px 13px 9px 0px;">

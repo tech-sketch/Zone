@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'Zone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'xxxxxxxx',
-        'USER': 'xxxxxxxx',
-        'PASSWORD': 'xxxxxxxxx',
+        'NAME': 'Zone',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
     }
 }
 

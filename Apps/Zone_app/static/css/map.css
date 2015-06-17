@@ -1,0 +1,49 @@
+#map-canvas {
+    width: 80%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#info{
+    color:#999;
+}
+.location_card{
+    width: 99%;
+    margin: 6 auto;
+    padding: 4px;
+    background-color: #fefefe;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    box-shadow: 0 4px 5px 0 #ddd;
+}
+.location_card:hover {
+    background-color: #f1f1f1;
+}
+#select{
+    float: left;
+    overflow: auto;
+    width: 20%;
+    height: 100%;
+    border: 1px #ccc solid;
+
+}
+
+#overlay_text{
+    color: #000;
+    text-shadow:
+        0 1px 0 #fff,
+        1px 0 0 #fff,
+        0 -1px 0 #fff,
+        -1px 0 0 #fff,
+        -1px -1px 0 #fff,
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff
+        ;
+    font: 'Century Gothic';
+    font-weight: 900;
+    //-webkit-text-stroke: 0.1px #ffffff;
+}
