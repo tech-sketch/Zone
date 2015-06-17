@@ -82,18 +82,19 @@ function overlayText(name, lat, lng){
     NameMarker.prototype = new google.maps.OverlayView();
 
     NameMarker.prototype.draw = function() {
-        // 何度も呼ばれる可能性があるので、div_が未設定の場合のみ要素生成
-        if (!this.div_) {
-            // 出力したい要素生成
-            this.div_ = document.createElement( "div" );
-            this.div_.style.position = "absolute";
-            this.div_.style.fontSize = "200%";
-            this.div_.innerHTML = name;
-            // 要素を追加する子を取得
-            var panes = this.getPanes();
-            // 要素追加
-            panes.overlayLayer.appendChild( this.div_ );
+        console.log("draw")
+        if (this.div_) {
+            this.div_.parentNode.removeChild(this.div_);
         }
+        // 出力したい要素生成
+        this.div_ = document.createElement( "div" );
+        this.div_.style.position = "absolute";
+        this.div_.style.fontSize = map.getZoom() * 18 + "%";
+        this.div_.innerHTML = name;
+        // 要素を追加する子を取得
+        var panes = this.getPanes();
+        // 要素追加
+        panes.overlayLayer.appendChild( this.div_ );
 
         // 緯度、軽度の情報を、Pixel（google.maps.Point）に変換
         var point = this.getProjection().fromLatLngToDivPixel( new google.maps.LatLng( this.lat_, this.lng_ ) );
