@@ -70,6 +70,7 @@
             <li><a href="/map">地図</a></li>
             <li><a href="/list">一覧</a></li>
             {% if user.is_authenticated %}
+                <li>{{ user.username }}</li>
                 <li><a href="{% url 'logout' %}">ログアウト</a></li>
                 {% else %}
                 <li><a href="{% url 'login' %}">ログイン</a></li>
