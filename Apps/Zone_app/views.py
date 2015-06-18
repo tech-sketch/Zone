@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from .models import Place, Picture
-
+from django.shortcuts import redirect
+from django.contrib import messages
 from django.http import HttpResponse
+from django.contrib.auth import logout as auth_logout
 
 # Create your views here.
 def index(request):
@@ -36,3 +38,8 @@ def places_api(request):
 
 def detail(request, place_id):
     return render_to_response('detail.html', {}, context_instance=RequestContext(request))
+
+def logout(request):
+    auth_logout(request)
+    messages.success(request, 'ログアウトしました。')
+    return redirect('/')
