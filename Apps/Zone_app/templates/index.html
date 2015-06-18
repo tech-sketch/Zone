@@ -1,11 +1,195 @@
 {% extends "base.html" %}
 {% block title %}TOP{% endblock title %}
+
 {% block content %}
+
 {% load staticfiles %}
-<p class="banner_image" style="position: relative; ">
-    <img src="{% static 'images/banner.jpg' %}" />
-    <span class="banner_text">
-      あなたに最適な作業場を推薦します。
-   </span>
-</p>
+<!-- Bootstrap core CSS -->
+<link href="{% static 'top/css/bootstrap.css' %}" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="{% static 'top/css/main.css' %}" rel="stylesheet">
+<link href="{% static 'top/css/font-awesome.min.css' %}" rel="stylesheet">
+<link href="{% static 'top/css/animate-custom.css' %}" rel="stylesheet">
+<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+<script src="{% static 'top/js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'top/js/modernizr.custom.js' %}"></script>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<div data-spy="scroll" data-offset="0" data-target="#navbar-main">
+
+<!-- ==== HEADERWRAP ==== -->
+<div id="headerwrap" name="home">
+  <header class="clearfix">
+    <h1>Zone</h1>
+    <p>リモートワーカの方に最適な作業環境を提供します。</p>
+    <a href="/map" class="smoothScroll btn btn-lg">Start Application</a>
+  </header>
+</div>
+<!-- /headerwrap -->
+
+<!-- ==== ABOUT ==== -->
+<div id="about" name="about">
+  <div class="container">
+    <div class="row white">
+      <h2 class="centered">Zoneとは</h2>
+      <hr>
+      <div class="col-md-6"> <img class="img-responsive" src="" align=""> </div>
+      <div class="col-md-6">
+        <h3>Who we are</h3>
+        <p>Lorem ipsum dolor sit amet, quo meis audire placerat eu, te eos porro veniam. An everti maiorum detracto mea. Eu eos dicam voluptaria, erant bonorum albucius et per, ei sapientem accommodare est. Saepe dolorum constituam ei vel. Te sit malorum ceteros repudiandae, ne tritani adipisci vis.</p>
+        <h3>Why choose us?</h3>
+        <p>Lorem ipsum dolor sit amet, quo meis audire placerat eu, te eos porro veniam. An everti maiorum detracto mea. Eu eos dicam voluptaria, erant bonorum albucius et per, ei sapientem accommodare est. Saepe dolorum constituam ei vel.</p>
+      </div>
+    </div>
+    <!-- row -->
+  </div>
+</div>
+<!-- container -->
+
+<!-- ==== SERVICES ==== -->
+<div id="services" name="services">
+  <div class="container">
+    <div class="row">
+      <h2 class="centered">提供される機能</h2>
+      <hr>
+      <div class="col-lg-8 col-lg-offset-2">
+        <p class="large">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p>
+      </div>
+      <div class="col-lg-4 callout"> <i class="fa fa-desktop fa-3x"></i>
+        <h3>Responsive Design</h3>
+        <p>Erat imperdiet dissentias ea usu, alia aliquid corrumpit ea qui. Eu vim oratio conclusionemque, vel at errem nominavi delicatissimi.</p>
+      </div>
+      <div class="col-lg-4 callout"> <i class="fa fa-gears fa-3x"></i>
+        <h3>Web Development</h3>
+        <p>Erat imperdiet dissentias ea usu, alia aliquid corrumpit ea qui. Eu vim oratio conclusionemque, vel at errem nominavi delicatissimi.</p>
+      </div>
+      <div class="col-lg-4 callout"> <i class="fa fa-dot-circle-o fa-3x"></i>
+        <h3>Social Marketing</h3>
+        <p>Erat imperdiet dissentias ea usu, alia aliquid corrumpit ea qui. Eu vim oratio conclusionemque, vel at errem nominavi delicatissimi.</p>
+      </div>
+    </div>
+    <!-- row -->
+  </div>
+</div>
+<!-- container -->
+
+<!-- ==== PORTFOLIO ==== -->
+<div id="portfolio" name="portfolio">
+  <div class="container">
+    <div class="row">
+      <h2 class="centered">私たち</h2>
+      <hr>
+      <div class="col-lg-8 col-lg-offset-2 centered">
+        <p class="large">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p>
+      </div>
+    </div>
+    <!-- /row -->
+  </div>
+</div>
+<!-- /container -->
+
+<!-- ==== TEAM MEMBERS ==== -->
+<div id="team" name="team">
+  <div class="container">
+    <div class="row centered">
+      <h2 class="centered">MEET OUR TEAM</h2>
+      <hr>
+      <div class="col-lg-6 centered"> <img class="img img-circle" src="top/img/team/team01.jpg" height="120px" width="120px" alt="">
+        <h4><strong>RyotaSakamoto</strong></h4>
+        <p>Albucius consectetuer eu nam. Saepe legendos vulputate eu quo, id mea comprehensam signifer.</p>
+        <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a>
+      </div>
+      <div class="col-lg-6 centered"> <img class="img img-circle" src="top/img/team/team02.jpg" height="120px" width="120px" alt="">
+        <h4><b>Takatomo Ishikawa</b></h4>
+        <p>Albucius consectetuer eu nam. Saepe legendos vulputate eu quo, id mea comprehensam signifer.</p>
+        <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+  <!-- row -->
+</div>
+<!-- container -->
+
+<!-- ==== CONTACT ==== -->
+<div id="contact" name="contact">
+  <div class="container">
+    <div class="row">
+      <h2 class="centered">CONTACT US</h2>
+      <hr>
+      <div class="col-md-4 centered"> <i class="fa fa-map-marker fa-2x"></i>
+        <p>321 Awesome Street<br>
+          New York, NY 17022</p>
+      </div>
+      <div class="col-md-4"> <i class="fa fa-envelope-o fa-2x"></i>
+        <p>info@companyname.com</p>
+      </div>
+      <div class="col-md-4"> <i class="fa fa-phone fa-2x"></i>
+        <p> +1 800 123 1234</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 centered">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p>
+        <form id="contact" method="post" class="form" role="form">
+          <div class="row">
+            <div class="col-xs-6 col-md-6 form-group">
+              <input class="form-control" id="name" name="name" placeholder="Name" type="text" required />
+            </div>
+            <div class="col-xs-6 col-md-6 form-group">
+              <input class="form-control" id="email" name="email" placeholder="Email" type="email" required />
+            </div>
+          </div>
+          <textarea class="form-control" id="message" name="message" placeholder="Message" rows="5"></textarea>
+          <div class="row">
+            <div class="col-xs-12 col-md-12">
+              <button class="btn btn btn-lg" type="submit">Send Message</button>
+            </div>
+          </div>
+        </form>
+        <!-- form -->
+      </div>
+    </div>
+    <!-- row -->
+
+  </div>
+</div>
+<!-- container -->
+
+<div id="footerwrap">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8"> <span class="copyright">Copyright &copy; 2015 Your Website Name. Design by <a href="http://www.templategarden.com" rel="nofollow">TemplateGarden</a></span> </div>
+      <div class="col-md-4">
+        <ul class="list-inline social-buttons">
+          <li><a href="#"><i class="fa fa-twitter"></i></a> </li>
+          <li><a href="#"><i class="fa fa-facebook"></i></a> </li>
+          <li><a href="#"><i class="fa fa-google-plus"></i></a> </li>
+          <li><a href="#"><i class="fa fa-linkedin"></i></a> </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script type="text/javascript" src="{% static 'top/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'top/js/retina.js' %}"></script>
+<script type="text/javascript" src="{% static 'top/js/jquery.easing.1.3.js' %}"></script>
+<script type="text/javascript" src="{% static 'top/js/smoothscroll.js' %}"></script>
+<script type="text/javascript" src="{% static 'top/js/jquery-func.js' %}"></script>
+</div>
+
 {% endblock content %}
