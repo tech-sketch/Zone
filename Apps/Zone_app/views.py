@@ -18,12 +18,12 @@ def map(request):
 def list(request):
     items = []
     for place in Place.objects.all():
-        pictures = Picture.objects.filter(place_id = place.id)
+        pictures = Picture.objects.filter(place_id=place.id)
 
         #send only data of top picture of a place
         if len(pictures):
             items.append({'image': pictures[0].data, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free})
-        else :
+        else:
             items.append({'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free})
 
     return render_to_response('list.html', {'items': items}, context_instance=RequestContext(request))
