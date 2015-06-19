@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^detail/(?P<place_id>[0-9]+)$', views.detail, name='detail'),
     url(r'^places_api/$', views.places_api, name='places_api'),
+    url(r'^weather_api/$', views.weather_api, name='weather_api'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
