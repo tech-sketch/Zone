@@ -44,7 +44,13 @@ def places_api(request):
     return HttpResponse(result)
 
 def detail(request, place_id):
-    return render_to_response('detail.html', {}, context_instance=RequestContext(request))
+    place = Place.objects.filter(id = place_id)
+    pictures = Picture.objects.filter(place_id = place_id)
+
+    if len(pictures):
+        return render_to_response('detail.html', {"place": place[0], "pictures": pictures[0].data}, context_instance=RequestContext(request))
+    else:
+        return render_to_response('detail.html', {"place": place[0]}, context_instance=RequestContext(request))
 
 def logout(request):
     auth_logout(request)

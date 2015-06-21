@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Detail{% endblock title %}
 {% block content %}
+{% load staticfiles %}
+<link href="{% static 'css/detail.css' %}" rel="stylesheet">
+
+
+
+<div id="detail">
+    <h3>{{ place.name }}</h3>
+    <br>
+</div>
+<div id="top_picture">
+    <img src={{ pictures.url }} alt={{ place.name }} />
+</div>
 
 {% endblock content %}
