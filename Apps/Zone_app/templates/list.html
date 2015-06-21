@@ -5,26 +5,26 @@
 <div id="wrapper">
 <div id="main">
 
-{%for item in items %}
+{%for place in places %}
 
 			<div class="entry" style="float:left;width:306px;height:300px;margin-bottom:28px; ">
 				<div id="entries">
                     <div style="width:270px;height:180px;">
-                        <img src={{ item.image.url }} alt={{ item.name }} width="270" height="180">
+                        <a href="/detail/{{ place.id }}"> <img src={{ place.image.url }} alt={{ place.name }} width="270" height="180"></a>
 					</div>
 
 
 					<div id="entrytitle">
-                        {{ item.name }}
+                        <a href="/detail/{{ place.id }}"> {{ place.name }}</a>
 					</div>
 
 					<div style="width:230px;height:43px;margin:9px 16px 10px 20px;line-height:22px;">
                         <span style="font-size:12px;">
 							wi-fi:
-                        {% if item.wifi_softbank == 'y' %}
+                        {% if place.wifi_softbank == 'y' %}
                              softbank
                         {% endif %}
-                        {% if item.wifi_free == 'y' %}
+                        {% if place.wifi_free == 'y' %}
                              free
                         {% endif %}
 						</span>

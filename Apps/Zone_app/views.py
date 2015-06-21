@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import logout as auth_logout
 import requests
+
+
 # Create your views here.
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
@@ -16,17 +18,19 @@ def map(request):
     return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
 
 def list(request):
-    items = []
+    places = []
     for place in Place.objects.all():
         pictures = Picture.objects.filter(place_id=place.id)
 
-        #send only data of top picture of a place
+        #send only data of top picture of places
         if len(pictures):
-            items.append({'image': pictures[0].data, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free})
+            places.append({'image': pictures[0].data, 'name': place.name, 'wifi_softbank': place.wifi_softbank,
+                           'wifi_free': place.wifi_free, 'id': place.id})
         else:
-            items.append({'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free})
+            places.append({'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free,
+                           'id': place.id})
 
-    return render_to_response('list.html', {'items': items}, context_instance=RequestContext(request))
+    return render_to_response('list.html', {'places': places}, context_instance=RequestContext(request))
 
 def weather_api(request):
     url = "http://api.openweathermap.org/data/2.5/weather?lat=" + request.GET['lat'] + "&lon=" + request.GET['lng']
