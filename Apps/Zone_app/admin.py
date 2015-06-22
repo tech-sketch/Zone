@@ -1,7 +1,8 @@
 from django.contrib import admin
-from Apps.Zone_app.models import Place, NomadUser, Picture
+from Apps.Zone_app.models import Place, NomadUser, Picture, Preference
 
 # Register your models here.
 admin.site.register(Place)
 admin.site.register(NomadUser)
 admin.site.register(Picture)
+admin.site.register(Preference)
