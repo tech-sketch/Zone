@@ -51,3 +51,8 @@ def logout(request):
     messages.success(request, 'ログアウトしました。')
     return redirect('/')
 
+def new(request):
+    return render_to_response('new.html', {}, context_instance=RequestContext(request))
+
+def create(request):
+    return redirect('/')

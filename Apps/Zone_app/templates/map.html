@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block title %}MAP{% endblock title %}
 {% block content %}
-<div id="panel">
-    <input id="address" type="textbox" value="Tokyo">
-    <input type="button" value="Geocode" onclick="codeAddress()">
-</div>
 <div class="map_box">
     <div id="select">
         {% for place in places %}
