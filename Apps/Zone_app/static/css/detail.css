@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+#detail {
+    float: left;
+    width: 30%;
+}
+
+#top_picture {
+    float: left;
+    width: 60%;
+}

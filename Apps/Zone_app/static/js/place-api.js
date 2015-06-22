@@ -10,4 +10,4 @@ function connect(){
 function success(data){
     console.log(data);
 }
-connect();
+//connect();
