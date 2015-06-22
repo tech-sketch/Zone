@@ -1,21 +1,10 @@
-var onStyle = "color: rgb(73, 76, 89); background-color: rgb(255, 255, 255);"
+var checkedStyle = "cursor: default; background-color: rgb(128, 138, 178); color: rgb(255, 255, 255);"
 
-$("[name=genres]").click(function(){
+$(':checkbox').click(function(){
     if($(this).is(':checked')){
-        console.log("checked")
-
+        $(this).parent("label").attr('style', checkedStyle);
     }
     else{
-        $(this).style = ""
+        $(this).parent("label").attr('style', "");
     }
 })
-
-function setBtnColor(btn){
-    if(btn.checked){
-        console.log("checked");
-    }
-    else {
-        btn.style = "";
-        console.log("un");
-    }
-}

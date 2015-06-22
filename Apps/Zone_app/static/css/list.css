@@ -88,6 +88,12 @@
 	float:left;
 //	width:610px;
 }
+.checked {
+    color: rgb(73, 76, 89);
+    background-color: rgb(255, 255, 255);
+}
+.un-checked {
+}
 
 
 #entries{
