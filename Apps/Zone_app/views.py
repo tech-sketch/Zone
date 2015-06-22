@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import logout as auth_logout
+import requests
 
 # Create your views here.
 def index(request):
@@ -16,18 +17,24 @@ def map(request):
     return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
 
 def list(request):
-    items = []
+    places = []
     for place in Place.objects.all():
-        pictures = Picture.objects.filter(place_id = place.id)
+        pictures = Picture.objects.filter(place_id=place.id)
 
         #send only data of top picture of a place
         if len(pictures):
-            items.append({'image': pictures[0].data, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free})
-        else :
-            items.append({'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free})
+            places.append({'image': pictures[0].data, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free,
+                           'id': place.id})
+        else:
+            places.append({'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free,
+                           'id': place.id})
 
-    return render_to_response('list.html', {'items': items}, context_instance=RequestContext(request))
+    return render_to_response('list.html', {'places': places}, context_instance=RequestContext(request))
 
+def weather_api(request):
+    url = "http://api.openweathermap.org/data/2.5/weather?lat=" + request.GET['lat'] + "&lon=" + request.GET['lng']
+    re = requests.get(url)
+    return HttpResponse(str(re.json()))
 
 def places_api(request):
     print(request)
@@ -38,7 +45,13 @@ def places_api(request):
     return HttpResponse(result)
 
 def detail(request, place_id):
-    return render_to_response('detail.html', {}, context_instance=RequestContext(request))
+    place = Place.objects.filter(id=place_id)
+    pictures = Picture.objects.filter(place_id=place_id)
+
+    if len(pictures):
+        return render_to_response('detail.html', {"place": place[0], "pictures": pictures[0].data}, context_instance=RequestContext(request))
+    else:
+        return render_to_response('detail.html', {"place": place[0]}, context_instance=RequestContext(request))
 
 def logout(request):
     auth_logout(request)

@@ -3,8 +3,107 @@
 {% block content %}
 {% load staticfiles %}
 <link href="{% static 'css/list.css' %}" rel="stylesheet">
+
+
 <div id="wrapper">
 <div id="main">
+<dl><dt>ジャンル</dt>
+    <dd>
+        <label for="genre_btn_01">カフェ
+			<input type='checkbox' id='genre_btn_01' name='genres' value='cafe'/></label>
+    </dd>
+	<dd>
+        <label for="genre_btn_02">レストラン
+			<input type='checkbox' id='genre_btn_02' name='genres' value='restaurant'/></label>
+    </dd>
+	<dd>
+        <label for="genre_btn_03">公園
+			<input type='checkbox' id='genre_btn_03' name='genres' value='park'/></label>
+    </dd>
+
+</dl>
+
+<br clear="left">
+
+<dl><dt>場所</dt>
+    <dd>
+        <label for="place_btn_01">東京
+			<input type='checkbox' id='place_btn_01' name='place_btn_01' value='tokyo'/></label>
+    </dd>
+	<dd>
+        <label for="place_btn_02">神奈川
+			<input type='checkbox' id='place_btn_02' name='place_btn_02' value='kanagawa'/></label>
+    </dd>
+	<dd>
+        <label for="place_btn_03">千葉
+			<input type='checkbox' id='place_btn_03' name='place_btn_03' value='chiba'></label>
+    </dd>
+	<dd>
+        <label for="place_btn_04">埼玉
+			<input type='checkbox' id='place_btn_04' name='place_btn_04' value='saitama'></label>
+    </dd>
+	<dd>
+        <label for="place_btn_05">群馬
+			<input type='checkbox' id='place_btn_05' name='place_btn_05' value='gunnma'></label>
+    </dd>
+	<dd>
+        <label for="place_btn_06">茨城
+			<input type='checkbox' id='place_btn_06' name='place_btn_06' value='ibaraki'></label>
+    </dd>
+	<dd>
+        <label for="place_btn_07">栃木
+			<input type='checkbox' id='place_btn_07' name='place_btn_07' value='tochigi'></label>
+    </dd>
+</dl>
+
+<br clear="left">
+
+<dl><dt>雰囲気</dt>
+    <dd>
+        <label for="air_btn_01">落ち着いている
+			<input type='checkbox' id='air_btn_01' name='air_btn_01' value='cafe'></label>
+    </dd>
+	<dd>
+        <label for="air_btn_02">レトロ
+			<input type='checkbox' id='air_btn_02' name='air_btn_02' value='restaurant'></label>
+    </dd>
+	<dd>
+        <label for="air_btn_03">おしゃれ
+			<input type='checkbox' id='air_btn_03' name='air_btn_03' value='park'></label>
+    </dd>
+
+</dl>
+
+<br clear="left">
+
+<dl><dt>ツール</dt>
+    <dd>
+        <label for="tool_btn_01">Wi-Fi(無料)
+			<input type='checkbox' id='tool_btn_01' name='tool_btn_01' value='wifi_free'></label>
+    </dd>
+	<dd>
+        <label for="tool_btn_02">Wi-Fi(Softbank)
+			<input type='checkbox' id='tool_btn_02' name='tool_btn_02' value='wifi_softbank'></label>
+    </dd>
+	<dd>
+        <label for="tool_btn_03" >電源
+			<input type='checkbox' id='tool_btn_03' name='tool_btn_03' value='outlet'></label>
+    </dd>
+	<!--
+	<dd>
+        <label for="tool_btn_04" style="color: rgb(255, 255, 255); opacity: 1; background-color: rgb(128, 138, 178);">日経新聞
+			<input type='checkbox' id='tool_btn_04' name='tool_btn_04' value='nikkei'></label>
+    </dd>
+	<dd>
+        <label for="tool_btn_05" style="color: rgb(255, 255, 255); opacity: 1; background-color: rgb(128, 138, 178);">スポーツ新聞
+			<input type='checkbox' id='tool_btn_05' name='tool_btn_05' value='sports_news'></label>
+    </dd>
+	-->
+</dl>
+
+<br clear="left">
+<br>
+<br>
 
 {%for place in places %}
 
@@ -41,5 +140,5 @@
 
 </div>
 </div>
-
+<script src="{% static 'js/search.js'%}"></script>
 {% endblock content %}
