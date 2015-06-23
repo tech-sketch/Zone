@@ -7,22 +7,25 @@
 
 <div id="wrapper">
 <div id="main">
+<form method="post" id="categories">
+{% csrf_token %}
 <dl><dt>ジャンル</dt>
+
     <dd>
         <label for="genre_btn_01">カフェ
-			<input type='checkbox' id='genre_btn_01' name='genres' value='cafe' ></label>
+			<input type='checkbox' id='genre_btn_01' name='categories' value='cafe' ></label>
     </dd>
 	<dd>
         <label for="genre_btn_02">レストラン
-			<input type='checkbox' id='genre_btn_02' name='genres' value='restaurant'></label>
+			<input type='checkbox' id='genre_btn_02' name='categories' value='restaurant'></label>
     </dd>
 	<dd>
         <label for="genre_btn_03">公園
-			<input type='checkbox' id='genre_btn_03' name='genres' value='park'></label>
+			<input type='checkbox' id='genre_btn_03' name='categories' value='park'></label>
     </dd>
 
 </dl>
-
+</form>
 <br clear="left">
 
 <dl><dt>場所</dt>
@@ -60,16 +63,16 @@
 
 <dl><dt>雰囲気</dt>
     <dd>
-        <label for="air_btn_01">落ち着いている
-			<input type='checkbox' id='air_btn_01' name='air_btn_01' value='cafe'></label>
+        <label for="mood_btn_01">落ち着いている
+			<input type='checkbox' id='mood_btn_01' name='mood_btn_01' value='cafe'></label>
     </dd>
 	<dd>
-        <label for="air_btn_02">レトロ
-			<input type='checkbox' id='air_btn_02' name='air_btn_02' value='restaurant'></label>
+        <label for="mood_btn_02">レトロ
+			<input type='checkbox' id='mood_btn_02' name='mood_btn_02' value='restaurant'></label>
     </dd>
 	<dd>
-        <label for="air_btn_03">おしゃれ
-			<input type='checkbox' id='air_btn_03' name='air_btn_03' value='park'></label>
+        <label for="mood_btn_03">おしゃれ
+			<input type='checkbox' id='mood_btn_03' name='mood_btn_03' value='park'></label>
     </dd>
 
 </dl>
@@ -110,7 +113,7 @@
 			<div class="entry" style="float:left;width:306px;height:300px;margin-bottom:28px; ">
 				<div id="entries">
                     <div style="width:270px;height:180px;">
-                        <a href="/detail/{{ place.id }}"> <img src={{ place.image.url }} alt={{ place.name }} width="270" height="180"></a>
+                        <a href="/detail/{{ place.id }}"> <img src={{ place.picture.url }} alt={{ place.name }} width="270" height="180"></a>
 					</div>
 
 
