@@ -2,16 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-DEFAULT_NOMADUSER_ID = 1
-
-class Preference(models.Model):
-    relax = models.BooleanField(max_length=10, blank=True)
-    retro = models.BooleanField(max_length=10, blank=True)
-    fashionable = models.BooleanField(max_length=10, blank=True)
-    coffee = models.BooleanField(max_length=10, blank=True)
-    menu = models.BooleanField(max_length=10, blank=True)
-    frank = models.BooleanField(max_length=10, blank=True)
-
 # Create your models here.
 class NomadUser(AbstractUser):
     GENDER_CHOICES = (
@@ -28,7 +18,6 @@ class NomadUser(AbstractUser):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     age = models.IntegerField(validators=[MinValueValidator(7), MaxValueValidator(99)], null=True, blank=True)
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
-    preference = models.OneToOneField(Preference, null=True, blank=True)
 
 
 class Place(models.Model):
@@ -73,3 +62,16 @@ class Picture(models.Model):
     nomad = models.ForeignKey(NomadUser)
     data = models.ImageField()
     add_date = models.TimeField(auto_now_add=True)
+
+class Mood(models.Model):
+    jp_title = models.CharField(max_length=40)
+    en_title = models.CharField(max_length=40)
+
+class Preference(models.Model):
+    nomad = models.ForeignKey(NomadUser)
+    mood = models.ForeignKey(Mood)
+
+class PlacePoint(models.Model):
+    place = models.ForeignKey(Place)
+    mood = models.ManyToManyField(Mood)
+    point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], null=True, blank=True)

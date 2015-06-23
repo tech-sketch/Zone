@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from .models import NomadUser, Place, Picture, Preference
+from .models import NomadUser, Place, Picture, Mood, Preference
 from django.db import models
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -56,11 +56,6 @@ def logout(request):
     messages.success(request, 'ログアウトしました。')
     return redirect('/')
 
-class PreferenceForm(ModelForm):
-    class Meta:
-        model = Preference
-        fields = ('relax', 'retro', 'fashionable', 'coffee', 'menu', 'frank')
-
 class UserForm(ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
@@ -70,13 +65,16 @@ class UserForm(ModelForm):
 
 def new(request):
     user_form = UserForm()
-    preference_form = PreferenceForm()
-    return render_to_response('new.html', {'user_form': user_form, 'preference_form': preference_form}, context_instance=RequestContext(request))
+    moods = Mood.objects.all()
+    return render_to_response('new.html', {'user_form': user_form, 'moods': moods}, context_instance=RequestContext(request))
 
 def create(request):
     nomad_user = UserForm(request.POST)
-    preference = PreferenceForm(request.POST)
-    new_nomad_user = nomad_user.save(commit=False)
-    new_nomad_user.preference = preference.save()
-    new_nomad_user.save()
+    new_nomad_user = nomad_user.save()
+    preference = Preference()
+    for mood in Mood.objects.all():
+        if mood.en_title in request.POST:
+            preference.nomad = new_nomad_user
+            preference.mood = mood
+            preference.save()
     return redirect('/')

@@ -4,7 +4,11 @@
 
 <form action="{% url 'create' %}" method="POST">{% csrf_token %}
     {{ user_form.as_p }}
-    {{ preference_form.as_p }}
+    {% for mood in moods %}
+        <input type="checkbox" name="{{mood.en_title}}" value="true">
+        {{mood.jp_title}}
+        <br/>
+    {% endfor %}
     <input type="submit" value="Submit" />
 </form>
 {% endblock content %}
