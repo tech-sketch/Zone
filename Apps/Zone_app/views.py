@@ -71,9 +71,9 @@ def new(request):
 def create(request):
     nomad_user = UserForm(request.POST)
     new_nomad_user = nomad_user.save()
-    preference = Preference()
     for mood in Mood.objects.all():
         if mood.en_title in request.POST:
+            preference = Preference()
             preference.nomad = new_nomad_user
             preference.mood = mood
             preference.save()
