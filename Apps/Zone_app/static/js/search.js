@@ -1,24 +1,72 @@
+
+// For CSRF
+// ======================
+jQuery(document).ajaxSend(function(event, xhr, settings) {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+});
+
+
+//
+// ======================
+
 var checkedStyle = "cursor: default; background-color: rgb(128, 138, 178); color: rgb(255, 255, 255);"
 
 $(':checkbox').click(function(){
     if($(this).is(':checked')){
         $(this).parent("label").attr('style', checkedStyle);
-
-        var length = $('[name=categories]:checked').length
-        var data =[];
-        for(var i=0; i<length; i++){
-            data.push($($('[name=categories]:checked')[i]).val());
-        }
-
-        $.post("/list/", {'categories': data});
-
+        //$('#categories').submit();
     }
     else{
         $(this).parent("label").attr('style', "");
-
     }
+    var length = $('[name=categories]:checked').length;
+    var data =[];
+    for(var i=0; i<length; i++){
+        data.push($($('[name=categories]:checked')[i]).val());
+    }
+    str = data.join([separater=',']);
+
+    $.post("/list/", {categories:str}, loadPlaces);
+
 })
 
-function loadPlaces(){
+function loadPlaces(data){
+    $('div.entry').html("");
+    for(var index in data.id){
+        $('div.entry').append('<p>' + index + '</p>');
+    }
 
 }
