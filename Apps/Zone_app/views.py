@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from .models import NomadUser, Place, Picture, Preference
+from django.db import models
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import logout as auth_logout
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms.widgets import RadioSelect, CheckboxSelectMultiple
+from django.forms import ModelForm
 from django import forms
 import requests
 
@@ -54,47 +56,27 @@ def logout(request):
     messages.success(request, 'ログアウトしました。')
     return redirect('/')
 
-class UserForm(forms.Form):
-    GENDER_CHOICES = (
-        ('M', '男'),
-        ('F', '女'),
-    )
-    JOB_CHOICES = (
-        ('Designer', 'デザイナー'),
-        ('Engineer', 'エンジニア'),
-        ('Other', 'その他'),
-    )
-    PREFERENCE_CHOICES = (
-        ('Relax', '落ち着いている'),
-        ('Retro', 'レトロ'),
-        ('Fashionable', 'おしゃれ'),
-        ('Coffee', 'コーヒーがおいしい'),
-        ('Menu', 'メニューが豊富'),
-        ('Frank', '店員が気さく'),
-    )
-    username = forms.CharField(max_length=40)
-    password = forms.CharField(widget=forms.PasswordInput())
-    email = forms.CharField(max_length=40)
-    nickname = forms.CharField(max_length=40)
-    gender = forms.ChoiceField(widget=RadioSelect, choices=GENDER_CHOICES)
-    age = forms.IntegerField(validators=[MinValueValidator(7), MaxValueValidator(99)])
-    job = forms.ChoiceField(widget=RadioSelect, choices=JOB_CHOICES)
-    preference = forms.MultipleChoiceField(required=False, widget=CheckboxSelectMultiple, choices=PREFERENCE_CHOICES)
+class PreferenceForm(ModelForm):
+    class Meta:
+        model = Preference
+        fields = ('relax', 'retro', 'fashionable', 'coffee', 'menu', 'frank')
 
+class UserForm(ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = NomadUser
+        fields = ('username', 'password', 'email', 'nickname', 'age', 'gender', 'job')
 
 def new(request):
-    form = UserForm()
-    return render_to_response('new.html', {'form': form}, context_instance=RequestContext(request))
+    user_form = UserForm()
+    preference_form = PreferenceForm()
+    return render_to_response('new.html', {'user_form': user_form, 'preference_form': preference_form}, context_instance=RequestContext(request))
 
 def create(request):
-    nomad_user = NomadUser(username=request.POST['username'], email=request.POST['email'], password=request.POST['password'])
-    nomad_user.nickname = request.POST['nickname']
-    nomad_user.age = request.POST['age']
-    nomad_user.gender = request.POST['gender']
-    nomad_user.job = request.POST['job']
-    print(Preference._meta.get_all_field_names())
-    #for preference in request.POST.getlist('preference'):
-
-    nomad_user.save()
-    print("save")
+    nomad_user = UserForm(request.POST)
+    preference = PreferenceForm(request.POST)
+    new_nomad_user = nomad_user.save(commit=False)
+    new_nomad_user.preference = preference.save()
+    new_nomad_user.save()
     return redirect('/')
