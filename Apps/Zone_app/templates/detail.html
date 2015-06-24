@@ -2,10 +2,23 @@
 {% load staticfiles %}
 {% block title %}Detail{% endblock title %}
 {% block content %}
+
+{% load staticfiles %}
+<link href="{% static 'css/detail.css' %}" rel="stylesheet">
+
+
 <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
 <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
 <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
 <button type="button" id="check_in">現在このお店にいる</button>
+
+<div id="detail">
+    <h3>{{ place.name }}</h3>
+    <br>
+</div>
+<div id="top_picture">
+    <img src={{ pictures.url }} alt={{ place.name }} />
+</div>
 
 <script src="{% static 'js/check_in.js' %}"></script>
 {% endblock content %}
