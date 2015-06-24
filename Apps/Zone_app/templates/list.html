@@ -13,15 +13,15 @@
 
     <dd>
         <label for="genre_btn_01">カフェ
-			<input type='checkbox' id='genre_btn_01' name='categories' value='cafe' ></label>
+			<input type='checkbox' id='genre_btn_01' name='category' value='cafe' ></label>
     </dd>
 	<dd>
         <label for="genre_btn_02">レストラン
-			<input type='checkbox' id='genre_btn_02' name='categories' value='restaurant'></label>
+			<input type='checkbox' id='genre_btn_02' name='category' value='restaurant'></label>
     </dd>
 	<dd>
         <label for="genre_btn_03">公園
-			<input type='checkbox' id='genre_btn_03' name='categories' value='park'></label>
+			<input type='checkbox' id='genre_btn_03' name='category' value='park'></label>
     </dd>
 
 </dl>
@@ -61,55 +61,38 @@
 
 <br clear="left">
 
+<form method="post" id="moods">
+{% csrf_token %}
 <dl><dt>雰囲気</dt>
+    {% for mood in moods %}
     <dd>
-        <label for="mood_btn_01">落ち着いている
-			<input type='checkbox' id='mood_btn_01' name='mood_btn_01' value='cafe'></label>
+        <label for="{{ mood.en_title }}">{{ mood.jp_title }}
+			<input type='checkbox' id='{{ mood.en_title }}' name='mood' value='{{ mood.en_title }}'></label>
     </dd>
-	<dd>
-        <label for="mood_btn_02">レトロ
-			<input type='checkbox' id='mood_btn_02' name='mood_btn_02' value='restaurant'></label>
-    </dd>
-	<dd>
-        <label for="mood_btn_03">おしゃれ
-			<input type='checkbox' id='mood_btn_03' name='mood_btn_03' value='park'></label>
-    </dd>
-
+    {% endfor %}
 </dl>
+</form>
 
 <br clear="left">
 
+<form method="post" id="tools">
+{% csrf_token %}
 <dl><dt>ツール</dt>
+    {% for tool in tools %}
     <dd>
-        <label for="tool_btn_01">Wi-Fi(無料)
-			<input type='checkbox' id='tool_btn_01' name='tool_btn_01' value='wifi_free'></label>
+        <label for="{{ tool.en_title }}">{{ tool.jp_title }}
+			<input type='checkbox' id='{{ tool.en_title }}' name='tool' value='{{ tool.en_title }}'></label>
     </dd>
-	<dd>
-        <label for="tool_btn_02">Wi-Fi(Softbank)
-			<input type='checkbox' id='tool_btn_02' name='tool_btn_02' value='wifi_softbank'></label>
-    </dd>
-	<dd>
-        <label for="tool_btn_03" >電源
-			<input type='checkbox' id='tool_btn_03' name='tool_btn_03' value='outlet'></label>
-    </dd>
-	<!--
-	<dd>
-        <label for="tool_btn_04" style="color: rgb(255, 255, 255); opacity: 1; background-color: rgb(128, 138, 178);">日経新聞
-			<input type='checkbox' id='tool_btn_04' name='tool_btn_04' value='nikkei'></label>
-    </dd>
-	<dd>
-        <label for="tool_btn_05" style="color: rgb(255, 255, 255); opacity: 1; background-color: rgb(128, 138, 178);">スポーツ新聞
-			<input type='checkbox' id='tool_btn_05' name='tool_btn_05' value='sports_news'></label>
-    </dd>
-	-->
+    {% endfor %}
 </dl>
+</form>
 
 <br clear="left">
 <br>
 <br>
 
 <div class="search-result">
-{%for place in places %}
+{% for place in places %}
 
 			<div class="entry" style="float:left;width:306px;height:300px;margin-bottom:28px; ">
 				<div id="entries">

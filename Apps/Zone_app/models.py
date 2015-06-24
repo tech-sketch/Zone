@@ -63,6 +63,12 @@ class Picture(models.Model):
     data = models.ImageField()
     add_date = models.TimeField(auto_now_add=True)
 
+class Tool(models.Model):
+    def __str__(self):
+        return self.jp_title + "({0})".format(self.en_title)
+    jp_title = models.CharField(max_length=40)
+    en_title = models.CharField(max_length=40)
+
 class Mood(models.Model):
     def __str__(self):
         return self.jp_title + "({0})".format(self.en_title)

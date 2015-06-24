@@ -52,14 +52,22 @@ $(':checkbox').click(function(){
     else{
         $(this).parent("label").attr('style', "");
     }
-    var length = $('[name=categories]:checked').length;
+
+    var length = $('[name=category]:checked').length;
     var data =[];
     for(var i=0; i<length; i++){
-        data.push($($('[name=categories]:checked')[i]).val());
+        data.push($($('[name=category]:checked')[i]).val());
     }
-    str = data.join([separater=',']);
+    var categories = data.join([separater=',']);
 
-    $.post("/list/", {categories:str}, loadPlaces);
+    var length = $('[name=tool]:checked').length;
+    var data =[];
+    for(var i=0; i<length; i++){
+        data.push($($('[name=tool]:checked')[i]).val());
+    }
+    var tools = data.join([separater=',']);
+
+    $.post("/list/", {categories:categories, tools:tools}, loadPlaces);
 
 })
 
@@ -73,6 +81,8 @@ function loadPlaces(data){
         str += '<a href="/detail/'+ places[i].id + '"> <img src="' + places[i].picture + '" alt='+ places[i].name + ' width="270" height="180"></a></div>';
         str += '<div id="entrytitle"><a href="/detail/' + places[i].id + '">' + places[i].name + '</a></div>';
         str += '<div style="width:230px;height:43px;margin:9px 16px 10px 20px;line-height:22px;"><span style="font-size:12px;">wi-fi:';
+        if(places[i].wifi_softbank == 'y')str += "softbank ";
+        if(places[i].wifi_free == 'y')str += "free ";
         str += '</span></div><div style="float:right;font-size:11px;margin:0px 13px 9px 0px;">東京・西新宿</div></div></div>';
         $('div.search-result').append(str);
     }
