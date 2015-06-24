@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -78,3 +79,10 @@ class PlacePoint(models.Model):
     place = models.ForeignKey(Place)
     mood = models.ManyToManyField(Mood)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], null=True, blank=True)
+
+class CheckInHistory(models.Model):
+    def __str__(self):
+        return self.create_at.strftime('%Y/%m/%d %H:%M:%S')
+    nomad = models.ForeignKey(NomadUser)
+    place = models.ForeignKey(Place)
+    create_at = models.DateTimeField(default=datetime.now)

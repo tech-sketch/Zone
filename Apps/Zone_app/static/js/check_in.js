@@ -11,9 +11,9 @@ function getLocation(){
     }
 }
 function addPoint(){
-    $.get('/add_point', function(data){
-        $("#user_point").text(data);
-        alert("ポイント加算");
+    $.get('/add_point', {place_id: $("#place_id").attr("value")}, function(data){
+        $("#user_point").text(data.split(",")[0]);
+        alert(data.split(",")[1]);
     });
 }
 function successCallback(position){
@@ -31,7 +31,6 @@ function successCallback(position){
         alert("お店にいません");
     }
 }
-
 
 function errorCallback(error){
     alert("位置情報が取得できませんでした");

@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from .models import NomadUser, Place, Picture, Mood, Preference, PlacePoint
+from .models import *
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import logout as auth_logout
 from django.forms import ModelForm
 from django import forms
+from datetime import datetime
 import requests
 
 
@@ -77,7 +78,22 @@ def create(request):
             preference.save()
     return redirect('/')
 
+
 def add_point(request):
+    place = Place.objects.get(id=request.GET['place_id'])
+    check_in_historys = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
+                                                      create_at__month=datetime.now().strftime("%m"),
+                                                      create_at__year=datetime.now().strftime("%Y"),
+                                                      nomad_id=request.user.id,
+                                                      place_id=request.GET['place_id'])
+    print(check_in_historys)
+    if len(check_in_historys) != 0:
+        return HttpResponse("{0},{1}".format(request.user.point, "同じ店では一日一回までです。"))
+
+    check_in_history = CheckInHistory()
     request.user.point += 10
     request.user.save()
-    return HttpResponse(str(request.user.point))
+    check_in_history.nomad = request.user
+    check_in_history.place = place
+    check_in_history.save()
+    return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
