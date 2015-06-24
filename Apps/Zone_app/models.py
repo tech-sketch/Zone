@@ -18,7 +18,7 @@ class NomadUser(AbstractUser):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     age = models.IntegerField(validators=[MinValueValidator(7), MaxValueValidator(99)], null=True, blank=True)
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
-
+    point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], default=0)
 
 class Place(models.Model):
     def __str__(self):
@@ -56,7 +56,6 @@ class Place(models.Model):
     PR = models.CharField(max_length=400, null=True, blank=True)
     add_date = models.TimeField(auto_now_add=True)
 
-
 class Picture(models.Model):
     place = models.ForeignKey(Place)
     nomad = models.ForeignKey(NomadUser)
@@ -64,10 +63,14 @@ class Picture(models.Model):
     add_date = models.TimeField(auto_now_add=True)
 
 class Mood(models.Model):
+    def __str__(self):
+        return self.jp_title + "({0})".format(self.en_title)
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
 
 class Preference(models.Model):
+    def __str__(self):
+        return self.nomad.username + "({0})".format(self.mood.jp_title)
     nomad = models.ForeignKey(NomadUser)
     mood = models.ForeignKey(Mood)
 

@@ -15,7 +15,7 @@
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqx3ox6iSZ3599nPe314NQNkbxfg-aXC0">
     </script>
-    <script src="{% static 'js/map.js' %}"></script>
+
     <script src="{% static 'js/place-api.js' %}"></script>
     <script src="{% static 'js/weather-api.js' %}"></script>
     {% block extrahead %}{% endblock %}
@@ -76,6 +76,7 @@
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
                 <li><p class="navbar-text">{{ user.username }}</p></li>
+                <li><p class="navbar-text" id="user_point">point:{{ user.point }}</p></li>
                 <li><a href="{% url 'logout' %}">ログアウト</a></li>
             {% else %}
                 <li><a href="{% url 'new' %}">Sing up</a></li>

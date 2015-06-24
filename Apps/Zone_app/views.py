@@ -1,14 +1,11 @@
 from django.shortcuts import render
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from .models import NomadUser, Place, Picture, Mood, Preference
-from django.db import models
+from .models import NomadUser, Place, Picture, Mood, Preference, PlacePoint
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import logout as auth_logout
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.forms.widgets import RadioSelect, CheckboxSelectMultiple
 from django.forms import ModelForm
 from django import forms
 import requests
@@ -49,7 +46,8 @@ def places_api(request):
     return HttpResponse(result)
 
 def detail(request, place_id):
-    return render_to_response('detail.html', {}, context_instance=RequestContext(request))
+    place = Place.objects.get(id=place_id)
+    return render_to_response('detail.html', {"place": place}, context_instance=RequestContext(request))
 
 def logout(request):
     auth_logout(request)
@@ -78,3 +76,8 @@ def create(request):
             preference.mood = mood
             preference.save()
     return redirect('/')
+
+def add_point(request):
+    request.user.point += 10
+    request.user.save()
+    return HttpResponse(str(request.user.point))

@@ -1,5 +1,11 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block title %}Detail{% endblock title %}
 {% block content %}
+<hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
+<hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
+<hidden type="input" id="place_id" value="{{place.id}}"></hidden>
+<button type="button" id="check_in">現在このお店にいる</button>
 
+<script src="{% static 'js/check_in.js' %}"></script>
 {% endblock content %}
