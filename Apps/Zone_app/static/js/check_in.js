@@ -39,8 +39,6 @@ function errorCallback(error){
 
 function collision(placeX, placeY, userX, userY, range){
     var margin = range / 2;
-    var userX = userX - margin;
-    var userY = userY - margin;
     placeX = placeX - margin;
     placeY = placeY - margin;
     return placeX < userX && placeX + range > userX && placeY < userY && placeY + range > userY;
