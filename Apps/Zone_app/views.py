@@ -27,8 +27,11 @@ def list(request):
         checked_list = request.POST.getlist('categories')
         searced_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, Place.objects)
 
-        json_serializer = serializers.get_serializer("json")()
-        places = json_serializer.serialize(searced_places, ensure_ascii=False)
+        places = serializers.serialize('json', searced_places, ensure_ascii=False,
+                                       fields=('name', 'wifi_softbank', 'wifi_free', 'outlet'))
+
+        #picture = get_top_picture(place.id)
+        print(str(places))
 
         return HttpResponse(str(places))
 
