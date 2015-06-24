@@ -70,8 +70,8 @@ function loadPlaces(data){
     for(i in places){
         var str = ''
         str += '<div class="entry" style="float:left;width:306px;height:300px;margin-bottom:28px; "><div id="entries"><div style="width:270px;height:180px;">';
-        str += '<a href="/detail/'+ places[i].pk + '"> <img src="" alt='+ places[i].fields.name + ' width="270" height="180"></a></div>';
-        str += '<div id="entrytitle"><a href="/detail/' + places[i].pk + '">' + places[i].fields.name + '</a></div>';
+        str += '<a href="/detail/'+ places[i].id + '"> <img src="' + places[i].picture + '" alt='+ places[i].name + ' width="270" height="180"></a></div>';
+        str += '<div id="entrytitle"><a href="/detail/' + places[i].id + '">' + places[i].name + '</a></div>';
         str += '<div style="width:230px;height:43px;margin:9px 16px 10px 20px;line-height:22px;"><span style="font-size:12px;">wi-fi:';
         str += '</span></div><div style="float:right;font-size:11px;margin:0px 13px 9px 0px;">東京・西新宿</div></div></div>';
         $('div.search-result').append(str);

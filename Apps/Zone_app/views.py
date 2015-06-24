@@ -9,6 +9,8 @@ from django.http import HttpResponse
 from django.contrib.auth import logout as auth_logout
 import requests, json, functools
 from django.core import serializers
+from django.http.response import JsonResponse
+import simplejson
 
 
 # Create your views here.
@@ -27,19 +29,32 @@ def list(request):
         checked_list = request.POST.getlist('categories')
         searced_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, Place.objects)
 
-        places = serializers.serialize('json', searced_places, ensure_ascii=False,
-                                       fields=('name', 'wifi_softbank', 'wifi_free', 'outlet'))
+        #places = serializers.serialize('json', searced_places, ensure_ascii=False,
+        #                               fields=('name', 'wifi_softbank', 'wifi_free', 'outlet'))
 
-        #picture = get_top_picture(place.id)
-        print(str(places))
+        for place in searced_places:
+            picture = get_top_picture(place.id)
+            places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free,
+                               'id': place.id})
 
-        return HttpResponse(str(places))
+        try:
+            places_json = json.dumps(places)
+            return JsonResponse(places_json, safe=False)
+        except Exception as e:
+            print('=== エラー内容 ===')
+            print ('type:' + str(type(e)))
+            print ('args:' + str(e.args))
+            print ('e自身:' + str(e))
+
+
 
     else:
         for place in Place.objects.all():
             picture = get_top_picture(place.id)
             places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free,
                                'id': place.id})
+
+        print(str(places[0]))
         return render_to_response('list.html', {'places': places}, context_instance=RequestContext(request))
 
 def weather_api(request):
@@ -72,6 +87,6 @@ def logout(request):
 def get_top_picture(place_id):
     pictures = Picture.objects.filter(place_id=place_id)
     if len(pictures):
-        return pictures[0].data
+        return pictures[0].data.url
     else:
-        return
+        return ""
