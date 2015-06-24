@@ -27,33 +27,26 @@ def list(request):
     places = []
 
     if request.method == 'POST':
-        checked_list = request.POST.getlist('categories')
-        searced_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, Place.objects)
-        checked_list = request.POST.getlist('tools')
+        searched_places = Place.objects.all()
+        checked_list = request.POST.getlist('categories[]')
+        searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
 
-        #places = serializers.serialize('json', searced_places, ensure_ascii=False,
-        #                               fields=('name', 'wifi_softbank', 'wifi_free', 'outlet'))
+        checked_list = request.POST.getlist('tools[]')
+        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
 
-        for place in searced_places:
+        for place in searched_places:
             picture = get_top_picture(place.id)
-            places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free,
-                               'id': place.id})
+            places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.has_equipment('wifi_softbank'),
+                           'wifi_free': place.has_equipment('wifi_free'), 'id': place.id})
 
         places_json = json.dumps(places)
         return JsonResponse(places_json, safe=False)
-        """try:
-            return JsonResponse(places_json, safe=False)
-        except Exception as e:
-            print('=== エラー内容 ===')
-            print('type:' + str(type(e)))
-            print('args:' + str(e.args))
-            print('e自身:' + str(e))"""
 
     else:
         for place in Place.objects.all():
             picture = get_top_picture(place.id)
-            places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free,
-                               'id': place.id})
+            places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.has_tool('wifi_softbank'),
+                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id})
 
         return render_to_response('list.html', {'places': places, 'moods': Mood.objects.all(),
                                                 'tools': Tool.objects.all()}, context_instance=RequestContext(request))
@@ -135,3 +128,12 @@ def get_top_picture(place_id):
     else:
         return ""
 
+
+
+"""try:
+    return JsonResponse(places_json, safe=False)
+except Exception as e:
+    print('=== エラー内容 ===')
+    print('type:' + str(type(e)))
+    print('args:' + str(e.args))
+    print('e自身:' + str(e))"""
