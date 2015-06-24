@@ -1,5 +1,4 @@
 $("#check_in").on("click", function(){
-    console.log("click")
     getLocation()
 });
 
@@ -21,10 +20,6 @@ function successCallback(position){
     var placeY = $("#latitude").attr("value");
     var userX = position.coords.longitude;
     var userY = position.coords.latitude;
-    console.log("placeX" + placeX);
-    console.log("placeY" + placeY);
-    console.log("userX" + userX);
-    console.log("userY" + userY);
     if(collision(placeX, placeY, userX, userY, 1)){
         addPoint();
     }else{

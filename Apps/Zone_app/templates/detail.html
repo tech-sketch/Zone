@@ -5,7 +5,8 @@
 <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
 <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
 <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
-<button type="button" id="check_in">現在このお店にいる</button>
-
+<button type="button" id="check_in">現在このお店にいる（10ポイントゲット）</button>
+<button type="button" id="recommend">このお店をおすすめする</button>
 <script src="{% static 'js/check_in.js' %}"></script>
+<script src="{% static 'js/recommend_form.js' %}"></script>
 {% endblock content %}
