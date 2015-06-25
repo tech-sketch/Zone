@@ -5,6 +5,7 @@
 {% block content %}
 <div class="map_box">
     <div id="select">
+        <a href=""> あなたのこだわりで絞り込む　></a>
         {% for place in places %}
             <div class="location_card">
                 <hidden type="input" id="name" value="{{place.name}}"></hidden>
