@@ -30,4 +30,23 @@
 </div>
 <link href="{% static 'css/map.css' %}" rel="stylesheet">
 <script src="{% static 'js/map.js' %}"></script>
+
+<script src="{% static 'js/check_in.js' %}"></script>
+<script>
+function showForm(){
+    bootbox.dialog({
+        title: "このお店をおすすめする",
+        message: {% include "recommend_form.html" %},
+        buttons: {
+            success: {
+                label: "Save",
+                className: "btn-success",
+                callback: saveRecommend
+            }
+        }
+    });
+}
+</script>
+<script src="{% static 'js/CSRF.js' %}"></script>
+<script src="{% static 'js/recommend_logic.js' %}"></script>
 {% endblock content %}

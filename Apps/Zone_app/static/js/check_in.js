@@ -1,21 +1,23 @@
-$("#check_in").on("click", function(){
-    getLocation()
+$("#check_in").click(function(){
+    console.log("click")
+    checkIn()
 });
 
-function getLocation(){
+function checkIn(){
     if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+        navigator.geolocation.getCurrentPosition(checkSuccessCallback, checkErrorCallback);
     }else{
         alert('ブラウザが位置情報取得に対応しておりません');
     }
 }
 function addPoint(){
-    $.get('/add_point', {place_id: $("#place_id").attr("value")}, function(data){
+    console.log("addpoint")
+    $.get('/add_point', {place_id: $("#check_in").attr("value")}, function(data){
         $("#user_point").text(data.split(",")[0]);
         alert(data.split(",")[1]);
     });
 }
-function successCallback(position){
+function checkSuccessCallback(position){
     var placeX = $("#longitude").attr("value");
     var placeY = $("#latitude").attr("value");
     var userX = position.coords.longitude;
@@ -27,7 +29,7 @@ function successCallback(position){
     }
 }
 
-function errorCallback(error){
+function checkErrorCallback(error){
     alert("位置情報が取得できませんでした");
 }
 

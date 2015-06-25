@@ -68,7 +68,10 @@ function makePlacePin() {
             map: map,
             title: name,
         }), new google.maps.InfoWindow({
-                content: name + "<br/>" + lat + "," + lng
+                maxWidth: 250,
+                maxHeight: 250,
+                content: name + '<br/><button type="button" id="check_in" class="btn-success" onClick="checkIn()" value=' + placeId + '>現在この店にいる</button>' +
+                                '<button type="button" id="recommend"  class="btn-success" onClick="showForm()" value=' + placeId + '>このお店をおすすめする</button>'
         }), locationCard, placeId)
     }
 }
@@ -85,8 +88,9 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
         location.href = "/detail/" + placeId;
     });
     locationCard.hover(openInfoWindow, closeInfoWindow);
+    google.maps.event.addListener(placeMarker, 'click',closeInfoWindow);
     google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
-    google.maps.event.addListener(placeMarker, "mouseout", closeInfoWindow);
+    //google.maps.event.addListener(placeMarker, "mouseout", closeInfoWindow);
 }
 
 function overlayText(name, lat, lng){

@@ -21,7 +21,8 @@ def index(request):
 
 def map(request):
     places = Place.objects.all()
-    return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
+    moods = Mood.objects.all()
+    return render_to_response('map.html', {'places': places, 'moods': moods}, context_instance=RequestContext(request))
 
 def list(request):
     places = []
