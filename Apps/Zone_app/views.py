@@ -20,8 +20,14 @@ def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def map(request):
-    places = Place.objects.all()
+
+    places = []
     moods = Mood.objects.all()
+    for place in Place.objects.all():
+            picture = get_top_picture(place.id)
+            places.append({'picture': picture, 'name': place.name, 'address':place.address, 'longitude':place.longitude,
+                           'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
+                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id})
     return render_to_response('map.html', {'places': places, 'moods': moods}, context_instance=RequestContext(request))
 
 def list(request):
@@ -67,9 +73,11 @@ def detail(request, place_id):
     pictures = Picture.objects.filter(place_id=place_id)
     moods = Mood.objects.all()
     if len(pictures):
-        return render_to_response('detail.html', {"place": place[0], "pictures": pictures[0].data, "moods": moods}, context_instance=RequestContext(request))
+        return render_to_response('detail.html', {"place": place[0], "wifi_softbank": place[0].has_tool('wifi_softbank'),
+                                                  "pictures": pictures[0].data, "moods": moods}, context_instance=RequestContext(request))
     else:
-        return render_to_response('detail.html', {"place": place[0], "moods": moods}, context_instance=RequestContext(request))
+        return render_to_response('detail.html', {"place": place[0], "wifi_softbank": place[0].has_tool('wifi_softbank'),
+                                                  "moods": moods}, context_instance=RequestContext(request))
 
 
 def logout(request):
