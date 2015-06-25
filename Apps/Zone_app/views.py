@@ -48,7 +48,8 @@ def places_api(request):
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
-    return render_to_response('detail.html', {"place": place}, context_instance=RequestContext(request))
+    moods = Mood.objects.all()
+    return render_to_response('detail.html', {"place": place, "moods": moods}, context_instance=RequestContext(request))
 
 def logout(request):
     auth_logout(request)
@@ -78,6 +79,21 @@ def create(request):
             preference.save()
     return redirect('/')
 
+def save_recommend(request):
+    print(request.POST)
+    print(request.POST.getlist('moods[]'))
+    for mood_en_title in request.POST.getlist('moods[]'):
+        print(mood_en_title)
+        mood = Mood.objects.get(en_title=mood_en_title)
+        print(mood.en_title)
+        place = Place.objects.get(id=request.POST['place'])
+        print(place)
+        place_point = PlacePoint()
+        place_point.place = place
+        place_point.mood = mood
+        place_point.point = int(request.POST['point'])
+        place_point.save()
+    return HttpResponse(request.POST['point'])
 
 def add_point(request):
     place = Place.objects.get(id=request.GET['place_id'])

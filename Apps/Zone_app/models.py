@@ -76,8 +76,10 @@ class Preference(models.Model):
     mood = models.ForeignKey(Mood)
 
 class PlacePoint(models.Model):
+    def __str__(self):
+        return self.place.name
     place = models.ForeignKey(Place)
-    mood = models.ManyToManyField(Mood)
+    mood = models.ForeignKey(Mood, null=True, blank=True)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], null=True, blank=True)
 
 class CheckInHistory(models.Model):
