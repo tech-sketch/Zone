@@ -6,24 +6,23 @@
 <div class="map_box">
     <div id="select">
         {% for place in places %}
-        <div class="location_card">
-            <hidden type="input" id="name" value="{{place.name}}"></hidden>
-            <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
-            <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
-            <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
-            <h3><a href="/detail/{{place.id}}">{{place.name}}</a></h3>
-
-            <div id="info">
-                {{place.address}}<br/>
-                wi-fi:
-                {% if place.wifi_softbank == 'y' %}
-                softbank
-                {% endif %}
-                {% if place.wifi_free == 'y' %}
-                free
-                {% endif %}
+            <div class="location_card">
+                <hidden type="input" id="name" value="{{place.name}}"></hidden>
+                <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
+                <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
+                <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
+                <h3><a href="/detail/{{place.id}}">{{place.name}}</a></h3>
+                <div id="info">
+                    {{place.address}}<br/>
+                    wi-fi:
+                    {% if place.wifi_softbank %}
+                        softbank
+                    {% endif %}
+                    {% if place.wifi_free %}
+                        free
+                    {% endif %}
+                </div>
             </div>
-        </div>
         {% endfor %}
     </div>
     <div id="map-canvas"></div>

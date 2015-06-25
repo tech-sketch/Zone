@@ -71,6 +71,16 @@
         <ul class="nav navbar-nav">
             <li><a href="/map">地図</a></li>
             <li><a href="/list">一覧</a></li>
+            <li>
+            <form class="navbar-form" style="margin:0 50pt;">
+                <div class="form-group">
+                    <input type="text" class="searched-position" placeholder="住所・駅名" style="margin:-5pt 5pt 0 0;">
+                    <span style="font-size:18pt; color:white; margin:2pt 0 0 0;"><b>×</b></span>
+                    <input type="text" class="searched-name" placeholder="何をお探しですか" style="margin:-5pt 0 0 5pt;">
+                </div>
+                <button type="submit" class="btn btn-info" style="margin:6pt 0 0 5pt;">検索</button>
+            </form>
+            </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
@@ -78,33 +88,43 @@
             <li><p class="navbar-text" id="user_point">point:{{ user.point }}</p></li>
             <li><a href="{% url 'logout' %}">ログアウト</a></li>
             {% else %}
-            <li><a href="{% url 'new' %}">Sing up</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
-                <ul id="login-dp" class="dropdown-menu">
-                    <li>
-                        <div class="row">
-                            <div class="col-md-12">
-                                Login via
-                                <div class="social-buttons">
-                                    <a href="#"><i class="fa fa-facebook text-center"></i></a>
-                                    <a href="#"><i class="fa fa-twitter text-center"></i></a>
-                                </div>
-                                or
-                                <form class="form" role="form" method="post"
-                                      action="{% url 'django.contrib.auth.views.login' %}" accept-charset="UTF-8"
-                                      id="login-nav">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="sr-only" for="username">User name</label>
-                                        <input type="text" class="form-control" id="username" name="username"
-                                               placeholder="User Name" required>
+                <li><a href="{% url 'new' %}">Sing up</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+                    <ul id="login-dp" class="dropdown-menu">
+                        <li>
+                             <div class="row">
+                                    <div class="col-md-12">
+                                        Login via
+                                        <div class="social-buttons">
+                                            <a href="#"><i class="fa fa-facebook text-center"></i></a>
+                                            <a href="#"><i class="fa fa-twitter text-center"></i></a>
+                                        </div>
+                                        or
+                                         <form class="form" role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}"  accept-charset="UTF-8" id="login-nav">
+                                              {% csrf_token %}
+                                                <div class="form-group">
+                                                     <label class="sr-only" for="username">User name</label>
+                                                     <input type="text" class="form-control" id="username" name="username" placeholder="User Name" required>
+                                                </div>
+                                                <div class="form-group">
+                                                     <label class="sr-only" for="password">Password</label>
+                                                     <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                                     <!--<div class="help-block text-right"><a href="">Forget the password ?</a></div> -->
+                                                </div>
+                                                <div class="form-group">
+                                                     <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                                                </div>
+                                                <div class="checkbox">
+                                                     <label>
+                                                     <input type="checkbox"> keep me logged-in
+                                                     </label>
+                                                </div>
+                                         </form>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="sr-only" for="password">Password</label>
-                                        <input type="password" class="form-control" id="password" name="password"
-                                               placeholder="Password" required>
-                                        <!--<div class="help-block text-right"><a href="">Forget the password ?</a></div> -->
+                                    <div class="bottom text-center">
+                                        New here ? <a href="{% url 'new' %}"><b>Join Us</b></a>
+>>>>>>> ishikawa/dev
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary btn-block">Sign in</button>
