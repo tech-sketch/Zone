@@ -25,10 +25,6 @@ class Place(models.Model):
     def __str__(self):
         return self.name + '(' + self.address + ')'
 
-    EXISTENCE_CHOICES = (
-        ('y', 'with'),
-        ('n', 'without')
-    )
     CATEGORY_CHOICES = (
         ('cafe', 'カフェ'),
         ('restaurant', 'レストラン'),
@@ -46,9 +42,6 @@ class Place(models.Model):
     longitude = models.FloatField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
     tell = models.CharField(max_length=15, null=True, blank=True)
-    wifi_softbank = models.CharField(max_length=2, choices=EXISTENCE_CHOICES, null=True, blank=True)
-    wifi_free = models.CharField(max_length=2, choices=EXISTENCE_CHOICES, null=True, blank=True)
-    outlet = models.CharField(max_length=2, choices=EXISTENCE_CHOICES, null=True, blank=True)
     seats_num = models.IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
     URL_PC = models.CharField(max_length=200, null=True, blank=True)
     URL_Mobile = models.CharField(max_length=200, null=True, blank=True)
@@ -57,11 +50,26 @@ class Place(models.Model):
     PR = models.CharField(max_length=400, null=True, blank=True)
     add_date = models.TimeField(auto_now_add=True)
 
+    def has_tool(self, tool):
+        return Equipment.objects.filter(place_id=self.id, tool__en_title__exact=tool).exists()
+
 class Picture(models.Model):
     place = models.ForeignKey(Place)
     nomad = models.ForeignKey(NomadUser)
     data = models.ImageField()
     add_date = models.TimeField(auto_now_add=True)
+
+class Tool(models.Model):
+    def __str__(self):
+        return self.jp_title + "({0})".format(self.en_title)
+    jp_title = models.CharField(max_length=40)
+    en_title = models.CharField(max_length=40)
+
+class Equipment(models.Model):
+    def __str__(self):
+        return self.place.name + "({0})".format(self.tool.jp_title)
+    place = models.ForeignKey(Place)
+    tool = models.ForeignKey(Tool)
 
 class Mood(models.Model):
     def __str__(self):

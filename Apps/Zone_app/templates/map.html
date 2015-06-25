@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+<link href="{% static 'css/map.css' %}" rel="stylesheet">
 {% block title %}MAP{% endblock title %}
 {% block content %}
 <div class="map_box">
@@ -27,5 +28,6 @@
     </div>
     <div id="map-canvas"></div>
 </div>
+<link href="{% static 'css/map.css' %}" rel="stylesheet">
 <script src="{% static 'js/map.js' %}"></script>
 {% endblock content %}

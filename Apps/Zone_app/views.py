@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -10,6 +11,8 @@ from django.forms import ModelForm
 from django import forms
 from datetime import datetime
 import requests
+import requests, json, functools
+from django.http.response import JsonResponse
 
 
 # Create your views here.
@@ -22,18 +25,28 @@ def map(request):
 
 def list(request):
     places = []
-    for place in Place.objects.all():
-        pictures = Picture.objects.filter(place_id=place.id)
 
-        # send only data of top picture of places
-        if len(pictures):
-            places.append({'image': pictures[0].data, 'name': place.name, 'wifi_softbank': place.wifi_softbank,
-                           'wifi_free': place.wifi_free, 'id': place.id})
-        else:
-            places.append({'name': place.name, 'wifi_softbank': place.wifi_softbank, 'wifi_free': place.wifi_free,
-                           'id': place.id})
+    if request.method == 'POST':
+        searched_places = Place.objects.all()
+        checked_list = request.POST.getlist('categories[]')
+        searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
+        checked_list = request.POST.getlist('tools[]')
+        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
+        for place in searched_places:
+            picture = get_top_picture(place.id)
+            places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.has_tool('wifi_softbank'),
+                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id})
+        places_json = json.dumps(places)
+        return JsonResponse(places_json, safe=False)
 
-    return render_to_response('list.html', {'places': places}, context_instance=RequestContext(request))
+    else:
+        for place in Place.objects.all():
+            picture = get_top_picture(place.id)
+            places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.has_tool('wifi_softbank'),
+                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id})
+
+        return render_to_response('list.html', {'places': places, 'moods': Mood.objects.all(),
+                                                'tools': Tool.objects.all()}, context_instance=RequestContext(request))
 
 def weather_api(request):
     url = "http://api.openweathermap.org/data/2.5/weather?lat=" + request.GET['lat'] + "&lon=" + request.GET['lng']
@@ -41,15 +54,22 @@ def weather_api(request):
     return HttpResponse(str(re.json()))
 
 def places_api(request):
+    print(request)
     url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=35.691638,139.704616&radius=50000&keyword=cafe|foo&sensor=false&language=ja&key=AIzaSyAqx3ox6iSZ3599nPe314NQNkbxfg-aXC0";
-    re = requests.get(url)
-    result = str(re.json())
+    # re = requests.get(url)
+    # result = str(re.json()
+    result = "json"
     return HttpResponse(result)
 
 def detail(request, place_id):
-    place = Place.objects.get(id=place_id)
+    place = Place.objects.filter(id=place_id)
+    pictures = Picture.objects.filter(place_id=place_id)
     moods = Mood.objects.all()
-    return render_to_response('detail.html', {"place": place, "moods": moods}, context_instance=RequestContext(request))
+    if len(pictures):
+        return render_to_response('detail.html', {"place": place[0], "pictures": pictures[0].data, "moods": moods}, context_instance=RequestContext(request))
+    else:
+        return render_to_response('detail.html', {"place": place[0], "moods": moods}, context_instance=RequestContext(request))
+
 
 def logout(request):
     auth_logout(request)
@@ -113,3 +133,20 @@ def add_point(request):
     check_in_history.place = place
     check_in_history.save()
     return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
+
+def get_top_picture(place_id):
+    pictures = Picture.objects.filter(place_id=place_id)
+    if len(pictures):
+        return pictures[0].data.url
+    else:
+        return ""
+
+
+
+"""try:
+    return JsonResponse(places_json, safe=False)
+except Exception as e:
+    print('=== エラー内容 ===')
+    print('type:' + str(type(e)))
+    print('args:' + str(e.args))
+    print('e自身:' + str(e))"""

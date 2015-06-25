@@ -5,6 +5,8 @@ from Apps.Zone_app.models import *
 admin.site.register(Place)
 admin.site.register(NomadUser)
 admin.site.register(Picture)
+admin.site.register(Tool)
+admin.site.register(Equipment)
 admin.site.register(Preference)
 admin.site.register(Mood)
 admin.site.register(CheckInHistory)
