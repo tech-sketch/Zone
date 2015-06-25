@@ -15,10 +15,10 @@
                 <div id="info">
                     {{place.address}}<br/>
                     wi-fi:
-                    {% if place.wifi_softbank == 'y' %}
+                    {% if place.wifi_softbank %}
                         softbank
                     {% endif %}
-                    {% if place.wifi_free == 'y' %}
+                    {% if place.wifi_free %}
                         free
                     {% endif %}
                 </div>
