@@ -1,5 +1,5 @@
 $("#recommend").on("click", function(){
-    showForm();
+    //showForm();
 });
 function saveRecommend() {
     var point = $("#point").val();
@@ -8,10 +8,11 @@ function saveRecommend() {
     var answer = $("input[name='moods']:checked").each(function(index, element){
         moods.push($(element).val());
     });
-    var place = $("#place_id").attr("value");
-    //console.log(place)
-    console.log(moods);
-    $.post("/save_recommend/",{point: point, moods: moods, place: place}, function(data){
-        console.log("request ok" + data);
+    var place = $("#recommend").attr("value");
+    console.log(recommendPlaceId)
+    //console.log("place_id:" + recommendPlaceId)
+    $.post("/save_recommend/",{point: point, moods: moods, place: recommendPlaceId}, function(data){
+        $("#user_point").text("現在のpoint:" + data.split(",")[0])
+        bootbox.alert("「" + data.split(',')[1] + "」" + "に" + point + "ポイントを入れました！")
     });
 }

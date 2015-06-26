@@ -33,9 +33,11 @@
 
 <script src="{% static 'js/check_in.js' %}"></script>
 <script>
-function showForm(){
+var recommendPlaceId  = 0;
+function showForm(placeId){
+recommendPlaceId = placeId;
     bootbox.dialog({
-        title: "このお店をおすすめする",
+        title: "この場所をおすすめする",
         message: {% include "recommend_form.html" %},
         buttons: {
             success: {

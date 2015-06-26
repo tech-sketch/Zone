@@ -70,15 +70,29 @@ function makePlacePin() {
         }), new google.maps.InfoWindow({
                 maxWidth: 250,
                 maxHeight: 250,
-                content: name + '<br/><button type="button" id="check_in" class="btn-success" onClick="checkIn()" value=' + placeId + '>現在この店にいる</button>' +
-                                '<button type="button" id="recommend"  class="btn-success" onClick="showForm()" value=' + placeId + '>このお店をおすすめする</button>'
+                content: name + '<br/><button type="button" id="check_in" class="btn-success" name="check_in" value="' + placeId + '">現在この店にいる</button>' +
+                                '<button type="button" id="recommend"  class="btn-success" name="recommend" value="' + placeId + '">このお店をおすすめする</button>'
         }), locationCard, placeId)
-    }
-}
+        //console.log($("#check_in").attr("value"))
 
+    }
+
+}
+addListenerList = []
 function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     var openInfoWindow = function(){
         placeInfoWindow.open(map, placeMarker);
+
+        if(addListenerList.indexOf(placeId) == -1){
+            $($("button[value=" + placeId + "]")[0]).on("click", function(){
+                checkIn(placeId);
+            });
+            $($("button[value=" + placeId + "]")[1]).on("click", function(){
+                showForm(placeId);
+            });
+            addListenerList.push(placeId);
+        }
+
     };
     var closeInfoWindow = function(){
         placeInfoWindow.close(map, placeMarker);
