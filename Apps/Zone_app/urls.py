@@ -6,8 +6,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^map/$', views.map, name='map'),
-    url(r'^list/$', views.list, name='list'),
+    url(r'^maps/$', views.maps, name='maps'),
+    url(r'^table/$', views.table, name='table'),
     url(r'^new/$', views.new, name='new'),
     url(r'^create/$', views.create, name='create'),
     url(r'^login/$', 'django.contrib.auth.views.login',

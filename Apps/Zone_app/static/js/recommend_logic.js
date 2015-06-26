@@ -1,6 +1,4 @@
-$("#recommend").on("click", function(){
-    //showForm();
-});
+
 function saveRecommend() {
     var point = $("#point").val();
     console.log(point);

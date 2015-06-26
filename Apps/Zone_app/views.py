@@ -13,13 +13,14 @@ from datetime import datetime
 import requests
 import requests, json, functools
 from django.http.response import JsonResponse
+from django.db.models import Sum
 
 
 # Create your views here.
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
-def map(request):
+def maps(request):
     places = []
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
@@ -28,13 +29,18 @@ def map(request):
         place_name = request.POST['place_name']
         filter_place = filter_place.filter(address__icontains=address).filter(name__icontains=place_name)
     for place in filter_place:
-            picture = get_top_picture(place.id)
-            places.append({'picture': picture, 'name': place.name, 'address':place.address, 'longitude':place.longitude,
+        total_point = 0
+        place_total_point = place.related_place_point.values('place').annotate(total_point=Sum('point'))
+        if len(place_total_point) is not 0:
+            total_point = place_total_point[0]['total_point']
+        picture = get_top_picture(place.id)
+        places.append({'picture': picture, 'name': place.name, 'address':place.address, 'longitude':place.longitude,
                            'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
-                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id})
+                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id, 'total_point': total_point})
+        places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     return render_to_response('map.html', {'places': places, 'moods': moods}, context_instance=RequestContext(request))
 
-def list(request):
+def table(request):
     places = []
     if request.method == 'POST':
         searched_places = Place.objects.all()
@@ -147,11 +153,3 @@ def get_top_picture(place_id):
         return pictures[0].data.url
     else:
         return ""
-
-"""try:
-    return JsonResponse(places_json, safe=False)
-except Exception as e:
-    print('=== エラー内容 ===')
-    print('type:' + str(type(e)))
-    print('args:' + str(e.args))
-    print('e自身:' + str(e))"""

@@ -14,6 +14,9 @@
                 <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
                 <h3><a href="/detail/{{place.id}}">{{place.name}}</a></h3>
                 <div id="info">
+                    <div id="total_point">
+                        合計ポイント:{{place.total_point}}point<br/>
+                    </div>
                     {{place.address}}<br/>
                     wi-fi:
                     {% if place.wifi_softbank %}
