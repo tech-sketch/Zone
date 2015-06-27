@@ -1,10 +1,7 @@
-$("#check_in").click(function(){
-    console.log("click")
-    checkIn()
-});
-
-function checkIn(){
+var checkInPlaceId = 0;
+function checkIn(placeId){
     if(navigator.geolocation){
+        checkInPlaceId = placeId
         navigator.geolocation.getCurrentPosition(checkSuccessCallback, checkErrorCallback);
     }else{
         alert('ブラウザが位置情報取得に対応しておりません');
@@ -12,9 +9,9 @@ function checkIn(){
 }
 function addPoint(){
     console.log("addpoint")
-    $.get('/add_point', {place_id: $("#check_in").attr("value")}, function(data){
-        $("#user_point").text(data.split(",")[0]);
-        alert(data.split(",")[1]);
+    $.get('/add_point', {place_id: checkInPlaceId}, function(data){
+        $("#user_point").text("現在のpoint:" + data.split(",")[0]);
+        bootbox.alert(data.split(',')[1]);
     });
 }
 function checkSuccessCallback(position){
@@ -25,12 +22,12 @@ function checkSuccessCallback(position){
     if(collision(placeX, placeY, userX, userY, 1)){
         addPoint();
     }else{
-        alert("お店にいません");
+        bootbox.alert("お店にいません");
     }
 }
 
 function checkErrorCallback(error){
-    alert("位置情報が取得できませんでした");
+    bootbox.alert("位置情報が取得できませんでした");
 }
 
 function collision(placeX, placeY, userX, userY, range){
@@ -39,5 +36,3 @@ function collision(placeX, placeY, userX, userY, range){
     placeY = placeY - margin;
     return placeX < userX && placeX + range > userX && placeY < userY && placeY + range > userY;
 }
-
-$("#place_id").attr("value")

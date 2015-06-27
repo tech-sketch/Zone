@@ -36,7 +36,3 @@ jQuery(document).ajaxSend(function(event, xhr, settings) {
         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     }
 });
-
-
-//action when click tags for search
-// ======================

@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'Zone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Zone',
+        'NAME': 'zone',
         'USER': 'admin',
         'PASSWORD': 'admin',
     }
@@ -111,4 +111,4 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'Data', 'media')
 MEDIA_URL = '/media/'
 
-LOGIN_REDIRECT_URL = '/map/'
+LOGIN_REDIRECT_URL = '/maps/'

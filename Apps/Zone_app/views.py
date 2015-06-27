@@ -13,26 +13,35 @@ from datetime import datetime
 import requests
 import requests, json, functools
 from django.http.response import JsonResponse
-
+from django.db.models import Sum
 
 # Create your views here.
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
-def map(request):
+def maps(request):
 
     places = []
     moods = Mood.objects.all()
-    for place in Place.objects.all():
-            picture = get_top_picture(place.id)
-            places.append({'picture': picture, 'name': place.name, 'address':place.address, 'longitude':place.longitude,
+    filter_place = Place.objects.all()
+    if request.method == 'POST':
+        address = request.POST['address']
+        place_name = request.POST['place_name']
+        filter_place = filter_place.filter(address__icontains=address).filter(name__icontains=place_name)
+    for place in filter_place:
+        total_point = 0
+        place_total_point = place.related_place_point.values('place').annotate(total_point=Sum('point'))
+        if len(place_total_point) is not 0:
+            total_point = place_total_point[0]['total_point']
+        picture = get_top_picture(place.id)
+        places.append({'picture': picture, 'name': place.name, 'address':place.address, 'longitude':place.longitude,
                            'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
-                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id})
+                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id, 'total_point': total_point})
+    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     return render_to_response('map.html', {'places': places, 'moods': moods}, context_instance=RequestContext(request))
 
-def list(request):
+def table(request):
     places = []
-
     if request.method == 'POST':
         searched_places = Place.objects.all()
         checked_list = request.POST.getlist('categories[]')
@@ -45,7 +54,6 @@ def list(request):
                            'wifi_free': place.has_tool('wifi_free'), 'id': place.id})
         places_json = json.dumps(places)
         return JsonResponse(places_json, safe=False)
-
     else:
         for place in Place.objects.all():
             picture = get_top_picture(place.id)
@@ -109,20 +117,17 @@ def create(request):
     return redirect('/')
 
 def save_recommend(request):
-    print(request.POST)
-    print(request.POST.getlist('moods[]'))
     for mood_en_title in request.POST.getlist('moods[]'):
-        print(mood_en_title)
         mood = Mood.objects.get(en_title=mood_en_title)
-        print(mood.en_title)
         place = Place.objects.get(id=request.POST['place'])
-        print(place)
         place_point = PlacePoint()
         place_point.place = place
         place_point.mood = mood
         place_point.point = int(request.POST['point'])
         place_point.save()
-    return HttpResponse(request.POST['point'])
+    request.user.point -= int(request.POST['point'])
+    request.user.save()
+    return HttpResponse("{0},{1}".format(request.user.point, place.name))
 
 def add_point(request):
     place = Place.objects.get(id=request.GET['place_id'])
@@ -131,9 +136,8 @@ def add_point(request):
                                                       create_at__year=datetime.now().strftime("%Y"),
                                                       nomad_id=request.user.id,
                                                       place_id=request.GET['place_id'])
-    print(check_in_historys)
     if len(check_in_historys) != 0:
-        return HttpResponse("{0},{1}".format(request.user.point, "同じ店では一日一回までです。"))
+        return HttpResponse("{0},{1}".format(request.user.point, "同じ場所では一日一回までです。"))
 
     check_in_history = CheckInHistory()
     request.user.point += 10
@@ -149,13 +153,3 @@ def get_top_picture(place_id):
         return pictures[0].data.url
     else:
         return ""
-
-
-
-"""try:
-    return JsonResponse(places_json, safe=False)
-except Exception as e:
-    print('=== エラー内容 ===')
-    print('type:' + str(type(e)))
-    print('args:' + str(e.args))
-    print('e自身:' + str(e))"""
