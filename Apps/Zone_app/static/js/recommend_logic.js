@@ -10,7 +10,7 @@ function saveRecommend() {
     //console.log(place)
     console.log(moods);
     $.post("/save_recommend/",{point: point, moods: moods, place: recommendPlaceId}, function(data){
-        $("#user_point").text("現在のpoint:" + data.split(",")[0])
-        bootbox.alert("「" + data.split(',')[1] + "」" + "に" + point + "ポイントを入れました！")
+        $("#user_point").text("現在のpoint:" + data.split(",")[0]);
+        bootbox.alert("「" + data.split(',')[1] + "」" + "に" + point + "ポイントを入れました！");
     });
 }

@@ -1,0 +1,23 @@
+'<div class="row">'+
+    '<div class="col-md-12">'+
+        '<form class="form-horizontal">'+
+            '<div class="form-group">'+
+                '<label class="col-md-4 control-label" for=""></label>'+
+                '<div class="col-md-4">'+
+                    '<input id="point" name="point" type="text" placeholder="半角で入力してください" class="form-control input-md">'+
+                    '<span class="help-block"></span></div>'+
+            '</div>'+
+            '<div class="form-group">'+
+                '<label class="col-md-4 control-label" for=""></label>'+
+                {% for mood in moods %}
+                '<div class="col-md-4">'+
+                    '<div class="radio"><label for="">'+
+                        '<input type="checkbox" name="" id="" value="">'+
+                        ' </label>'+
+                    '</div>'+
+                '</div>'+
+                {% endfor %}
+            '</div>'+
+        '</form>'+
+    '</div>'+
+'</div>'

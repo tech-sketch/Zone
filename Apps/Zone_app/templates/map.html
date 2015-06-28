@@ -5,7 +5,7 @@
 {% block content %}
 <div class="map_box">
     <div id="select">
-        <a href=""> あなたのこだわりで絞り込む　></a>
+        <a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>
         {% for place in places %}
             <div class="location_card">
                 <hidden type="input" id="name" value="{{place.name}}"></hidden>
@@ -49,6 +49,14 @@ function showForm(placeId){
                 callback: saveRecommend
             }
         }
+    });
+}
+</script>
+<script>
+function dispPreference(){
+    bootbox.dialog({
+        title: "こだわり条件で絞り込む",
+        message: {% include "preference_form.html" %},
     });
 }
 </script>

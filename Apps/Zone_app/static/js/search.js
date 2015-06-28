@@ -27,6 +27,7 @@ $(':checkbox').click(function(){
 
 })
 
+/*
 function loadPlaces(data){
     var places = $.parseJSON(data);
     $('div.search-result').html("");
@@ -42,4 +43,4 @@ function loadPlaces(data){
         $('div.search-result').append(str);
     }
 
-}
+}*/
