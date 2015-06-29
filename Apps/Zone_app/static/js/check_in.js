@@ -9,6 +9,9 @@ function checkIn(placeId){
 }
 
 function detailCheckIn(){
+    if($("#user_auth").attr("value") == "False"){
+        location.href = "/new"
+    }
     checkIn($("#detail_place_id").attr("value"));
 }
 

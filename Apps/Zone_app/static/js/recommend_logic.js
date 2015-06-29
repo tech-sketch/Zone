@@ -1,4 +1,6 @@
 var recommendPlaceId  = 0;
+
+
 function showRecommendForm(html, placeId){
     recommendPlaceId = placeId;
     bootbox.dialog({
@@ -16,6 +18,10 @@ function showRecommendForm(html, placeId){
 
 function detailRecommend(){
     console.log("detailRecommend")
+    console.log($("#user_auth").attr("value"))
+    if($("#user_auth").attr("value") == "False"){
+        location.href = "/new"
+    }
     $.get("/recommend_form/", function(html){
         showRecommendForm(html, $("#detail_place_id").attr("value"))
     })

@@ -25,15 +25,16 @@ def recommend(request):
     recommend_rank = place_points.filter(mood=user_preferences).values('place').annotate(total_point=Sum('point')).order_by('-total_point')
     print("recommend_rank" + str(recommend_rank))
     recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
-    return render_to_response('recommend_detail.html', {'place': recommend_place})
+    pictures = Picture.objects.filter(place_id=recommend_place.id)
+    return render_to_response('recommend_detail.html', {'place': recommend_place, 'picture': pictures[0].data})
 
 def recommend_form(request):
     print("recommend_form")
+    print(request.user.is_authenticated())
     moods = Mood.objects.all()
     return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
 
 def maps(request):
-    recommend(request)
     places = []
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
@@ -51,7 +52,7 @@ def maps(request):
                            'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
                            'wifi_free': place.has_tool('wifi_free'), 'id': place.id, 'total_point': total_point})
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    return render_to_response('map.html', {'places': places, 'moods': moods}, context_instance=RequestContext(request))
+    return render_to_response('map.html', {'user': request.user, 'places': places, 'moods': moods}, context_instance=RequestContext(request))
 
 def table(request):
     places = []
