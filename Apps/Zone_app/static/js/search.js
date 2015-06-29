@@ -1,3 +1,5 @@
+
+
 //action when click tags for search
 // ======================
 
@@ -45,3 +47,18 @@ function loadPlaces(data){
     }
 
 }*/
+
+//action when search places with search-form of top-var
+// ======================
+function searchPlaces(){
+    $.post("/maps/", {address:$('[name=address]').attr('value'), place_name:$('[name=place_name]').attr('value')}, loadPlaces);
+}
+
+function loadPlaces(data){
+    cosole.log('jsontest')
+    if(location.href=="http://127.0.0.1:8000/maps/"){
+        cosole.log('jsontest')
+        var places = $.parseJSON(data);
+        $('div.select').html("");
+    }
+}

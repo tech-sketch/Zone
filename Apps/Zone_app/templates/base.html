@@ -15,9 +15,9 @@
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqx3ox6iSZ3599nPe314NQNkbxfg-aXC0">
     </script>
-
     <script src="{% static 'js/place-api.js' %}"></script>
     <script src="{% static 'js/weather-api.js' %}"></script>
+    <script src="{% static 'js/search.js'%}"></script>
     {% block extrahead %}{% endblock %}
     <style>
         .navbar-default {
@@ -111,10 +111,10 @@
             <li><a href="/list">一覧</a></li>-->
             <li>
             <form class="navbar-form" action="{% url 'maps' %}" method="POST" style="margin:2pt 0">{% csrf_token %}
-                <div class="form-group">
-                    <input type="text" class="form-control" name="address" placeholder="住所・駅名" style="margin:-3pt 5pt 0 0;">
+                <div class="form-group" id="search_from">
+                    <input type="text" class="form-control" name="address" placeholder="住所・駅名" value="{{address}}" style="margin:-3pt 5pt 0 0;">
                     <span style="font-size:18pt; color:white; margin:15pt 0 0 0;"><b>×</b></span>
-                    <input type="text" class="form-control" name="place_name" placeholder="何をお探しですか" style="margin:-3pt 0 0 5pt;">
+                    <input type="text" class="form-control" name="place_name" placeholder="何をお探しですか" value="{{place_name}}" style="margin:-3pt 0 0 5pt;">
                 </div>
                 <button type="submit" class="btn btn-info" style="margin:3pt 0 0 5pt;">検索</button>
             </form>
@@ -175,6 +175,7 @@
 {% block content %}
 {{ content }}
 {% endblock %}
+
 
 </body>
 </html>

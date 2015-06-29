@@ -1,5 +1,6 @@
 var geocoder;
 var map;
+var centerLatlng;
 function start(){
     getLocation();
 }
@@ -18,10 +19,11 @@ function errorCallback(error){
 }
 function initialize(x, y) {
     geocoder = new google.maps.Geocoder();
-    var myLatlng = new google.maps.LatLng(x,y);
+    var myLatlng = new google.maps.LatLng(x, y);
+
     var mapOptions = {
-        center: myLatlng,
-        zoom: 17
+            center: myLatlng,
+            zoom: 17
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
@@ -45,7 +47,18 @@ function initialize(x, y) {
     makePlacePin();
     new google.maps.InfoWindow({
                 content: "現在地"
-              }).open(map, userMarker)
+              }).open(map, userMarker);
+
+    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
+        console.log('true')
+        centerLatlng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'));
+        map.panTo(centerLatlng);
+    }
+    else{
+        console.log('false')
+        centerLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    }
+
 }
 
 function makePlacePin() {
@@ -148,6 +161,7 @@ function overlayText(name, lat, lng){
     new NameMarker(map, lat, lng);
 }
 
+/*
 function codeAddress() {
     var address = document.getElementById('address').value;
     geocoder.geocode( { 'address': address, region: 'JP'}, function(results, status) {
@@ -166,6 +180,6 @@ function codeAddress() {
             }
         }
     });
-}
+}*/
 
 google.maps.event.addDomListener(window, 'load', start);
