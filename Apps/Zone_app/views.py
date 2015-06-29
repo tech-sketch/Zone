@@ -19,7 +19,14 @@ from django.db.models import Sum
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
+def recommend(request):
+    user_preferences = Preference.objects.all().filter(nomad=request.user)
+    place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
+    print("user_preference" + str(user_preferences))
+    print("place_points" + str(place_points))
+
 def maps(request):
+    recommend(request)
     places = []
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
