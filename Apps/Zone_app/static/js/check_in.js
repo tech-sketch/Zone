@@ -9,6 +9,7 @@ function checkIn(placeId){
 }
 function addPoint(){
     console.log("addpoint")
+    console.log(checkInPlaceId)
     $.get('/add_point', {place_id: checkInPlaceId}, function(data){
         $("#user_point").text("現在のpoint:" + data.split(",")[0]);
         bootbox.alert(data.split(',')[1]);

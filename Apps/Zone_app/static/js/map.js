@@ -73,9 +73,13 @@ function makePlacePin() {
                 content: name + '<br/><button type="button" id="check_in" class="btn-success" name="check_in" value="' + placeId + '">現在この店にいる</button>' +
                                 '<button type="button" id="recommend"  class="btn-success" name="recommend" value="' + placeId + '">このお店をおすすめする</button>'
         }), locationCard, placeId)
+        //console.log($("#check_in").attr("value"))
+
     }
+
 }
 addListenerList = [];
+
 function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     var openInfoWindow = function(){
         placeInfoWindow.open(map, placeMarker);
@@ -89,6 +93,10 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
             });
             addListenerList.push(placeId);
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> sakamoto/dev
     };
     var closeInfoWindow = function(){
         placeInfoWindow.close(map, placeMarker);
