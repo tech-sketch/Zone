@@ -60,5 +60,18 @@ function loadPlaces(data){
         cosole.log('jsontest')
         var places = $.parseJSON(data);
         $('div.select').html("");
+        var str = '<a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>';
+        for(i in places){
+            str += '<div class="location_card">' + '<hidden type="input" id="name" value="' + place[i].name + '"></hidden>';
+            str += '<hidden type="input" id="longitude" value="' + place[i].longitude + '"></hidden>';
+            str += '<hidden type="input" id="latitude" value="' + place[i].latitude + '"></hidden>';
+            str += '<hidden type="input" id="place_id" value="' + place[i].id + '"></hidden>'
+            str += '<h3><a href="/detail/' + place[i].id + '">' + place[i].name + '</a></h3>' + '<div id="info">' + '<div id="total_point">';
+            str += '合計ポイント:' + place[i].total_pointpoint + '<br/>' + '</div>' + place.address + '<br/>' + 'wi-fi:';
+            if(place[i].wifi_softbank) str += 'softbank'
+            if (place.wifi_free)str += 'free';
+            str += '</div>' + '</div>';
+            $('div.select').append(str);
+        }
     }
 }
