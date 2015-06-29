@@ -3,6 +3,9 @@
 <link href="{% static 'css/map.css' %}" rel="stylesheet">
 {% block title %}MAP{% endblock title %}
 {% block content %}
+
+<hidden type="input" id="location_lat" value="{{location.lat}}"></hidden>
+<hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
 <div class="map_box">
     <div id="select">
         <a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>
@@ -12,6 +15,7 @@
                 <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
                 <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
                 <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
+
                 <h3><a href="/detail/{{place.id}}">{{place.name}}</a></h3>
                 <div id="info">
                     <div id="total_point">

@@ -22,12 +22,24 @@ def index(request):
 def maps(request):
 
     places = []
+    location = None
+    northeast = None
+    southwest = None
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
     if request.method == 'POST':
-        address = request.POST['address']
         place_name = request.POST['place_name']
-        filter_place = filter_place.filter(address__icontains=address).filter(name__icontains=place_name)
+        if request.POST['address']:
+            address = request.POST['address']
+            url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
+            result = requests.get(url).json()
+            location = result['results'][0]['geometry']['location']
+            northeast = result['results'][0]['geometry']['viewport']['northeast']
+            southwest = result['results'][0]['geometry']['viewport']['southwest']
+
+        filter_place = filter_place.filter(name__icontains=place_name, longitude__gt=southwest['lng'],
+                                           longitude__lt=northeast['lng'], latitude__gt=southwest['lat'],
+                                           latitude__lt=northeast['lat'])
     for place in filter_place:
         total_point = 0
         place_total_point = place.related_place_point.values('place').annotate(total_point=Sum('point'))
@@ -38,7 +50,8 @@ def maps(request):
                            'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
                            'wifi_free': place.has_tool('wifi_free'), 'id': place.id, 'total_point': total_point})
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    return render_to_response('map.html', {'places': places, 'moods': moods}, context_instance=RequestContext(request))
+    return render_to_response('map.html', {'places': places, 'moods': moods, 'location': location, 'northeast': northeast,
+                                           'southwest': southwest}, context_instance=RequestContext(request))
 
 def table(request):
     places = []

@@ -27,6 +27,7 @@ $(':checkbox').click(function(){
 
 })
 
+
 /*
 function loadPlaces(data){
     var places = $.parseJSON(data);

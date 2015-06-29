@@ -11,7 +11,7 @@ function getLocation(){
     }
 }
 function successCallback(position){
-    initialize(position.coords.latitude, position.coords.longitude);
+   initialize(position.coords.latitude, position.coords.longitude);
 }
 function errorCallback(error){
     alert('位置情報が取得できません');
@@ -94,9 +94,11 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
         placeInfoWindow.close(map, placeMarker);
     };
 
+    /*
     locationCard.on("click", function(){
         location.href = "/detail/" + placeId;
     });
+    */
     locationCard.hover(openInfoWindow, closeInfoWindow);
     google.maps.event.addListener(placeMarker, 'click',closeInfoWindow);
     google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
