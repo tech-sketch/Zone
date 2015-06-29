@@ -20,10 +20,17 @@ def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def recommend(request):
-    user_preferences = Preference.objects.all().filter(nomad=request.user)
+    user_preferences = Preference.objects.all().filter(nomad=request.user).values('mood')
     place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
-    print("user_preference" + str(user_preferences))
-    print("place_points" + str(place_points))
+    recommend_rank = place_points.filter(mood=user_preferences).values('place').annotate(total_point=Sum('point')).order_by('-total_point')
+    print("recommend_rank" + str(recommend_rank))
+    recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
+    return render_to_response('recommend_detail.html', {'place': recommend_place})
+
+def recommend_form(request):
+    print("recommend_form")
+    moods = Mood.objects.all()
+    return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
 
 def maps(request):
     recommend(request)

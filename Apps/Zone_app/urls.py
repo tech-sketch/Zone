@@ -18,6 +18,8 @@ urlpatterns = [
     url(r'^weather_api/$', views.weather_api, name='weather_api'),
     url(r'^add_point/$', views.add_point, name='add_point'),
     url(r'^save_recommend/$', views.save_recommend, name='save_recommend'),
+    url(r'^recommend/$', views.recommend, name='recommend'),
+    url(r'^recommend_form/$', views.recommend_form, name='recommend_form')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

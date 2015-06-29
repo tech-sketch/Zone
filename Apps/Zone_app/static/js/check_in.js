@@ -7,11 +7,18 @@ function checkIn(placeId){
         alert('ブラウザが位置情報取得に対応しておりません');
     }
 }
+
+function detailCheckIn(){
+    checkIn($("#detail_place_id").attr("value"));
+}
+
 function addPoint(){
     console.log("addpoint")
     console.log(checkInPlaceId)
     $.get('/add_point', {place_id: checkInPlaceId}, function(data){
+        console.log("success")
         $("#user_point").text("現在のpoint:" + data.split(",")[0]);
+        console.log("change point")
         bootbox.alert(data.split(',')[1]);
     });
 }

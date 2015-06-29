@@ -1,3 +1,26 @@
+var recommendPlaceId  = 0;
+function showRecommendForm(html, placeId){
+    recommendPlaceId = placeId;
+    bootbox.dialog({
+        title: "この場所をおすすめする",
+        message: html,
+        buttons: {
+            success: {
+                label: "Save",
+                className: "btn-success",
+                callback: saveRecommend
+            }
+        }
+    });
+}
+
+function detailRecommend(){
+    console.log("detailRecommend")
+    $.get("/recommend_form/", function(html){
+        showRecommendForm(html, $("#detail_place_id").attr("value"))
+    })
+
+}
 
 function saveRecommend() {
     var point = $("#point").val();

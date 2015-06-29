@@ -93,22 +93,44 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
             });
             addListenerList.push(placeId);
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> sakamoto/dev
     };
     var closeInfoWindow = function(){
         placeInfoWindow.close(map, placeMarker);
     };
 
     locationCard.on("click", function(){
-        location.href = "/detail/" + placeId;
+        $.get('/detail/' + placeId, function(data){
+            showDetail(data);
+            console.log(data);
+        });
     });
     locationCard.hover(openInfoWindow, closeInfoWindow);
     google.maps.event.addListener(placeMarker, 'click',closeInfoWindow);
     google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
     //google.maps.event.addListener(placeMarker, "mouseout", closeInfoWindow);
+}
+
+function showDetail(data){
+    bootbox.dialog({
+        title: "",
+        message: data,
+        buttons: {
+            checkIn: {
+                label: "現在この場所にいる（10ポイントゲット）",
+                className: "btn-primary",
+                callback: detailCheckIn
+            },
+            recommend: {
+                label: "このお店をおすすめする",
+                className: "btn-primary",
+                callback: detailRecommend
+            },
+            success: {
+                label: "閉じる",
+                className: "btn-success",
+            }
+        }
+    });
 }
 
 function overlayText(name, lat, lng){
@@ -173,5 +195,33 @@ function codeAddress() {
         }
     });
 }
-
+function showRecommend(html){
+    bootbox.dialog({
+        title: "あなたにお勧めの場所があります",
+        message: html,
+        buttons: {
+            checkIn: {
+                label: "現在この場所にいる（10ポイントゲット）",
+                className: "btn-primary",
+                callback: detailCheckIn
+            },
+            recommend: {
+                label: "このおみせをおすすめする",
+                className: "btn-primary",
+                callback: detailRecommend
+            },
+            success: {
+                label: "閉じる",
+                className: "btn-success",
+            }
+        }
+    });
+}
+function startRecommend(){
+    console.log("start")
+    $.get('/recommend/', function(html){
+        showRecommend(html);
+    });
+}
+startRecommend();
 google.maps.event.addDomListener(window, 'load', start);

@@ -1,41 +1,9 @@
-{% extends "base.html" %}
-{% load staticfiles %}
-{% block title %}Detail{% endblock title %}
-{% block content %}
-
-{% load staticfiles %}
-<link href="{% static 'css/detail.css' %}" rel="stylesheet">
-
-
-<hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
-<hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
-<hidden type="input" id="place_id" value="{{place.id}}"></hidden>
-
-<button type="button" id="recommend">このお店をおすすめする</button>
-<button type="button" id="check_in">現在このお店にいる（10ポイントゲット）</button>
 <div id="detail">
     <h3>{{ place.name }}</h3>
     <br>
 </div>
+<hidden type="input" id="detail_place_id" value="{{ place.id }}"></hidden>
 <div id="top_picture">
     <img src={{ pictures.url }} alt={{ place.name }} />
 </div>
-<script src="{% static 'js/check_in.js' %}"></script>
-<script>
-function showForm(){
-    bootbox.dialog({
-        title: "このお店をおすすめする",
-        message: {% include "recommend_form.html" %},
-        buttons: {
-            success: {
-                label: "Save",
-                className: "btn-success",
-                callback: saveRecommend
-            }
-        }
-    });
-}
-</script>
-<script src="{% static 'js/CSRF.js' %}"></script>
-<script src="{% static 'js/recommend_logic.js' %}"></script>
-{% endblock content %}
+<br/>
