@@ -4,6 +4,9 @@
 {% block title %}MAP{% endblock title %}
 {% block content %}
 <hidden type="input" id="user_auth" value="{{ user.is_authenticated }}"></hidden>
+<hidden type="input" id="location_lat" value="{{location.lat}}"></hidden>
+<hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
+
 <div class="map_box">
     <div id="select">
         <a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>

@@ -14,6 +14,7 @@ import requests
 import requests, json, functools
 from django.http.response import JsonResponse
 from django.db.models import Sum
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def index(request):
@@ -42,25 +43,48 @@ def recommend_form(request):
     moods = Mood.objects.all()
     return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
 
+
 def maps(request):
     places = []
+    location = {}
+    northeast = {}
+    southwest = {}
+    address = ""
+    place_name = ""
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
+    print('testpy0')
     if request.method == 'POST':
-        address = request.POST['address']
+        print('testpy1')
+        if request.POST['address']:
+            print('testpy2')
+            address = request.POST['address']
+            url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
+            result = requests.get(url).json()
+            location = result['results'][0]['geometry']['location']
+            northeast = result['results'][0]['geometry']['viewport']['northeast']
+            southwest = result['results'][0]['geometry']['viewport']['southwest']
+            filter_place = filter_place.filter(longitude__gt=southwest['lng'], longitude__lt=northeast['lng'],
+                                               latitude__gt=southwest['lat'], latitude__lt=northeast['lat'])
         place_name = request.POST['place_name']
-        filter_place = filter_place.filter(address__icontains=address).filter(name__icontains=place_name)
-    for place in filter_place:
-        total_point = 0
-        place_total_point = place.related_place_point.values('place').annotate(total_point=Sum('point'))
-        if len(place_total_point) is not 0:
-            total_point = place_total_point[0]['total_point']
-        picture = get_top_picture(place.id)
-        places.append({'picture': picture, 'name': place.name, 'address':place.address, 'longitude':place.longitude,
-                           'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
-                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id, 'total_point': total_point})
-    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    return render_to_response('map.html', {'user': request.user, 'places': places, 'moods': moods}, context_instance=RequestContext(request))
+
+        filter_place = filter_place.filter(name__icontains=place_name)
+        places = sort_by_point(filter_place)
+
+        if 'referrer' in request.POST:
+                print('testpy3')
+                return JsonResponse(json.dumps(places), safe=False)
+        else:
+            print('testpy4')
+            return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address, 'place_name': place_name,
+                                                   'location': location, 'northeast': northeast, 'southwest': southwest},
+                                      context_instance=RequestContext(request))
+    else:
+        print('testpy5')
+        places = sort_by_point(filter_place)
+        return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address, 'place_name': place_name,
+                                               'location': location, 'northeast': northeast, 'southwest': southwest},
+                                  context_instance=RequestContext(request))
 
 def table(request):
     places = []
@@ -74,8 +98,7 @@ def table(request):
             picture = get_top_picture(place.id)
             places.append({'picture': picture, 'name': place.name, 'wifi_softbank': place.has_tool('wifi_softbank'),
                            'wifi_free': place.has_tool('wifi_free'), 'id': place.id})
-        places_json = json.dumps(places)
-        return JsonResponse(places_json, safe=False)
+        return JsonResponse(json.dumps(places), safe=False)
     else:
         for place in Place.objects.all():
             picture = get_top_picture(place.id)
@@ -174,3 +197,16 @@ def get_top_picture(place_id):
         return pictures[0].data.url
     else:
         return ""
+
+def sort_by_point(places):
+    place_list = []
+    for place in places:
+        total_point = 0
+        place_total_point = place.related_place_point.values('place').annotate(total_point=Sum('point'))
+        if len(place_total_point) is not 0:
+            total_point = place_total_point[0]['total_point']
+        picture = get_top_picture(place.id)
+        place_list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
+                           'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
+                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id, 'total_point': total_point})
+    return sorted(place_list, key=lambda x: x['total_point'], reverse=True)

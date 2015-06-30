@@ -1,5 +1,8 @@
 var geocoder;
 var map;
+var centerLatlng;
+var userMarker;
+
 function start(){
     getLocation();
 }
@@ -11,17 +14,28 @@ function getLocation(){
     }
 }
 function successCallback(position){
-    initialize(position.coords.latitude, position.coords.longitude);
+   initialize(position.coords.latitude, position.coords.longitude);
+    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
+        centerLatlng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'));
+    }
+    else{
+        new google.maps.InfoWindow({
+                content: "現在地"
+              }).open(map, userMarker);
+        centerLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    }
+    map.panTo(centerLatlng);
 }
 function errorCallback(error){
     alert('位置情報が取得できません');
 }
 function initialize(x, y) {
     geocoder = new google.maps.Geocoder();
-    var myLatlng = new google.maps.LatLng(x,y);
+    var myLatlng = new google.maps.LatLng(x, y);
+
     var mapOptions = {
-        center: myLatlng,
-        zoom: 17
+            center: myLatlng,
+            zoom: 17
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
@@ -35,17 +49,14 @@ function initialize(x, y) {
         new google.maps.Point(10, 24)
     );
 
-
-    var userMarker = new google.maps.Marker({
+    userMarker = new google.maps.Marker({
             position: myLatlng,
             map: map,
             title:"Your position",
             icon: markerImg,
     });
+
     makePlacePin();
-    new google.maps.InfoWindow({
-                content: "現在地"
-              }).open(map, userMarker)
 }
 
 function makePlacePin() {
@@ -98,12 +109,14 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
         placeInfoWindow.close(map, placeMarker);
     };
 
+    /*
     locationCard.on("click", function(){
         $.get('/detail/' + placeId, function(data){
             showDetail(data);
             console.log(data);
         });
     });
+    */
     locationCard.hover(openInfoWindow, closeInfoWindow);
     google.maps.event.addListener(placeMarker, 'click',closeInfoWindow);
     google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
@@ -176,6 +189,7 @@ function overlayText(name, lat, lng){
     new NameMarker(map, lat, lng);
 }
 
+/*
 function codeAddress() {
     var address = document.getElementById('address').value;
     geocoder.geocode( { 'address': address, region: 'JP'}, function(results, status) {
@@ -194,6 +208,6 @@ function codeAddress() {
             }
         }
     });
-}
+}*/
 
 google.maps.event.addDomListener(window, 'load', start);
