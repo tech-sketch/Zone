@@ -1,8 +1,11 @@
 var geocoder;
 var map;
-var centerLatlng;
 var userMarker;
 var currentInfoWindow = null;
+var defaultMapOptions = {
+    center: new google.maps.LatLng(35.682323, 139.765955),　//東京駅
+    zoom: 15
+};
 
 function start(){
     getLocation();
@@ -11,24 +14,25 @@ function getLocation(){
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
     }else{
-        alert('ブラウザが位置情報取得に対応しておりません');
+        alert('ブラウザが位置情報取得に対応しておりません。');
     }
 }
 function successCallback(position){
    initialize(position.coords.latitude, position.coords.longitude);
-    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
-        centerLatlng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'));
-    }
-    else{
+   makePlacePin();
+   if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
+        map.panTo(new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value')));
+   }
+   else{
         new google.maps.InfoWindow({
                 content: "現在地"
               }).open(map, userMarker);
-        centerLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    }
-    map.panTo(centerLatlng);
+   }
 }
 function errorCallback(error){
-    alert('位置情報が取得できません');
+    alert('位置情報が取得できません。');
+    map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
+    makePlacePin();
 }
 function initialize(x, y) {
     geocoder = new google.maps.Geocoder();
@@ -57,7 +61,6 @@ function initialize(x, y) {
             icon: markerImg,
     });
 
-    makePlacePin();
 }
 
 function makePlacePin() {
@@ -82,8 +85,7 @@ function makePlacePin() {
         }), new google.maps.InfoWindow({
                 maxWidth: 250,
                 maxHeight: 250,
-                content: name + '<br/><button type="button" id="check_in" class="btn-success" name="check_in" value="' + placeId + '">現在この店にいる</button>' +
-                                '<button type="button" id="recommend"  class="btn-success" name="recommend" value="' + placeId + '">このお店をおすすめする</button>'
+                content: name
         }), locationCard, placeId)
         //console.log($("#check_in").attr("value"))
 
@@ -99,7 +101,7 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
         }
         placeInfoWindow.open(map, placeMarker);
         currentInfoWindow = placeInfoWindow;
-
+        /*
         if(addListenerList.indexOf(placeId) == -1){
             $($("button[value=" + placeId + "]")[0]).on("click", function(){
                 checkIn(placeId);
@@ -108,7 +110,7 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
                 showForm(placeId);
             });
             addListenerList.push(placeId);
-        }
+        }*/
     };
     var closeInfoWindow = function(){
         placeInfoWindow.close(map, placeMarker);
@@ -118,7 +120,6 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     locationCard.on("click", function(){
         $.get('/detail/' + placeId, function(data){
             showDetail(data);
-            console.log(data);
         });
     });
 

@@ -17,11 +17,13 @@ from django.db.models import Sum
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
+lat_from_cen = 0.00586331
+lng_from_cen = 0.00173597
+
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def recommend(request):
-    print("recommend")
     print(Preference.objects.all().filter(nomad=request.user).values('mood'))
     user_preferences = Preference.objects.all().filter(nomad=request.user).values('mood')
     place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
@@ -42,7 +44,6 @@ def recommend_form(request):
     print(request.user.is_authenticated())
     moods = Mood.objects.all()
     return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
-
 
 def maps(request):
     places = []
@@ -69,7 +70,7 @@ def maps(request):
         places = sort_by_point(filter_place)
 
         if 'referrer' in request.POST:
-                return JsonResponse(json.dumps(places), safe=False)
+            return JsonResponse(json.dumps({'places': places, 'location':location}), safe=False)
         else:
             return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address, 'place_name': place_name,
                                                    'location': location, 'northeast': northeast, 'southwest': southwest},

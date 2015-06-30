@@ -59,23 +59,26 @@ function searchPlaces(){
     }
 }
 
-function loadPlaces(data){
-    var places = $.parseJSON(data);
+function loadPlaces(response){
+    var data = $.parseJSON(response);
+    var placelist = data.places;
     $('[id = select]').html("");
     var str = '<a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>';
-    $('[id = select]').append(str);
-    for(i in places){
-        str = '<div class="location_card">' + '<hidden type="input" id="name" value="' + places[i].name + '"></hidden>';
-        str += '<hidden type="input" id="longitude" value="' + places[i].longitude + '"></hidden>';
-        str += '<hidden type="input" id="latitude" value="' + places[i].latitude + '"></hidden>';
-        str += '<hidden type="input" id="place_id" value="' + places[i].id + '"></hidden>'
-        str += '<h3>' + places[i].name + '</h3>' + '<div id="info">' + '<div id="total_point">';
-        str += '合計ポイント:' + places[i].total_point + 'point<br/>' + '</div>' + places[i].address + '<br/>' + 'wi-fi: ';
-        if(places[i].wifi_softbank) str += 'softbank';
-        if (places[i].wifi_free)str += 'free';
+    for(i in placelist){
+        str += '<div class="location_card">' + '<hidden type="input" id="name" value="' + placelist[i].name + '"></hidden>';
+        str += '<hidden type="input" id="longitude" value="' + placelist[i].longitude + '"></hidden>';
+        str += '<hidden type="input" id="latitude" value="' + placelist[i].latitude + '"></hidden>';
+        str += '<hidden type="input" id="place_id" value="' + placelist[i].id + '"></hidden>'
+        str += '<h3>' + placelist[i].name + '</h3>' + '<div id="info">' + '<div id="total_point">';
+        str += '合計ポイント:' + placelist[i].total_point + 'point<br/>' + '</div>' + placelist[i].address + '<br/>' + 'wi-fi: ';
+        if(placelist[i].wifi_softbank) str += 'softbank';
+        if (placelist[i].wifi_free)str += 'free';
         str += '</div>' + '</div>';
-        $('[id = select]').append(str);
     }
+    $('[id = select]').append(str);
     makePlacePin();
+    if(data.location.lat != null){
+        map.panTo(new google.maps.LatLng(data.location.lat, data.location.lng));
+    }
 }
 
