@@ -53,11 +53,8 @@ def maps(request):
     place_name = ""
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
-    print('testpy0')
     if request.method == 'POST':
-        print('testpy1')
         if request.POST['address']:
-            print('testpy2')
             address = request.POST['address']
             url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
             result = requests.get(url).json()
@@ -72,15 +69,12 @@ def maps(request):
         places = sort_by_point(filter_place)
 
         if 'referrer' in request.POST:
-                print('testpy3')
                 return JsonResponse(json.dumps(places), safe=False)
         else:
-            print('testpy4')
             return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address, 'place_name': place_name,
                                                    'location': location, 'northeast': northeast, 'southwest': southwest},
                                       context_instance=RequestContext(request))
     else:
-        print('testpy5')
         places = sort_by_point(filter_place)
         return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address, 'place_name': place_name,
                                                'location': location, 'northeast': northeast, 'southwest': southwest},
