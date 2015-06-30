@@ -1,5 +1,5 @@
 {% load staticfiles %}
-<html lang="{{ LANGUAGE_CODE|default:" en-us" }}">
+<html lang="{{ LANGUAGE_CODE|default:'en-us' }}">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Zone{% endblock %}</title>
@@ -17,6 +17,7 @@
     </script>
     <script src="{% static 'js/place-api.js' %}"></script>
     <script src="{% static 'js/weather-api.js' %}"></script>
+    <script src="{% static 'js/CSRF.js' %}"></script>
     <script src="{% static 'js/search.js'%}"></script>
     {% block extrahead %}{% endblock %}
     <style>
@@ -110,15 +111,13 @@
             <!--<li><a href="/map">地図</a></li>
             <li><a href="/list">一覧</a></li>-->
             <li>
-            <form class="navbar-form" action="{% url 'maps' %}" method="POST" style="margin:2pt 0">{% csrf_token %}
-                <div class="form-group" id="search_from">
-                    <input type="text" class="form-control" name="address" placeholder="住所・駅名" value="{{address}}" style="margin:-3pt 5pt 0 0;">
-                    <span style="font-size:18pt; color:white; margin:15pt 0 0 0;"><b>×</b></span>
-                    <input type="text" class="form-control" name="place_name" placeholder="何をお探しですか" value="{{place_name}}" style="margin:-3pt 0 0 5pt;">
-                </div>
-                <button type="submit" class="btn btn-info" style="margin:3pt 0 0 5pt;">検索</button>
+            <form method="post" action="{% url 'maps' %}" id="search_form" class="navbar-form">{% csrf_token %}
+                <input type="text" class="form-control" name="address" placeholder="住所・駅名" value="{{address}}" style="margin:-5pt 5pt 0 0;">
+                <b style="font-size:18pt; color:white; margin:20pt 0;">×</b>
+                <input type="text" class="form-control" name="place_name" placeholder="何をお探しですか" value="{{place_name}}" style="margin:-5pt 0 0 5pt;">
             </form>
             </li>
+            <li><button id="form_btn" onclick="searchPlaces();" class="btn btn-info" style="margin:7pt 0 0 10pt;">検索</button></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}

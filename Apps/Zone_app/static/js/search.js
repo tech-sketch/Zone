@@ -1,5 +1,3 @@
-
-
 //action when click tags for search
 // ======================
 
@@ -51,27 +49,34 @@ function loadPlaces(data){
 //action when search places with search-form of top-var
 // ======================
 function searchPlaces(){
-    $.post("/maps/", {address:$('[name=address]').attr('value'), place_name:$('[name=place_name]').attr('value')}, loadPlaces);
+    var ref = location.pathname;
+    console.log(ref)
+    if(ref == "/maps/"){
+        console.log('if')
+        $.post("/maps/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(), referrer: '/maps/' }, loadPlaces);
+    }
+    else{
+        console.log('else')
+        $('#search_form').submit();
+    }
 }
 
 function loadPlaces(data){
-    cosole.log('jsontest')
-    if(location.href=="http://127.0.0.1:8000/maps/"){
-        cosole.log('jsontest')
-        var places = $.parseJSON(data);
-        $('div.select').html("");
-        var str = '<a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>';
-        for(i in places){
-            str += '<div class="location_card">' + '<hidden type="input" id="name" value="' + place[i].name + '"></hidden>';
-            str += '<hidden type="input" id="longitude" value="' + place[i].longitude + '"></hidden>';
-            str += '<hidden type="input" id="latitude" value="' + place[i].latitude + '"></hidden>';
-            str += '<hidden type="input" id="place_id" value="' + place[i].id + '"></hidden>'
-            str += '<h3><a href="/detail/' + place[i].id + '">' + place[i].name + '</a></h3>' + '<div id="info">' + '<div id="total_point">';
-            str += '合計ポイント:' + place[i].total_pointpoint + '<br/>' + '</div>' + place.address + '<br/>' + 'wi-fi:';
-            if(place[i].wifi_softbank) str += 'softbank'
-            if (place.wifi_free)str += 'free';
-            str += '</div>' + '</div>';
-            $('div.select').append(str);
-        }
+    var places = $.parseJSON(data);
+    console.log('jsontest')
+    $('[id = select]').html("");
+    var str = '<a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>';
+    $('[id = select]').append(str);
+    for(i in places){
+        str = '<div class="location_card">' + '<hidden type="input" id="name" value="' + places[i].name + '"></hidden>';
+        str += '<hidden type="input" id="longitude" value="' + places[i].longitude + '"></hidden>';
+        str += '<hidden type="input" id="latitude" value="' + places[i].latitude + '"></hidden>';
+        str += '<hidden type="input" id="place_id" value="' + places[i].id + '"></hidden>'
+        str += '<h3><a href="/detail/' + places[i].id + '">' + places[i].name + '</a></h3>' + '<div id="info">' + '<div id="total_point">';
+        str += '合計ポイント:' + places[i].total_point + 'point<br/>' + '</div>' + places[i].address + '<br/>' + 'wi-fi: ';
+        if(places[i].wifi_softbank) str += 'softbank';
+        if (places[i].wifi_free)str += 'free';
+        str += '</div>' + '</div>';
+        $('[id = select]').append(str);
     }
 }

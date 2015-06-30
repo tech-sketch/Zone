@@ -1,6 +1,8 @@
 var geocoder;
 var map;
 var centerLatlng;
+var userMarker;
+
 function start(){
     getLocation();
 }
@@ -13,6 +15,16 @@ function getLocation(){
 }
 function successCallback(position){
    initialize(position.coords.latitude, position.coords.longitude);
+    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
+        centerLatlng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'));
+    }
+    else{
+        new google.maps.InfoWindow({
+                content: "現在地"
+              }).open(map, userMarker);
+        centerLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    }
+    map.panTo(centerLatlng);
 }
 function errorCallback(error){
     alert('位置情報が取得できません');
@@ -37,28 +49,14 @@ function initialize(x, y) {
         new google.maps.Point(10, 24)
     );
 
-
-    var userMarker = new google.maps.Marker({
+    userMarker = new google.maps.Marker({
             position: myLatlng,
             map: map,
             title:"Your position",
             icon: markerImg,
     });
+
     makePlacePin();
-    new google.maps.InfoWindow({
-                content: "現在地"
-              }).open(map, userMarker);
-
-    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
-        console.log('true')
-        centerLatlng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'));
-        map.panTo(centerLatlng);
-    }
-    else{
-        console.log('false')
-        centerLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    }
-
 }
 
 function makePlacePin() {
