@@ -2,6 +2,7 @@ var geocoder;
 var map;
 var centerLatlng;
 var userMarker;
+var currentInfoWindow = null;
 
 function start(){
     getLocation();
@@ -93,7 +94,11 @@ addListenerList = [];
 
 function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     var openInfoWindow = function(){
+        if(currentInfoWindow){
+            currentInfoWindow.close();
+        }
         placeInfoWindow.open(map, placeMarker);
+        currentInfoWindow = placeInfoWindow;
 
         if(addListenerList.indexOf(placeId) == -1){
             $($("button[value=" + placeId + "]")[0]).on("click", function(){
@@ -109,14 +114,14 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
         placeInfoWindow.close(map, placeMarker);
     };
 
-    /*
+
     locationCard.on("click", function(){
         $.get('/detail/' + placeId, function(data){
             showDetail(data);
             console.log(data);
         });
     });
-    */
+
     locationCard.hover(openInfoWindow, closeInfoWindow);
     google.maps.event.addListener(placeMarker, 'click',closeInfoWindow);
     google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
