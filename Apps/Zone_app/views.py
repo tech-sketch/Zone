@@ -20,13 +20,21 @@ def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def recommend(request):
+    print("recommend")
+    print(Preference.objects.all().filter(nomad=request.user).values('mood'))
     user_preferences = Preference.objects.all().filter(nomad=request.user).values('mood')
     place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
     recommend_rank = place_points.filter(mood=user_preferences).values('place').annotate(total_point=Sum('point')).order_by('-total_point')
     print("recommend_rank" + str(recommend_rank))
     recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
     pictures = Picture.objects.filter(place_id=recommend_place.id)
-    return render_to_response('recommend_detail.html', {'place': recommend_place, 'picture': pictures[0].data})
+    print(str(Picture.objects.all()[0].data))
+    if len(pictures):
+        picture_url = pictures[0].data.url
+    else:
+        picture_url = "/media/no_image.png"
+
+    return render_to_response('recommend_detail.html', {'place': recommend_place, 'picture_url': picture_url})
 
 def recommend_form(request):
     print("recommend_form")
@@ -95,12 +103,11 @@ def detail(request, place_id):
     pictures = Picture.objects.filter(place_id=place_id)
     moods = Mood.objects.all()
     if len(pictures):
-        return render_to_response('detail.html', {"place": place[0], "wifi_softbank": place[0].has_tool('wifi_softbank'),
-                                                  "pictures": pictures[0].data, "moods": moods}, context_instance=RequestContext(request))
+        picture_url = pictures[0].data.url
     else:
-        return render_to_response('detail.html', {"place": place[0], "wifi_softbank": place[0].has_tool('wifi_softbank'),
-                                                  "moods": moods}, context_instance=RequestContext(request))
-
+        picture_url = "/media/no_image.png"
+    return render_to_response('detail.html', {"place": place[0], "wifi_softbank": place[0].has_tool('wifi_softbank'),
+                                                  "picture_url": picture_url, "moods": moods}, context_instance=RequestContext(request))
 
 def logout(request):
     auth_logout(request)
