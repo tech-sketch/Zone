@@ -15,10 +15,14 @@ import requests, json, functools
 from django.http.response import JsonResponse
 from django.db.models import Sum
 from django.views.decorators.csrf import csrf_exempt
+import  math
 
 # Create your views here.
 lat_from_cen = 0.00586331
 lng_from_cen = 0.00173597
+default_lat_size = 0.002697960583020631
+default_zoom_level = 17
+
 
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
@@ -55,6 +59,7 @@ def maps(request):
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
     if request.method == 'POST':
+        zoom_level = default_zoom_level
         if request.POST['address']:
             address = request.POST['address']
             url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
@@ -62,19 +67,24 @@ def maps(request):
             location = result['results'][0]['geometry']['location']
             northeast = result['results'][0]['geometry']['viewport']['northeast']
             southwest = result['results'][0]['geometry']['viewport']['southwest']
-            filter_place = filter_place.filter(longitude__gt=southwest['lng'], longitude__lt=northeast['lng'],
-                                               latitude__gt=southwest['lat'], latitude__lt=northeast['lat'])
+            zoom_level = get_zoom_level(northeast['lat'], southwest['lat'])
+            rate = pow(2, (default_zoom_level-zoom_level))
+            filter_place = filter_place.filter(longitude__gt=location['lng']-rate*lng_from_cen,
+                                               longitude__lt=location['lng']+rate*lng_from_cen,
+                                               latitude__gt=location['lng']-rate*lat_from_cen,
+                                               latitude__lt=location['lng']+rate*lat_from_cen)
+
         place_name = request.POST['place_name']
 
         filter_place = filter_place.filter(name__icontains=place_name)
         places = sort_by_point(filter_place)
 
         if 'referrer' in request.POST:
-            return JsonResponse(json.dumps({'places': places, 'location':location}), safe=False)
+            return JsonResponse(json.dumps({'places': places, 'location': location, 'zoom_level': zoom_level}), safe=False)
         else:
             return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address, 'place_name': place_name,
-                                                   'location': location, 'northeast': northeast, 'southwest': southwest},
-                                      context_instance=RequestContext(request))
+                                                   'location': location, 'northeast': northeast, 'southwest': southwest,
+                                                   'zoom_level': zoom_level},  context_instance=RequestContext(request))
     else:
         places = sort_by_point(filter_place)
         return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address, 'place_name': place_name,
@@ -205,3 +215,14 @@ def sort_by_point(places):
                            'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
                            'wifi_free': place.has_tool('wifi_free'), 'id': place.id, 'total_point': total_point})
     return sorted(place_list, key=lambda x: x['total_point'], reverse=True)
+
+def get_zoom_level(lat_east, lat_west):
+    rate = round((lat_east-lat_west)/(default_lat_size/16), 0)
+    print(rate)
+    zoom_level = 21
+    n = 2
+    while rate >= n:
+        n *= 2
+        zoom_level -= 1
+    return zoom_level
+

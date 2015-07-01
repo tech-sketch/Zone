@@ -133,6 +133,7 @@ function showDetail(data){
     bootbox.dialog({
         title: "",
         message: data,
+        size: "large",
         buttons: {
             checkIn: {
                 label: "現在この場所にいる（10ポイントゲット）",
@@ -216,4 +217,5 @@ function codeAddress() {
     });
 }*/
 
+$('#loading').fadeOut("quick");
 google.maps.event.addDomListener(window, 'load', start);

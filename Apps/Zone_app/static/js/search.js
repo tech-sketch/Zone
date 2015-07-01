@@ -50,8 +50,8 @@ function loadPlaces(data){
 // ======================
 function searchPlaces(){
     var ref = location.pathname;
-    console.log(ref)
     if(ref == "/maps/"){
+        $("#loading").fadeIn("quick");
         $.post("/maps/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(), referrer: '/maps/' }, loadPlaces);
     }
     else{
@@ -60,8 +60,10 @@ function searchPlaces(){
 }
 
 function loadPlaces(response){
+    $("#loading").fadeOut("quick")
     var data = $.parseJSON(response);
     var placelist = data.places;
+    map.setZoom(data.zoom_level);
     $('[id = select]').html("");
     var str = '<a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>';
     for(i in placelist){
