@@ -166,17 +166,19 @@ def create(request):
     return redirect('/')
 
 def save_recommend(request):
+    place = Place.objects.get(id=request.POST['place'])
+    place.total_point += int(request.POST['point'])
     for mood_en_title in request.POST.getlist('moods[]'):
         mood = Mood.objects.get(en_title=mood_en_title)
-        place = Place.objects.get(id=request.POST['place'])
         place_point = PlacePoint()
         place_point.place = place
         place_point.mood = mood
         place_point.point = int(request.POST['point'])
         place_point.save()
+    place.save()
     request.user.point -= int(request.POST['point'])
     request.user.save()
-    return HttpResponse("{0},{1}".format(request.user.point, place.name))
+    return HttpResponse("{0},{1},{2}".format(request.user.point, place.name, place.total_point))
 
 def add_point(request):
     place = Place.objects.get(id=request.GET['place_id'])
@@ -206,10 +208,7 @@ def get_top_picture(place_id):
 def sort_by_point(places):
     place_list = []
     for place in places:
-        total_point = 0
-        place_total_point = place.related_place_point.values('place').annotate(total_point=Sum('point'))
-        if len(place_total_point) is not 0:
-            total_point = place_total_point[0]['total_point']
+        total_point = place.total_point
         picture = get_top_picture(place.id)
         place_list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
                            'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),

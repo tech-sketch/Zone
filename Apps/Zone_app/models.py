@@ -49,6 +49,7 @@ class Place(models.Model):
     holiday = models.CharField(max_length=100, null=True, blank=True)
     PR = models.CharField(max_length=400, null=True, blank=True)
     add_date = models.TimeField(auto_now_add=True)
+    total_point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], default=0)
 
     def has_tool(self, tool):
         return Equipment.objects.filter(place_id=self.id, tool__en_title__exact=tool).exists()
