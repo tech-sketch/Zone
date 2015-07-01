@@ -37,10 +37,10 @@ function errorCallback(error){
 function initialize(x, y) {
     geocoder = new google.maps.Geocoder();
     var myLatlng = new google.maps.LatLng(x, y);
-
+    var zoom_level = parseInt($('#zoom_level').attr('value'))
     var mapOptions = {
             center: myLatlng,
-            zoom: 17
+            zoom: zoom_level
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
@@ -130,6 +130,7 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
 }
 
 function showDetail(data){
+
     bootbox.dialog({
         title: "",
         message: data,

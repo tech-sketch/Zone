@@ -56,10 +56,10 @@ def maps(request):
     southwest = {}
     address = ""
     place_name = ""
+    zoom_level = default_zoom_level
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
     if request.method == 'POST':
-        zoom_level = default_zoom_level
         if request.POST['address']:
             address = request.POST['address']
             url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
@@ -69,10 +69,12 @@ def maps(request):
             southwest = result['results'][0]['geometry']['viewport']['southwest']
             zoom_level = get_zoom_level(northeast['lat'], southwest['lat'])
             rate = pow(2, (default_zoom_level-zoom_level))
+
             filter_place = filter_place.filter(longitude__gt=location['lng']-rate*lng_from_cen,
                                                longitude__lt=location['lng']+rate*lng_from_cen,
-                                               latitude__gt=location['lng']-rate*lat_from_cen,
-                                               latitude__lt=location['lng']+rate*lat_from_cen)
+                                               latitude__gt=location['lat']-rate*lat_from_cen,
+                                               latitude__lt=location['lat']+rate*lat_from_cen)
+            print(filter_place)
 
         place_name = request.POST['place_name']
 
@@ -88,7 +90,8 @@ def maps(request):
     else:
         places = sort_by_point(filter_place)
         return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address, 'place_name': place_name,
-                                               'location': location, 'northeast': northeast, 'southwest': southwest},
+                                               'location': location, 'northeast': northeast, 'southwest': southwest,
+                                               'zoom_level': zoom_level},
                                   context_instance=RequestContext(request))
 
 def table(request):
@@ -218,7 +221,7 @@ def sort_by_point(places):
         picture = get_top_picture(place.id)
         place_list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
                            'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
-                           'wifi_free': place.has_tool('wifi_free'), 'id': place.id, 'total_point': total_point})
+                           'wifi_free': place.has_tool('wifi_free'), 'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
     return sorted(place_list, key=lambda x: x['total_point'], reverse=True)
 
 def get_zoom_level(lat_east, lat_west):
