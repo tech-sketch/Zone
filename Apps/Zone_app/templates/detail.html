@@ -1,10 +1,11 @@
+{% load staticfiles %}
 <div id="detail">
     <h3>{{ place.name }}</h3>
     <br>
 </div>
 <hidden type="input" id="detail_place_id" value="{{ place.id }}"></hidden>
 
-<div id="top_picture">
+<div class="top_picture">
     <img src={{ picture_url }} alt={{ place.name }} />
 </div>
 <br/>

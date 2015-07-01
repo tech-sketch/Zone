@@ -5,7 +5,12 @@
     width: 30%;
 }
 
-#top_picture {
+.top_picture {
     float: left;
-    width: 60%;
+    width: 30%;
+    height: 30%;
+}
+.largeWidth {
+    margin: 0 auto;
+    width: 50%;
 }
