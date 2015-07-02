@@ -67,14 +67,17 @@ function loadPlaces(response){
     $('[id = select]').html("");
     var str = '<a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>';
     for(i in placelist){
-        str += '<div class="location_card">' + '<hidden type="input" id="name" value="' + placelist[i].name + '"></hidden>';
+        str += '<div class="location_card" style="position: relative">' + '<hidden type="input" id="name" value="' + placelist[i].name + '"></hidden>';
         str += '<hidden type="input" id="longitude" value="' + placelist[i].longitude + '"></hidden>';
         str += '<hidden type="input" id="latitude" value="' + placelist[i].latitude + '"></hidden>';
         str += '<hidden type="input" id="place_id" value="' + placelist[i].id + '"></hidden>'
+        str += '<img src="' + placelist[i].picture + '" alt="{{ place.name }}">';
         str += '<h3>' + placelist[i].name + '</h3>' + '<div id="info">' + '<div id="total_point">';
-        str += '合計ポイント:' + placelist[i].total_point + 'point<br/>' + '</div>' + placelist[i].address + '<br/>' + 'wi-fi: ';
-        if(placelist[i].wifi_softbank) str += 'softbank';
-        if (placelist[i].wifi_free)str += 'free';
+        str += '合計ポイント:' + placelist[i].total_point + 'point<br/>' + '</div>' + 'wi-fi： ';
+        if(placelist[i].wifi_softbank) str += 'softbank ';
+        if(placelist[i].wifi_free)str += 'free ';
+        str += ' <br>電源：';
+        if(placelist[i].outlet)str += ' あり'
         str += '</div>' + '</div>';
     }
     $('[id = select]').append(str);
@@ -83,4 +86,3 @@ function loadPlaces(response){
         map.panTo(new google.maps.LatLng(data.location.lat, data.location.lng));
     }
 }
-

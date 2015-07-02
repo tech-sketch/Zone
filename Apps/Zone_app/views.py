@@ -160,6 +160,8 @@ def new(request):
 def create(request):
     nomad_user = UserForm(request.POST)
     new_nomad_user = nomad_user.save()
+    new_nomad_user.set_password(new_nomad_user.password)
+    new_nomad_user.save()
     for mood in Mood.objects.all():
         if mood.en_title in request.POST:
             preference = Preference()
@@ -212,7 +214,7 @@ def get_top_picture(place_id):
     if len(pictures):
         return pictures[0].data.url
     else:
-        return ""
+        return '/media/no_image.png'
 
 def sort_by_point(places):
     place_list = []
