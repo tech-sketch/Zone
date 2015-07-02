@@ -228,7 +228,6 @@ def sort_by_point(places):
 
 def get_zoom_level(lat_east, lat_west):
     rate = round((lat_east-lat_west)/(default_lat_size/16), 0)
-    print(rate)
     zoom_level = 21
     n = 2
     while rate >= n:
