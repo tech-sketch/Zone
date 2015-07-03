@@ -1,6 +1,8 @@
 ##概要
 * 更新予定 
+
 ###システム名:  Zone
+
 ###本サービスの目的
 * リモートワーカに最適な環境をおすすめする。
 
@@ -25,10 +27,11 @@
 
 ##起動方法
 
-Zone/Apps/Zone_app/setting.pyでデータベースの設定を行う。
-psycopg2のインストールが必須
+Zone/Apps/Zone_app/setting.pyでデータベースの設定を行います。
+psycopg2のインストールが必須です。
+
 http://www.stickpeople.com/projects/python/win-psycopg/
-以下はlocalにおけるのpostgresqlの設定
+以下はlocal環境におけるのpostgresqlの設定です。
 ```python
 DATABASES = {
         'default': {
@@ -41,13 +44,13 @@ DATABASES = {
 }
 ```
 
-以下のコマンドを実行してマイグレーションを行う
+以下のコマンドを実行してマイグレーションを行います。
 ```shell
 $ python manage.py makemigrations
 $ python manage.py migrate
 ```
 スーパユーザを作成
-usernameとpaswordの入力が必須
+usernameとpaswordの入力が必須となります。
 ```shell
 $ python manage.py createsuperuser
 ```
@@ -57,9 +60,19 @@ $ python manage.py createsuperuser
 $ python manage.py runserver
 ```
 
-ブラウザでhttp://127.0.0.1:8000/にアクセス。
+ブラウザでhttp://127.0.0.1:8000/にアクセスします。
 
-アクセス後はスーパユーザを作成した際のusernameとpasswordを入力してログイン
+##初期データの登録
+ブラウザでhttp://127.0.0.1:8000/adminにアクセスします。
+
+### Place
+更新予定
+
+### Mood
+更新予定
+
+### Preference
+更新予定
 
 ##画面
 * TOP画面
