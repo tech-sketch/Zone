@@ -52,9 +52,8 @@ function searchPlaces(){
     var ref = location.pathname;
     if(ref == "/maps/"){
         $("#loading").fadeIn("quick");
-        $.post("/maps/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(), referrer: '/maps/' }, loadPlaces);
-    }
-    else{
+        $.post("/search/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(), referrer: '/maps/' }, loadPlaces);
+    }else{
         $('#search_form').submit();
     }
 }

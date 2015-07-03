@@ -21,6 +21,15 @@ class NomadUser(AbstractUser):
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], default=0)
 
+    def can_check_in(self, place_id):
+        check_in_historys = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
+                                                      create_at__month=datetime.now().strftime("%m"),
+                                                      create_at__year=datetime.now().strftime("%Y"),
+                                                      nomad_id=self.id,
+                                                      place_id=place_id)
+        return len(check_in_historys) == 0
+
+
 class Place(models.Model):
     def __str__(self):
         return self.name + '(' + self.address + ')'
@@ -54,11 +63,19 @@ class Place(models.Model):
     def has_tool(self, tool):
         return Equipment.objects.filter(place_id=self.id, tool__en_title__exact=tool).exists()
 
+    def get_pictures_url(self):
+        pictures = Picture.objects.filter(place_id=self.id)
+        if len(pictures):
+            return [x.data.url for x in pictures]
+        else:
+            return ["/media/no_image.png"]
+
 class Picture(models.Model):
     place = models.ForeignKey(Place)
     nomad = models.ForeignKey(NomadUser)
     data = models.ImageField()
     add_date = models.TimeField(auto_now_add=True)
+
 
 class Tool(models.Model):
     def __str__(self):
