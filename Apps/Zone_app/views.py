@@ -132,6 +132,8 @@ def detail(request, place_id):
     place = Place.objects.filter(id=place_id)
     pictures = Picture.objects.filter(place_id=place_id)
     moods = Mood.objects.all()
+    if not request.user.is_authenticated():
+        messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
     if len(pictures):
         picture_url = pictures[0].data.url
     else:
