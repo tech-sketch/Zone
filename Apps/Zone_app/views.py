@@ -35,7 +35,7 @@ def recommend_form(request):
 
 def maps(request):
     if request.POST:
-        search(request)
+        return search(request)
     zoom_level = DEFAULT_ZOOM_LEVEL
     moods = Mood.objects.all()
     filter_place = Place.objects.all()
