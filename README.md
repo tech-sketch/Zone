@@ -126,6 +126,7 @@ $ python manage.py runserver
  - age(IntegerField)
  - job(CharField)
  - point(IntegerField)
+
 ### Place
 * **Field**
  - google_id(CharField) 
