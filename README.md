@@ -153,26 +153,33 @@ $ python manage.py runserver
  - nomad(ForeignKey NomadUser)
  - data(ImageField)
  - add_date(TimeField)
+
 ### Tool
 * **field**
  - jp_title(CharField)
  - en_title(CharField)
-* Equipment
+
+### Equipment
+* **field**
  - place(ForeignKey Place)
  - tool(ForeignKey Tool)
+
 ### Mood
 * **field**
  - jp_title(CharField)
  - en_title(CharField)
-## Preference
+
+### Preference
 * **field**
  - nomad(ForeignKey NomadUser)
  - mood(ForeignKey Mood)
+
 ### PlacePoint
 * **field**
  - place(ForeignKey Place)
  - mood(ForeignKey Mood)
  - point(IntegerField)
+
 ### CheckInHIstory
 * **field**
  - nomad(ForeignKey NomadUser)
