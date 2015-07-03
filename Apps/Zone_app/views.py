@@ -7,8 +7,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import logout as auth_logout
-from django.forms import ModelForm
-from django import forms
+from .forms import UserForm
 from datetime import datetime
 import requests
 import requests, json, functools
@@ -144,13 +143,6 @@ def logout(request):
     auth_logout(request)
     messages.success(request, 'ログアウトしました。')
     return redirect('/')
-
-class UserForm(ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-
-    class Meta:
-        model = NomadUser
-        fields = ('username', 'password', 'email', 'nickname', 'age', 'gender', 'job')
 
 def new(request):
     user_form = UserForm()

@@ -15,7 +15,7 @@ class NomadUser(AbstractUser):
         ('Other', 'その他')
     )
 
-    nickname = models.CharField(max_length=40)
+    nickname = models.CharField(max_length=40,  null=True, blank=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     age = models.IntegerField(validators=[MinValueValidator(7), MaxValueValidator(99)], null=True, blank=True)
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
