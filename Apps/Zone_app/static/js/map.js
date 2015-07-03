@@ -135,6 +135,7 @@ function showDetail(data){
         title: "",
         message: data,
         size: "large",
+        footer
         buttons: {
             checkIn: {
                 label: "現在この場所にいる（10ポイントゲット）",

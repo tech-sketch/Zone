@@ -1,7 +1,6 @@
 {% load staticfiles %}
 <div id="detail">
     <h3>{{ place.name }}</h3>
-    <br>
 </div>
 <hidden type="input" id="detail_place_id" value="{{ place.id }}"></hidden>
 
@@ -29,3 +28,8 @@
                 </div>
 </div>
 <div style="clear:both;"></div>
+{% for message in messages %}
+<script type="text/javascript">
+        $('.modal-footer').prepend('<p style="font-size:10pt; color: red; float: left; ">{{ message }}</p>')
+</script>
+{% endfor %}

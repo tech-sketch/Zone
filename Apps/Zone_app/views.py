@@ -70,6 +70,8 @@ def search(request):
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
     moods = Mood.objects.all()
+    if not request.user.is_authenticated():
+        messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
     picture_url = place.get_pictures_url()[0]
     return render_to_response('detail.html', {"place": place, "wifi_softbank": place.has_tool('wifi_softbank'),
                                                   "picture_url": picture_url, "moods": moods}, context_instance=RequestContext(request))
