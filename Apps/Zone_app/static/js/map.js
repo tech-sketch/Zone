@@ -108,6 +108,7 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
         var closeInfoWindow = function(){
             placeInfoWindow.close(map, placeMarker);
         };
+        var position = locationCard.offset().top - locationCard.parent('div').offset().top;
 
         locationCard.on("click", function(){
             $.get('/detail/' + placeId, function(detailTemplate){
@@ -120,8 +121,16 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
                 showDetail(detailTemplate);
             });
         });
-        google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
-        google.maps.event.addListener(placeMarker, "mouseout", closeInfoWindow);
+        google.maps.event.addListener(placeMarker, "mouseover", function(){
+            openInfoWindow();
+            console.log(position)
+            locationCard.parent('div').animate({scrollTop: position}, 'normal');
+            locationCard.attr('style', 'background-color: #f1f1f1;');
+        });
+        google.maps.event.addListener(placeMarker, "mouseout", function(){
+            closeInfoWindow();
+            locationCard.attr('style', '');
+        });
         listenerList.push(placeId);
     }
 }
