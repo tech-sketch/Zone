@@ -7,30 +7,29 @@
 <div class="top_picture">
     <img src={{ picture_url }} alt={{ place.name }} style="width: 250pt; float: left; margin: 0 5pt 0 0;"/>
     <div id="info">
-                    <div id="total_point">
-                        合計ポイント:{{place.total_point}}point<br/>
-                    </div>
-                    wi-fi：
-                    {% if place.wifi_softbank %}
-                        softbank
-                    {% endif %}
-                    {% if place.wifi_free %}
-                        free
-                    {% endif %}
-                    <br>電源：
-                    {% if place.outlet %}
-                        あり
-                    {% endif %}
+        <div id="total_point">
+            合計ポイント:{{place.total_point}}point<br/>
+        </div>
+        wi-fi：
+        {% if place.wifi_softbank %}
+            softbank
+        {% endif %}
+        {% if place.wifi_free %}
+            free
+        {% endif %}
+        <br>電源：
+        {% if place.outlet %}
+            あり
+        {% endif %}
         <br>
-                    URL：<br>
-
-
-                </div>
+        URL：<br>
+    </div>
 </div>
 <div style="clear:both;"></div>
 {% for message in messages %}
 <script type="text/javascript">
-        console.log('test')
-        $('.modal-footer').prepend('<p style="font-size:10pt; color: red; float: left; ">{{ message }}</p>')
+        $('.modal-footer').children().attr('disabled', true);
+        console.log($('.modal-footer').children());
+        $('.modal-footer').prepend('<p style="font-size:10pt; color: red; float: left; ">{{ message }}</p>');
 </script>
 {% endfor %}

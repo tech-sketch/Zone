@@ -85,3 +85,12 @@ function loadPlaces(response){
         map.panTo(new google.maps.LatLng(data.location.lat, data.location.lng));
     }
 }
+
+
+
+function dispPreference(){
+    bootbox.dialog({
+        title: "こだわり条件で絞り込む",
+        message: {% include "preference_form.html" %},
+    });
+}

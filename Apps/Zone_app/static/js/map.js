@@ -118,8 +118,8 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
 
 
     locationCard.on("click", function(){
-        $.get('/detail/' + placeId, function(data){
-            showDetail(data);
+        $.get('/detail/' + placeId, function(detailTemplate){
+            showDetail(detailTemplate);
         });
     });
 
@@ -127,27 +127,6 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     google.maps.event.addListener(placeMarker, 'click',closeInfoWindow);
     google.maps.event.addListener(placeMarker, "mouseover", openInfoWindow);
     //google.maps.event.addListener(placeMarker, "mouseout", closeInfoWindow);
-}
-
-function showDetail(data){
-
-    bootbox.dialog({
-        title: "",
-        message: data,
-        size: "large",
-        buttons: {
-            checkIn: {
-                label: "チェックイン（10ポイントゲット）",
-                className: "btn-primary",
-                callback: detailCheckIn
-            },
-            recommend: {
-                label: "この場所をおすすめする",
-                className: "btn-primary",
-                callback: detailRecommend
-            },
-        }
-    });
 }
 
 function overlayText(name, lat, lng){

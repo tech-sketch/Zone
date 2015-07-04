@@ -46,21 +46,14 @@
     <div id="map-canvas"></div>
     <img id="loading" src="/media/loading.gif" style="position: absolute; top: 50%; left: 50%;"/>
 </div>
-<link href="{% static 'css/map.css' %}" rel="stylesheet">
-<script src="{% static 'js/map.js' %}"></script>
-<script src="{% static 'js/check_in.js' %}"></script>
 
-<script>
-function dispPreference(){
-    bootbox.dialog({
-        title: "こだわり条件で絞り込む",
-        message: {% include "preference_form.html" %},
-    });
-}
-</script>
+<link href="{% static 'css/map.css' %}" rel="stylesheet">
+<script src="{% static 'js/show_detail.js' %}"></script>
+<script src="{% static 'js/map.js' %}"></script>
 <script src="{% static 'js/CSRF.js' %}"></script>
 {% if user.is_authenticated %}
 <script src="{% static 'js/show_recommend.js'%}"></script>
 {% endif %}
+<script src="{% static 'js/check_in.js' %}"></script>
 <script src="{% static 'js/recommend_logic.js' %}"></script>
 {% endblock content %}

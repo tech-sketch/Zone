@@ -21,7 +21,6 @@ function showRecommend(html){
     });
 }
 function startRecommend(){
-    console.log("start")
     $.get('/recommend/', function(html){
         showRecommend(html);
     });
