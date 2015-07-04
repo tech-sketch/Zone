@@ -52,14 +52,24 @@ function searchPlaces(){
     var ref = location.pathname;
     if(ref == "/maps/"){
         $("#loading").fadeIn("quick");
-        $.post("/search/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(), referrer: '/maps/' }, loadPlaces);
+        $.post("/search/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(),
+         zoom_level: map.getZoom(), referrer: '/maps/' }, loadPlaces);
     }else{
         $('#search_form').submit();
     }
 }
 
 function loadPlaces(response){
-    $("#loading").fadeOut("quick")
+    $("#loading").fadeOut("quick");
+    markerList.forEach(function(marker){
+        marker.setMap(null);
+    });
+    markerList.clear();
+    overlayList.forEach(function(overlay){
+        overlay.toggleDOM();
+    });
+    overlayList.clear();
+    listenerList = [];
     var data = $.parseJSON(response);
     var placelist = data.places;
     map.setZoom(data.zoom_level);
@@ -91,6 +101,6 @@ function loadPlaces(response){
 function dispPreference(){
     bootbox.dialog({
         title: "こだわり条件で絞り込む",
-        message: {% include "preference_form.html" %},
+        message: '',
     });
 }

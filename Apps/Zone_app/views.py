@@ -11,8 +11,8 @@ from django.http.response import JsonResponse
 from django.db.models import Sum
 
 # Create your views here.
-LAT_FROM_CEN = 0.00586331
-LNG_FROM_CEN = 0.00173597
+LAT_FROM_CEN = 0.002265
+LNG_FROM_CEN = 0.00439
 DEFAULT_LAT_SIZE = 0.002697960583020631
 DEFAULT_ZOOM_LEVEL = 17
 
@@ -42,7 +42,10 @@ def maps(request):
                                                 context_instance=RequestContext(request))
 def search(request):
     location = {}
-    zoom_level = DEFAULT_ZOOM_LEVEL
+    if 'zoom_level' in request.POST:
+        zoom_level = int(request.POST['zoom_level'])
+    else:
+        zoom_level = DEFAULT_ZOOM_LEVEL
     all_place = Place.objects.all()
     address = request.POST['address']
     place_name = request.POST['place_name']
@@ -78,6 +81,7 @@ def detail(request, place_id):
         messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
     picture_url = place.get_pictures_url()[0]
     return render_to_response('detail.html', {"place": place, "wifi_softbank": place.has_tool('wifi_softbank'),
+                                              'wifi_free': place.has_tool('wifi_free'), 'outlet': place.has_tool('outlet'),
                                                   "picture_url": picture_url, "moods": moods}, context_instance=RequestContext(request))
 
 def new(request):
