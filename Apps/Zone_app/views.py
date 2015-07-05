@@ -62,13 +62,10 @@ def search(request):
                                      latitude__lt=location['lat']+rate*LAT_FROM_CEN)
     all_place = all_place.filter(name__icontains=place_name)
     places = sort_by_point(all_place)
-    if 'referrer' in request.POST:
-        return JsonResponse(json.dumps({'places': places, 'location': location, 'zoom_level': zoom_level}), safe=False)
-    else:
-        moods = Mood.objects.all()
-        return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address,
-                                               'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
-                                  context_instance=RequestContext(request))
+    moods = Mood.objects.all()
+    return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address,
+                                           'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
+                              context_instance=RequestContext(request))
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)

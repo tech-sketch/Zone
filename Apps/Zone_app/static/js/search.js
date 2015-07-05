@@ -70,29 +70,13 @@ function loadPlaces(response){
     });
     overlayList.clear();
     listenerList = [];
-    var data = $.parseJSON(response);
-    var placelist = data.places;
-    map.setZoom(data.zoom_level);
-    $('[id = select]').html("");
-    var str = '<a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>';
-    for(i in placelist){
-        str += '<div class="location_card" style="position: relative">' + '<hidden type="input" id="name" value="' + placelist[i].name + '"></hidden>';
-        str += '<hidden type="input" id="longitude" value="' + placelist[i].longitude + '"></hidden>';
-        str += '<hidden type="input" id="latitude" value="' + placelist[i].latitude + '"></hidden>';
-        str += '<hidden type="input" id="place_id" value="' + placelist[i].id + '"></hidden>'
-        str += '<img src="' + placelist[i].picture + '" alt="{{ place.name }}">';
-        str += '<h3>' + placelist[i].name + '</h3>' + '<div id="info">' + '<div id="total_point">';
-        str += '合計ポイント:' + placelist[i].total_point + 'point<br/>' + '</div>' + 'wi-fi： ';
-        if(placelist[i].wifi_softbank) str += 'softbank ';
-        if(placelist[i].wifi_free)str += 'free ';
-        str += ' <br>電源：';
-        if(placelist[i].outlet)str += ' あり'
-        str += '</div>' + '</div>';
-    }
-    $('[id = select]').append(str);
+    map.setZoom(parseInt($(response).find('#zoom_level').attr('value')));
+    $('#select').html('')
+    $('#select').append($(response).find('#select').children());
     makePlacePin();
-    if(data.location.lat != null){
-        map.panTo(new google.maps.LatLng(data.location.lat, data.location.lng));
+    if($(response).find('#location_lat').attr('value') != null){
+        map.panTo(new google.maps.LatLng($(response).find('#location_lat').attr('value'),
+        $(response).find('#location_lng').attr('value')));
     }
 }
 

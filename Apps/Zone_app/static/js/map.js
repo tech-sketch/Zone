@@ -37,7 +37,17 @@ function successCallback(position){
 
 function errorCallback(error){
     alert('位置情報が取得できません。');
-    map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
+    var mapOptions;
+    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
+        mapOptions = {
+            center: new google.maps.LatLng($('#location_lat').attr('value'), $('#location_lng').attr('value')),
+            zoom: parseInt($('#zoom_level').attr('value'))
+        };
+    }
+    else{
+        mapOptions = defaultMapOptions;
+    }
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     makePlacePin();
 }
 
@@ -123,9 +133,8 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
         });
         google.maps.event.addListener(placeMarker, "mouseover", function(){
             openInfoWindow();
-            console.log(position)
             locationCard.parent('div').animate({scrollTop: position}, 'normal');
-            locationCard.attr('style', 'background-color: #f1f1f1;');
+            locationCard.attr('style', 'background-color: #f1f1f1; box-shadow: 0 0px 0px 0 #ddd;');
         });
         google.maps.event.addListener(placeMarker, "mouseout", function(){
             closeInfoWindow();

@@ -3,16 +3,17 @@
 <link href="{% static 'css/map.css' %}" rel="stylesheet">
 {% block title %}MAP{% endblock title %}
 {% block content %}
+<div class="map_box">
 <hidden type="input" id="user_auth" value="{{ user.is_authenticated }}"></hidden>
 <hidden type="input" id="location_lat" value="{{location.lat}}"></hidden>
 <hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
 <hidden type="input" id="zoom_level" value="{{zoom_level}}"></hidden>
 
-<div class="map_box">
     <div id="select">
-        <a href="#" onclick="dispPreference()"> あなたのこだわりで絞り込む　></a>
+        <a href="#" id ="preference"> あなたのこだわりで絞り込む　></a>
+        {% for message in messages%}{{ message }} {% endfor %}
         {% for place in places %}
-            <div class="location_card" style="position: relative">
+            <div class="location_card">
                 <hidden type="input" id="name" value="{{place.name}}"></hidden>
                 <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
                 <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
