@@ -6,8 +6,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
 from .forms import UserForm
-import requests, json
-from django.http.response import JsonResponse
+import requests, functools
 from django.db.models import Sum
 
 # Create your views here.
@@ -31,6 +30,22 @@ def recommend(request):
 def recommend_form(request):
     moods = Mood.objects.all()
     return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
+
+def preference_form(request):
+    if request.method == 'POST':
+        searched_places = Place.objects.all()
+        checked_list = request.POST.getlist('categories[]')
+        print(checked_list)
+        searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
+        checked_list = request.POST.getlist('tools[]')
+        print(checked_list)
+        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
+        places = sort_by_point(searched_places)
+        print(places)
+        return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
+    moods = Mood.objects.all()
+    tools = Tool.objects.all()
+    return render_to_response('preference_form.html', {'moods': moods, 'tools': tools}, context_instance=RequestContext(request))
 
 def maps(request):
     if request.POST:

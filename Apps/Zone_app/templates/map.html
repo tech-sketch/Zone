@@ -3,14 +3,16 @@
 <link href="{% static 'css/map.css' %}" rel="stylesheet">
 {% block title %}MAP{% endblock title %}
 {% block content %}
+<div style="margin-top:-10pt; margin-left: 1%;">
+    <a id="preference"> あなたのこだわりで絞り込む　></a>
+</div>
+
 <div class="map_box">
 <hidden type="input" id="user_auth" value="{{ user.is_authenticated }}"></hidden>
 <hidden type="input" id="location_lat" value="{{location.lat}}"></hidden>
 <hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
 <hidden type="input" id="zoom_level" value="{{zoom_level}}"></hidden>
-
     <div id="select">
-        <a href="#" id ="preference"> あなたのこだわりで絞り込む　></a>
         {% for message in messages%}{{ message }} {% endfor %}
         {% for place in places %}
             <div class="location_card">
@@ -50,6 +52,7 @@
 
 <link href="{% static 'css/map.css' %}" rel="stylesheet">
 <script src="{% static 'js/show_detail.js' %}"></script>
+<script src="{% static 'js/preference.js' %}"></script>
 <script src="{% static 'js/map.js' %}"></script>
 <script src="{% static 'js/CSRF.js' %}"></script>
 {% if user.is_authenticated %}
@@ -57,4 +60,9 @@
 {% endif %}
 <script src="{% static 'js/check_in.js' %}"></script>
 <script src="{% static 'js/recommend_logic.js' %}"></script>
+<script>
+$(document).on('click', '.bootbox', function (event) {
+    if(event.target == this)bootbox.hideAll()
+});
+</script>
 {% endblock content %}

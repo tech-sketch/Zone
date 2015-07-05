@@ -1,23 +1,53 @@
-'<div class="row">'+
-    '<div class="col-md-12">'+
-        '<form class="form-horizontal">'+
-            '<div class="form-group">'+
-                '<label class="col-md-4 control-label" for=""></label>'+
-                '<div class="col-md-4">'+
-                    '<input id="point" name="point" type="text" placeholder="半角で入力してください" class="form-control input-md">'+
-                    '<span class="help-block"></span></div>'+
-            '</div>'+
-            '<div class="form-group">'+
-                '<label class="col-md-4 control-label" for=""></label>'+
-                {% for mood in moods %}
-                '<div class="col-md-4">'+
-                    '<div class="radio"><label for="">'+
-                        '<input type="checkbox" name="" id="" value="">'+
-                        ' </label>'+
-                    '</div>'+
-                '</div>'+
-                {% endfor %}
-            '</div>'+
-        '</form>'+
-    '</div>'+
-'</div>'
+{% load staticfiles %}
+<link href="{% static 'css/preference_form.css' %}" rel="stylesheet">
+
+<div id="preference_form">
+<form method="post" id="categories">
+{% csrf_token %}
+<dl><dt>ジャンル</dt>
+
+    <dd>
+        <label for="genre_btn_01">カフェ
+			<input type='checkbox' id='genre_btn_01' name='category' value='cafe'></label>
+    </dd>
+	<dd>
+        <label for="genre_btn_02">レストラン
+			<input type='checkbox' id='genre_btn_02' name='category' value='restaurant'></label>
+    </dd>
+	<dd>
+        <label for="genre_btn_03">公園
+			<input type='checkbox' id='genre_btn_03' name='category' value='park'></label>
+    </dd>
+
+</dl>
+</form>
+
+<br clear="left">
+
+<form method="post" id="moods">
+{% csrf_token %}
+<dl><dt>雰囲気</dt>
+    {% for mood in moods %}
+    <dd>
+        <label for="{{ mood.en_title }}">{{ mood.jp_title }}
+			<input type='checkbox' id='{{ mood.en_title }}' name='mood' value='{{ mood.en_title }}'></label>
+    </dd>
+    {% endfor %}
+</dl>
+</form>
+
+<br clear="left">
+
+<form method="post" id="tools">
+{% csrf_token %}
+<dl><dt>ツール</dt>
+    {% for tool in tools %}
+    <dd>
+        <label for="{{ tool.en_title }}">{{ tool.jp_title }}
+			<input type='checkbox' id='{{ tool.en_title }}' name='tool' value='{{ tool.en_title }}'></label>
+    </dd>
+    {% endfor %}
+</dl>
+</form>
+<br clear="left">
+</div>

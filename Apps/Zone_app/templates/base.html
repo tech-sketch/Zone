@@ -110,9 +110,9 @@
             <li><a href="/list">一覧</a></li>-->
             <li>
             <form method="post" action="{% url 'maps' %}" id="search_form" class="navbar-form">{% csrf_token %}
-                <input type="text" onkeypress="if(event.keyCode==13)searchPlaces();" class="form-control" name="address" placeholder="住所・駅名" value="{{address}}" style="margin:-5pt 5pt 0 0;">
+                <input type="text" onkeypress="if(event.keyCode==13)searchPlaces();" class="form-control" name="address" placeholder="どこでお探しですか" value="{{address}}" style="margin:-5pt 5pt 0 0;">
                 <b style="font-size:18pt; color:white; margin:20pt 0;">×</b>
-                <input type="text" onkeypress="if(event.keyCode==13)searchPlaces();" class="form-control" name="place_name" placeholder="何をお探しですか" value="{{place_name}}" style="margin:-5pt 0 0 5pt;">
+                <input type="text" onkeypress="if(event.keyCode==13)searchPlaces();" class="form-control" name="place_name" placeholder="場所の名前" value="{{place_name}}" style="margin:-5pt 0 0 5pt;">
             </form>
             </li>
             <li><button id="form_btn" onclick="searchPlaces();" class="btn btn-warning" style="margin:7pt 0 0 0;">検索</button></li>

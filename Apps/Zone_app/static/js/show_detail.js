@@ -1,8 +1,8 @@
-function showDetail(detailTemplate){
+function showDetail(html){
 
     bootbox.dialog({
         title: "",
-        message: detailTemplate,
+        message: html,
         size: "large",
         buttons: {
             checkIn: {
@@ -18,7 +18,3 @@ function showDetail(detailTemplate){
         }
     });
 }
-
-$(document).on('click', '.bootbox', function (event) {
-    if(event.target == this)bootbox.hideAll()
-});

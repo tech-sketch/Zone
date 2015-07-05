@@ -121,14 +121,14 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
         var position = locationCard.offset().top - locationCard.parent('div').offset().top;
 
         locationCard.on("click", function(){
-            $.get('/detail/' + placeId, function(detailTemplate){
-                showDetail(detailTemplate);
+            $.get('/detail/' + placeId, function(html){
+                showDetail(html);
             });
         });
         locationCard.hover(openInfoWindow, closeInfoWindow);
         google.maps.event.addListener(placeMarker, 'click', function(){
-            $.get('/detail/' + placeId, function(detailTemplate){
-                showDetail(detailTemplate);
+            $.get('/detail/' + placeId, function(html){
+                showDetail(html);
             });
         });
         google.maps.event.addListener(placeMarker, "mouseover", function(){

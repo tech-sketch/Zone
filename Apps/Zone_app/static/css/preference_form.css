@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+#preference_form {
+	background-color:#FFFFFF;
+    text-align: left;
+}
+
+#preference_form dl {
+  display: block;
+  -webkit-margin-before: 1em;
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+}
+
+
+#preference_form dl dt {
+  background: url(/static/images/works_search_category.png) no-repeat left top;
+  width: 102px;
+  height: 22px;
+  float: left;
+  text-align: center;
+  color: #fff;
+  padding: 2px 0px 0px 0px;
+  font-size: 82%;
+  margin-right: -112px;
+  margin: 0px 20px 0 0;
+  font-weight: bold;
+  line-height: 150%;
+}
+
+#preference_form dd label {
+  float: left;
+  border-radius: 3px;
+  background: #fff;
+  border: 1px solid #c0bdb5;
+  margin: 0px 3px;
+  padding: 2px 8px;
+  text-decoration: none;
+  color: #494c59;
+  white-space: nowrap;
+  font-size: 85%;
+  cursor: pointer;
+ }
+
+
+#preference_form dd label input {
+  display: none;
+}
+
