@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from .forms import UserForm
 import requests, functools
-from django.db.models import Sum
+from django.db.models import Sum, Count
 
 # Create your views here.
 LAT_FROM_CEN = 0.002265
@@ -36,6 +36,7 @@ def preference_form(request):
         searched_places = Place.objects.filter(id__in=request.POST.getlist('place_id_list[]'))
         checked_list = request.POST.getlist('categories[]')
         searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
+        #checked_list = request.POST.getlist('moods[]')
         checked_list = request.POST.getlist('tools[]')
         searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
         places = sort_by_point(searched_places)

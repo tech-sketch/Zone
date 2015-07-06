@@ -24,13 +24,19 @@ function showPreference(html){
             categories.push($($('[name=category]:checked')[i]).val());
         }
 
+        var length = $('[name=mood]:checked').length;
+        var moods =[];
+        for(var i=0; i<length; i++){
+            moods.push($($('[name=mood]:checked')[i]).val());
+        }
+
         var length = $('[name=tool]:checked').length;
         var tools =[];
         for(var i=0; i<length; i++){
             tools.push($($('[name=tool]:checked')[i]).val());
         }
         $("#loading").fadeOut("quick");
-        $.post("/preference_form/", {categories:categories, tools:tools, place_id_list: placeIdList}, loadPlaces);
+        $.post("/preference_form/", {categories: categories, moods: moods, tools: tools, place_id_list: placeIdList}, loadPlaces);
 });
 }
 
