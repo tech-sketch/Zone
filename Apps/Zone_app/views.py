@@ -33,15 +33,12 @@ def recommend_form(request):
 
 def preference_form(request):
     if request.method == 'POST':
-        searched_places = Place.objects.all()
+        searched_places = Place.objects.filter(id__in=request.POST.getlist('place_id_list[]'))
         checked_list = request.POST.getlist('categories[]')
-        print(checked_list)
         searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
         checked_list = request.POST.getlist('tools[]')
-        print(checked_list)
         searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
         places = sort_by_point(searched_places)
-        print(places)
         return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
     moods = Mood.objects.all()
     tools = Tool.objects.all()

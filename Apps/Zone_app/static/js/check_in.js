@@ -29,7 +29,7 @@ function checkSuccessCallback(position){
     if(cal_length(placeX, placeY, userX, userY) < 50){
         addPoint();
     }else{
-        bootbox.alert("お店にいません");
+        bootbox.alert("その場所にいません");
     }
 }
 

@@ -5,7 +5,10 @@ function searchPlaces(){
     if(ref == "/maps/"){
         $("#loading").fadeIn("quick");
         $.post("/search/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(),
-         zoom_level: map.getZoom(), referrer: '/maps/' }, loadPlaces);
+         zoom_level: map.getZoom(), referrer: '/maps/'}, function(response){
+            placeIdList = [];
+            loadPlaces(response);
+         });
     }else{
         $('#search_form').submit();
     }
@@ -21,7 +24,6 @@ function loadPlaces(response){
         overlay.toggleDOM();
     });
     overlayList.clear();
-    listenerList = [];
     $('#select').html('')
     $('#select').append($(response).find('#select').children());
     makePlacePin();

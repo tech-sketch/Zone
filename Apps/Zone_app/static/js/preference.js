@@ -3,7 +3,7 @@
 
 var checkedStyle = "cursor: default; background-color: rgb(128, 138, 178); color: rgb(255, 255, 255);"
 
-function dispPreference(html){
+function showPreference(html){
     bootbox.dialog({
         title: "こだわり条件で絞り込む",
         message: html,
@@ -30,12 +30,12 @@ function dispPreference(html){
             tools.push($($('[name=tool]:checked')[i]).val());
         }
         $("#loading").fadeOut("quick");
-        $.post("/preference_form/", {categories:categories, tools:tools}, loadPlaces);
+        $.post("/preference_form/", {categories:categories, tools:tools, place_id_list: placeIdList}, loadPlaces);
 });
 }
 
 $("#preference").on("click", function(){
     $.get('/preference_form/', function(html){
-        dispPreference(html);
+        showPreference(html);
     });
 });

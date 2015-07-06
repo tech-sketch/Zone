@@ -8,7 +8,7 @@ var defaultMapOptions = {
 };
 var markerList = new google.maps.MVCArray();
 var overlayList = new google.maps.MVCArray();
-var listenerList = [];
+var placeIdList = [];
 
 function start(){
     getLocation();
@@ -107,7 +107,7 @@ function makePlacePin() {
 }
 
 function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
-    if(listenerList.indexOf(placeId) == -1){
+    if(placeIdList.indexOf(placeId) == -1){
         var openInfoWindow = function(){
             if(currentInfoWindow){
                 currentInfoWindow.close();
@@ -140,7 +140,7 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
             closeInfoWindow();
             locationCard.attr('style', '');
         });
-        listenerList.push(placeId);
+        placeIdList.push(placeId);
     }
 }
 
@@ -195,6 +195,9 @@ function overlayText(name, lat, lng){
     overlayList.push(new NameMarker(map, lat, lng));
 }
 
+$('#loading').fadeOut("quick");
+google.maps.event.addDomListener(window, 'load', start);
+
 /*
 function codeAddress() {
     var address = document.getElementById('address').value;
@@ -215,6 +218,3 @@ function codeAddress() {
         }
     });
 }*/
-
-$('#loading').fadeOut("quick");
-google.maps.event.addDomListener(window, 'load', start);
