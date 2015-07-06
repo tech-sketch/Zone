@@ -1,9 +1,7 @@
 //action when click tags for search
 // ======================
 
-
 var checkedStyle = "cursor: default; background-color: rgb(128, 138, 178); color: rgb(255, 255, 255);"
-var checkbox
 
 function dispPreference(html){
     bootbox.dialog({
