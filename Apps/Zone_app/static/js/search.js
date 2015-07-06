@@ -24,10 +24,8 @@ function loadPlaces(response){
     listenerList = [];
     $('#select').html('')
     $('#select').append($(response).find('#select').children());
-    console.log('test')
     makePlacePin();
-    console.log('test2')
-    if($(response).find('#location_lat').attr('value') && $(response).find('zoom_level').attr('value')){
+    if($(response).find('#location_lat').attr('value') && $(response).find('#zoom_level').attr('value')){
         map.setZoom(parseInt($(response).find('#zoom_level').attr('value')));
         map.panTo(new google.maps.LatLng($(response).find('#location_lat').attr('value'),
         $(response).find('#location_lng').attr('value')));
