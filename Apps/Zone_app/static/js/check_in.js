@@ -16,21 +16,17 @@ function detailCheckIn(){
 }
 
 function addPoint(){
-    console.log("addpoint")
-    console.log(checkInPlaceId)
     $.get('/add_point', {place_id: checkInPlaceId}, function(data){
-        console.log("success")
         $("#user_point").text("現在のpoint:" + data.split(",")[0]);
-        console.log("change point")
         bootbox.alert(data.split(',')[1]);
     });
 }
 function checkSuccessCallback(position){
-    var placeX = $("#longitude").attr("value");
-    var placeY = $("#latitude").attr("value");
+    var placeX = $("#detail_lng").attr("value");
+    var placeY = $("#detail_lat").attr("value");
     var userX = position.coords.longitude;
     var userY = position.coords.latitude;
-    if(collision(placeX, placeY, userX, userY, 1)){
+    if(cal_length(placeX, placeY, userX, userY) < 50){
         addPoint();
     }else{
         bootbox.alert("お店にいません");
@@ -41,9 +37,14 @@ function checkErrorCallback(error){
     bootbox.alert("位置情報が取得できませんでした");
 }
 
-function collision(placeX, placeY, userX, userY, range){
-    var margin = range / 2;
-    placeX = placeX - margin;
-    placeY = placeY - margin;
-    return placeX < userX && placeX + range > userX && placeY < userY && placeY + range > userY;
+function cal_length(placeX, placeY, userX, userY){
+    placeX = placeX * Math.PI / 180.0;
+    placeY = placeY * Math.PI / 180.0;
+    userX = userX * Math.PI / 180.0;
+    userY = userY * Math.PI / 180.0;
+    A = 6378137; // 地球の赤道半径(6378137m)
+    x = A * (userX-placeX) * Math.cos( placeY );
+    y = A * (userY-placeY);
+    L = Math.sqrt(x*x + y*y);	// メートル単位の距離
+    return  L;
 }
