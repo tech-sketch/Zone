@@ -1,5 +1,4 @@
 function showDetail(html){
-
     bootbox.dialog({
         title: "",
         message: html,

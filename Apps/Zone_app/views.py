@@ -25,7 +25,9 @@ def recommend(request):
     recommend_rank = place_points.filter(mood=user_preferences).values('place').annotate(total_point=Sum('point')).order_by('-total_point')
     recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
     picture_url = recommend_place.get_pictures_url()[0]
-    return render_to_response('recommend_detail.html', {'place': recommend_place, 'picture_url': picture_url})
+    wifi = recommend_place.get_wifi_list()
+    return render_to_response('detail.html', {'place': recommend_place, 'picture_url': picture_url,
+                                                        "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
 
 def recommend_form(request):
     moods = Mood.objects.all()
@@ -90,7 +92,6 @@ def search(request):
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
-    moods = Mood.objects.all()
     if not request.user.is_authenticated():
         # メッセージの削除
         storage = messages.get_messages(request)
@@ -100,7 +101,7 @@ def detail(request, place_id):
     picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
     return render_to_response('detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
-                                                  "picture_url": picture_url, "moods": moods}, context_instance=RequestContext(request))
+                                                  "picture_url": picture_url}, context_instance=RequestContext(request))
 
 def new(request):
     user_form = UserForm()
@@ -108,10 +109,7 @@ def new(request):
     return render_to_response('new.html', {'user_form': user_form, 'moods': moods}, context_instance=RequestContext(request))
 
 def create(request):
-    print('test')
     nomad_user = UserForm(request.POST)
-    print(nomad_user)
-    print(request.POST)
     new_nomad_user = nomad_user.save()
     new_nomad_user.set_password(new_nomad_user.password)
     new_nomad_user.save()

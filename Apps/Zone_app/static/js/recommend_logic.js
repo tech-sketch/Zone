@@ -35,7 +35,6 @@ function saveRecommend() {
     $.post("/save_recommend/",{point: point, moods: moods, place: recommendPlaceId}, function(data){
         $("#user_point").text("現在のpoint:" + data.split(",")[1])
         $("#total_point_" + recommendPlaceId).text("合計ポイント:" + data.split(",")[2] + "point")
-        console.log($("#total_point_" + recommendPlaceId))
         bootbox.alert(data.split(',')[0])
     });
 }
