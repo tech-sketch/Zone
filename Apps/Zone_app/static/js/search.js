@@ -7,6 +7,9 @@ function searchPlaces(){
         $.post("/search/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(),
          zoom_level: map.getZoom(), referrer: '/maps/'}, function(response){
             placeIdList = [];
+            categoriesChecked = [];
+            moodsChecked = [];
+            toolsChecked = [];
             loadPlaces(response);
          });
     }else{
