@@ -18,7 +18,7 @@
 
 ### システムからのレコメンド機能
 ログイン後、	メインのアプリケーション画面に移動しユーザの好みに合わせた場所がおすすめされます。
-**閉じる**か右上の**×**を押すとレコメンドwindowが閉じます。
+ダイアログ外クリックか右上の**×**を押すとレコメンドwindowが閉じます。
 ![recommend](https://github.com/Takatymo/Zone/wiki/README_images/recommend.png "recommend")
 
 ### メインアプリケーション画面
@@ -107,23 +107,24 @@ $ python manage.py runserver
  - Latitude: 35.6933473
 
 ### Mood
-- jp_title: 店員が気さく
-- en_title: frank
+i.  jp_title: 店員が気さく
+    en_title: frank
 
-- jp_title: メニューが豊富
-- en_title: menu
+ii. jp_title: メニューが豊富
+    en_title: menu
 
-- jp_title: コーヒー
-- en_title: coffee
+iii.jp_title: おいしいコーヒー
+    en_title: coffee
 
-- jp_title: おしゃれ
-- en_title: fashionable
+iv. jp_title: おしゃれ
+    en_title: fashionable
 
-- jp_title: 落ちつていている
-- en_title: relax
+v.  jp_title: 落ちつていている
+    en_title: relax
 
-- jp_title: レトロ
-- en_title: retro
+vi. jp_title: レトロ
+    en_title: retro
+
 
 ### Preference
 - Nomad: 作成したスーパーユーザを選択
@@ -133,12 +134,14 @@ $ python manage.py runserver
 * TOP画面
 * Map画面
 * ユーザ登録画面
+* ログイン画面
 
 ##機能
 * ログイン/ログアウト
 * ユーザ登録
 * 地図機能
 * 住所および場所から検索
+* ジャンル・雰囲気・設備で絞り込み
 * システムからのレコメンド機能
 * ユーザからのおすすめ機能
 * チェックイン機能（現在お店にいる）

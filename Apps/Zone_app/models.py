@@ -34,14 +34,6 @@ class Place(models.Model):
     def __str__(self):
         return self.name + '(' + self.address + ')'
 
-    CATEGORY_CHOICES = (
-        ('cafe', 'カフェ'),
-        ('restaurant', 'レストラン'),
-        ('bar', 'バー'),
-        ('park', '公園'),
-        ('other', 'その他')
-    )
-
     google_id = models.CharField(max_length=100, null=True, blank=True)
     nomad = models.ForeignKey(NomadUser)
     category = models.CharField(max_length=100, null=True, blank=True)
@@ -89,6 +81,8 @@ class Place(models.Model):
             return ["/media/no_image.png"]
 
 class Picture(models.Model):
+    def __str__(self):
+        return self.data.url + '({0})'.format(self.place.name)
     place = models.ForeignKey(Place)
     nomad = models.ForeignKey(NomadUser)
     data = models.ImageField()
@@ -128,7 +122,7 @@ class PlacePoint(models.Model):
 
 class CheckInHistory(models.Model):
     def __str__(self):
-        return self.create_at.strftime('%Y/%m/%d %H:%M:%S')
+        return self.create_at.strftime('%Y/%m/%d %H:%M:%S') + ' {0}'.format(self.place.name) + '({0})'.format(self.nomad.username)
     nomad = models.ForeignKey(NomadUser)
     place = models.ForeignKey(Place)
     create_at = models.DateTimeField(default=datetime.now)
