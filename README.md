@@ -124,8 +124,8 @@ $ python manage.py runserver
 - en_title: retro
 
 ### Preference
-Nomad: 作成したスーパーユーザを選択
-Mood: 作成したMoodの中から適当に選択
+- Nomad: 作成したスーパーユーザを選択
+- Mood: 作成したMoodの中から適当に選択
 ##画面
 * TOP画面
 * Map画面
