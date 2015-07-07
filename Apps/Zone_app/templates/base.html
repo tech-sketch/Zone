@@ -9,6 +9,7 @@
     <link href="{% static 'css/login-dropbox.css' %}" rel="stylesheet">
     <link href="{% static 'top/css/font-awesome.min.css' %}" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootbox.min.js' %}"></script>
@@ -18,83 +19,6 @@
     <script src="{% static 'js/CSRF.js' %}"></script>
     <script src="{% static 'js/search.js'%}"></script>
     {% block extrahead %}{% endblock %}
-    <style>
-        .navbar-default {
-            border-color: transparent;
-            background-color: #dadada;
-        }
-        .navbar-inverse .navbar-brand {
-            font-weight: 500;
-            font-size: 20px;
-        }
-        .navbar-toggle {
-            border-color: transparent;
-            border: 0px solid transparent;
-        }
-        .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-            background-color: #16a085;
-            color: white;
-        }
-
-        ::-moz-selection {
-            background: #f2c2c9;
-            color: #a4003a;
-            text-shadow: none;
-        }
-        ::selection {
-            background: #16a085;
-            color: #a4003a;
-            text-shadow: none;
-        }
-        body {
-            font-family: "Lato";
-            font-weight: 300;
-            font-size: 16px;
-            color: #555;
-            -webkit-font-smoothing: antialiased;
-        	line-height: 1.4;
-        }
-    </style>
-    <style>
-        .banner_image{
-            text-align: center;
-        }
-        p.banner_image img {
-            -webkit-filter: brightness(60%);
-            width: 100%;
-        }
-        .banner_text{
-            position: absolute;
-            top: 100px;
-            font-size: xx-large;
-            color: #ffffff;
-        }
-
-        .block_white {
-            padding: 20px;
-            background: #fff;
-            border: 1px #ccc solid;
-            box-shadow: 0 2px 3px 0 #ddd;
-            -moz-box-shadow: 0 2px 3px 0 #ddd;
-            -webkit-box-shadow: 0 2px 3px 0 #ddd;
-        }
-        .block_blue {
-            padding: 20px;
-            background: #ddf;
-            border: 1px #ccc solid;
-            box-shadow: 0 2px 3px 0 #ddd;
-            -moz-box-shadow: 0 2px 3px 0 #ddd;
-            -webkit-box-shadow: 0 2px 3px 0 #ddd;
-        }
-        .block_red {
-            padding: 20px;
-            background: #fdd;
-            border: 1px #ccc solid;
-            box-shadow: 0 2px 3px 0 #ddd;
-            -moz-box-shadow: 0 2px 3px 0 #ddd;
-            -webkit-box-shadow: 0 2px 3px 0 #ddd;
-        }
-    </style>
 </head>
 <body>
 <!-- 1.ナビゲーションバーの設定 -->

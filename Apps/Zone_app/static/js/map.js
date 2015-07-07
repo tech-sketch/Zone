@@ -8,7 +8,7 @@ var defaultMapOptions = {
 };
 var markerList = new google.maps.MVCArray();
 var overlayList = new google.maps.MVCArray();
-var listenerList = [];
+var placeIdList = [];
 
 function start(){
     getLocation();
@@ -107,40 +107,40 @@ function makePlacePin() {
 }
 
 function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
-    if(listenerList.indexOf(placeId) == -1){
-        var openInfoWindow = function(){
-            if(currentInfoWindow){
-                currentInfoWindow.close();
-            }
-            placeInfoWindow.open(map, placeMarker);
-            currentInfoWindow = placeInfoWindow;
-        };
-        var closeInfoWindow = function(){
-            placeInfoWindow.close(map, placeMarker);
-        };
-        var position = locationCard.offset().top - locationCard.parent('div').offset().top;
+    var openInfoWindow = function(){
+        if(currentInfoWindow){
+            currentInfoWindow.close();
+        }
+        placeInfoWindow.open(map, placeMarker);
+        currentInfoWindow = placeInfoWindow;
+    };
+    var closeInfoWindow = function(){
+        placeInfoWindow.close(map, placeMarker);
+    };
+    var position = locationCard.offset().top - locationCard.parent('div').offset().top;
 
-        locationCard.on("click", function(){
-            $.get('/detail/' + placeId, function(html){
-                showDetail(html);
-            });
+    locationCard.on("click", function(){
+        $.get('/detail/' + placeId, function(html){
+            showDetail(html);
         });
-        locationCard.hover(openInfoWindow, closeInfoWindow);
-        google.maps.event.addListener(placeMarker, 'click', function(){
-            $.get('/detail/' + placeId, function(html){
-                showDetail(html);
-            });
+    });
+    locationCard.hover(openInfoWindow, closeInfoWindow);
+    google.maps.event.addListener(placeMarker, 'click', function(){
+        $.get('/detail/' + placeId, function(html){
+            showDetail(html);
         });
-        google.maps.event.addListener(placeMarker, "mouseover", function(){
-            openInfoWindow();
-            locationCard.parent('div').animate({scrollTop: position}, 'normal');
-            locationCard.attr('style', 'background-color: #f1f1f1; box-shadow: 0 0px 0px 0 #ddd;');
-        });
-        google.maps.event.addListener(placeMarker, "mouseout", function(){
-            closeInfoWindow();
-            locationCard.attr('style', '');
-        });
-        listenerList.push(placeId);
+    });
+    google.maps.event.addListener(placeMarker, "mouseover", function(){
+        openInfoWindow();
+        locationCard.parent('div').animate({scrollTop: position}, 'normal');
+        locationCard.attr('style', 'background-color: #f1f1f1; box-shadow: 0 0px 0px 0 #ddd;');
+    });
+    google.maps.event.addListener(placeMarker, "mouseout", function(){
+        closeInfoWindow();
+        locationCard.attr('style', '');
+    });
+    if(placeIdList.indexOf(placeId) == -1){
+        placeIdList.push(placeId);
     }
 }
 
@@ -195,6 +195,9 @@ function overlayText(name, lat, lng){
     overlayList.push(new NameMarker(map, lat, lng));
 }
 
+$('#loading').fadeOut("quick");
+google.maps.event.addDomListener(window, 'load', start);
+
 /*
 function codeAddress() {
     var address = document.getElementById('address').value;
@@ -215,6 +218,3 @@ function codeAddress() {
         }
     });
 }*/
-
-$('#loading').fadeOut("quick");
-google.maps.event.addDomListener(window, 'load', start);

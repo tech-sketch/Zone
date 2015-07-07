@@ -3,11 +3,13 @@
     <h3>{{ place.name }}</h3>
 </div>
 <hidden type="input" id="detail_place_id" value="{{ place.id }}"></hidden>
+<hidden type="input" id="detail_lat" value="{{ place.latitude }}"></hidden>
+<hidden type="input" id="detail_lng" value="{{ place.longitude }}"></hidden>
 
 <div class="top_picture">
     <img src={{ picture_url }} alt={{ place.name }} style="width: 250pt; height: 250pt; float: left; margin: 0 5pt 0 0;"/>
-    <div id="info">
-        <div id="total_point">
+    <div id="detail_info">
+        <div id="detail_total_point">
             合計ポイント:{{place.total_point}}point<br/>
         </div>
         wi-fi：
