@@ -30,10 +30,9 @@
                     <div id="total_point_{{place.id}}">
                         合計ポイント:{{place.total_point}}point
                     </div>
-                    <br/>
                     wi-fi：
-                    {% if place.wifi_softbank %}
-                        softbank
+                    {% if place.wifi %}
+                        {{ place.wifi }}
                     {% endif %}
                     {% if place.wifi_free %}
                         free

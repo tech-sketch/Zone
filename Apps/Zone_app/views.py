@@ -98,8 +98,8 @@ def detail(request, place_id):
             del storage._loaded_messages[0]
         messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
     picture_url = place.get_pictures_url()[0]
-    return render_to_response('detail.html', {"place": place, "wifi_softbank": place.has_tool('wifi_softbank'),
-                                              'wifi_free': place.has_tool('wifi_free'), 'outlet': place.has_tool('outlet'),
+    wifi = place.get_wifi_list()
+    return render_to_response('detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
                                                   "picture_url": picture_url, "moods": moods}, context_instance=RequestContext(request))
 
 def new(request):
@@ -159,9 +159,9 @@ def get_place_picture_list(places):
     for place in places:
         total_point = place.total_point
         picture = place.get_pictures_url()[0]
+        wifi = place.get_wifi_list()
         place_picture__list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
-                           'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
-                           'wifi_free': place.has_tool('wifi_free'), 'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
+                           'latitude': place.latitude, 'wifi': ' '.join(wifi), 'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
     return place_picture__list
 
 

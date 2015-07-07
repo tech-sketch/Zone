@@ -13,11 +13,8 @@
             合計ポイント:{{place.total_point}}point<br/>
         </div>
         wi-fi：
-        {% if wifi_softbank %}
-            softbank
-        {% endif %}
-        {% if wifi_free %}
-            free
+        {% if wifi %}
+            {{ wifi }}
         {% endif %}
         <br>電源：
         {% if outlet %}

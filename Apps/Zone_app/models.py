@@ -63,6 +63,24 @@ class Place(models.Model):
     def has_tool(self, tool):
         return Equipment.objects.filter(place_id=self.id, tool__en_title__exact=tool).exists()
 
+    def get_wifi_list(self):
+        self.wifi_list = []
+        if self.has_tool('wifi_free'):
+            self.wifi_list.append('Free')
+        if self.has_tool('wifi_docomo'):
+            self.wifi_list.append('docomo')
+        if self.has_tool('wifi_au'):
+            self.wifi_list.append('au')
+        if self.has_tool('wifi_softbank'):
+            self.wifi_list.append('SoftBank')
+        if self.has_tool('wifi_wi2'):
+            self.wifi_list.append('wi2')
+        if self.has_tool('wifi_flets'):
+            self.wifi_list.append('Flet\'s')
+        if self.has_tool('wifi_BB'):
+            self.wifi_list.append('BB')
+        return self.wifi_list
+
     def get_pictures_url(self):
         pictures = Picture.objects.filter(place_id=self.id)
         if len(pictures):
