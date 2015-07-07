@@ -108,10 +108,14 @@ def new(request):
     return render_to_response('new.html', {'user_form': user_form, 'moods': moods}, context_instance=RequestContext(request))
 
 def create(request):
+    print('test')
     nomad_user = UserForm(request.POST)
+    print(nomad_user)
+    print(request.POST)
     new_nomad_user = nomad_user.save()
     new_nomad_user.set_password(new_nomad_user.password)
     new_nomad_user.save()
+
     for mood in Mood.objects.all():
         if mood.en_title in request.POST:
             preference = Preference()
