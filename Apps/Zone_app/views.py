@@ -38,7 +38,8 @@ def preference_form(request):
         searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
         checked_list = request.POST.getlist('tools[]')
         searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
-        places = sort_by_point(searched_places)
+        places = get_place_picture_list(searched_places)
+        places = sorted(places, key=lambda x: x['total_point'], reverse=True)
         return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
     moods = Mood.objects.all()
     tools = Tool.objects.all()
@@ -49,7 +50,8 @@ def maps(request):
         return search(request)
     zoom_level = DEFAULT_ZOOM_LEVEL
     moods = Mood.objects.all()
-    places = sort_by_point(Place.objects.all())
+    places = get_place_picture_list(Place.objects.all())
+    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     return render_to_response('map.html', {'places': places, 'moods': moods, 'zoom_level': zoom_level},
                                                 context_instance=RequestContext(request))
 def search(request):
@@ -73,7 +75,8 @@ def search(request):
                                      latitude__gt=location['lat']-rate*LAT_FROM_CEN,
                                      latitude__lt=location['lat']+rate*LAT_FROM_CEN)
     all_place = all_place.filter(name__icontains=place_name)
-    places = sort_by_point(all_place)
+    places = get_place_picture_list(all_place)
+    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     moods = Mood.objects.all()
     return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address,
                                            'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
@@ -145,16 +148,16 @@ def add_point(request):
     check_in_history.save()
     return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
 
-# リファクタリング対象
-def sort_by_point(places):
-    place_list = []
+def get_place_picture_list(places):
+    place_picture__list = []
     for place in places:
         total_point = place.total_point
         picture = place.get_pictures_url()[0]
-        place_list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
+        place_picture__list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
                            'latitude': place.latitude, 'wifi_softbank': place.has_tool('wifi_softbank'),
                            'wifi_free': place.has_tool('wifi_free'), 'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
-    return sorted(place_list, key=lambda x: x['total_point'], reverse=True)
+    return place_picture__list
+
 
 def get_zoom_level(lat_east, lat_west):
     rate = round((lat_east-lat_west)/(DEFAULT_LAT_SIZE/16), 0)
