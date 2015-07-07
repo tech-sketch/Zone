@@ -44,19 +44,19 @@ $("#preference").on("click", function(){
     $.get('/preference_form/', function(html){
         showPreference(html);
         $('#preference_form input[name=category]').each(function(i, thisCheckBox){
-            rememberChecked(categoriesChecked, thisCheckBox);
+            rememberChecked(thisCheckBox, categoriesChecked);
         });
         $('#preference_form input[name=mood]').each(function(i, thisCheckBox){
-            rememberChecked(moodsChecked, thisCheckBox);
+            rememberChecked(thisCheckBox, moodsChecked);
         });
         $('#preference_form input[name=tool]').each(function(i, thisCheckBox){
-            rememberChecked(toolsChecked, thisCheckBox);
+            rememberChecked(thisCheckBox, toolsChecked);
         });
     });
 });
 
 
-function rememberChecked(checkedList, thisCheckBox){
+function rememberChecked(thisCheckBox, checkedList){
     if(checkedList.some(function(element){
         return ($(thisCheckBox).val()==element);
     })){
