@@ -107,28 +107,35 @@ $ python manage.py runserver
  - Latitude: 35.6933473
 
 ### Mood
-i.  jp_title: 店員が気さく
-    en_title: frank
+-  jp_title: 店員が気さく
+   en_title: frank
 
-ii. jp_title: メニューが豊富
-    en_title: menu
+-  jp_title: メニューが豊富
+   en_title: menu
 
-iii.jp_title: おいしいコーヒー
-    en_title: coffee
+-  jp_title: おいしいコーヒー
+   en_title: coffee
 
-iv. jp_title: おしゃれ
-    en_title: fashionable
+-  jp_title: おしゃれ
+   en_title: fashionable
 
-v.  jp_title: 落ちつていている
-    en_title: relax
+-  jp_title: 落ちつていている
+   en_title: relax
 
-vi. jp_title: レトロ
-    en_title: retro
+- jp_title: レトロ
+   en_title: retro
 
 
 ### Preference
 - Nomad: 作成したスーパーユーザを選択
 - Mood: 作成したMoodの中から適当に選択
+
+
+### Tool
+coming soon.
+
+### Equipment
+coming soon
 
 ##画面
 * TOP画面
