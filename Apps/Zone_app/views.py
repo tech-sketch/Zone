@@ -35,13 +35,10 @@ def preference_form(request):
     if request.method == 'POST':
         searched_places = Place.objects.all()
         checked_list = request.POST.getlist('categories[]')
-        print(checked_list)
         searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
         checked_list = request.POST.getlist('tools[]')
-        print(checked_list)
         searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
         places = sort_by_point(searched_places)
-        print(places)
         return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
     moods = Mood.objects.all()
     tools = Tool.objects.all()
@@ -86,9 +83,9 @@ def detail(request, place_id):
     place = Place.objects.get(id=place_id)
     moods = Mood.objects.all()
     if not request.user.is_authenticated():
-        #メッセージの削除
+        # メッセージの削除
         storage = messages.get_messages(request)
-        if(len(storage)):
+        if len(storage):
             del storage._loaded_messages[0]
         messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
     picture_url = place.get_pictures_url()[0]
@@ -148,6 +145,7 @@ def add_point(request):
     check_in_history.save()
     return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
 
+# リファクタリング対象
 def sort_by_point(places):
     place_list = []
     for place in places:

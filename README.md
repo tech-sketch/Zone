@@ -10,6 +10,35 @@
 * 作業場所を探すノマド・リモートワーカー
 
 
+##使い方
+###Top画面およびLogin
+以下がtop画面となります。
+右上のある、ナビゲーションバーのLoginから認証を通してください。（スーパーユーザで認証できます）
+![top_login](https://github.com/Takatymo/Zone/wiki/README_images/login_top.png "top_login")
+
+### システムからのレコメンド機能
+ログイン後、	メインのアプリケーション画面に移動しユーザの好みに合わせた場所がおすすめされます。
+**閉じる**か右上の**×**を押すとレコメンドwindowが閉じます。
+![recommend](https://github.com/Takatymo/Zone/wiki/README_images/recommend.png "recommend")
+
+### メインアプリケーション画面
+登録されている場所がすべて左側のリストに表示されます。
+また、上のナビゲーションバーにある検索フォームから場所を絞り込むことができます。
+![map](https://github.com/Takatymo/Zone/wiki/README_images/search.png "map")
+
+### 詳細画面
+左側のリストから気になる場所をクリックするとその場所の詳細画面が表示されます。
+
+* **「現在この場所にいる」**を押すとチェックインを行うことができます。チェックインをすることによってポイントを取得できます。このポイントはユーザから場所をおすすめする際に使えます。（その場所にいなかったり、その日に一度チェックインをしている場合はこの機能は使えません）
+*  **「この場所をおすすめする」**を押すと、ユーザから場所のおすすめをする画面が表示されます。
+![detail](https://github.com/Takatymo/Zone/wiki/README_images/detail.png "detail")
+
+### ユーザからのおすすめ機能
+おすすめする際はポイントと、その場所の良かったところを入力して**Save**を押してください。その後、おすすめした場所にポイントが加算されユーザのポイントは差し引かれます。
+このお勧めはシステムからのレコメンドに影響されます。
+![user_recommend](https://github.com/Takatymo/Zone/wiki/README_images/user_recommend.png "user_recommend")
+
+
 ##実行環境
 * Windows 7
 * Python 3.4.3
@@ -90,105 +119,3 @@ $ python manage.py runserver
 * システムからのレコメンド機能
 * ユーザからのおすすめ機能
 * チェックイン機能（現在お店にいる）
-
-##使い方
-###Top画面およびLogin
-以下がtop画面となります。
-右上のある、ナビゲーションバーのLoginから認証を通してください。（スーパーユーザで認証できます）
-![top_login](https://github.com/Takatymo/Zone/wiki/README_images/login_top.png "top_login")
-
-### システムからのレコメンド機能
-ログイン後、	メインのアプリケーション画面に移動しユーザの好みに合わせた場所がおすすめされます。
-**閉じる**か右上の**×**を押すとレコメンドwindowが閉じます。
-![recommend](https://github.com/Takatymo/Zone/wiki/README_images/recommend.png "recommend")
-
-### メインアプリケーション画面
-登録されている場所がすべて左側のリストに表示されます。
-また、上のナビゲーションバーにある検索フォームから場所を絞り込むことができます。
-![map](https://github.com/Takatymo/Zone/wiki/README_images/search.png "map")
-
-### 詳細画面
-左側のリストから気になる場所をクリックするとその場所の詳細画面が表示されます。
-
-* **「現在この場所にいる」**を押すとチェックインを行うことができます。チェックインをすることによってポイントを取得できます。このポイントはユーザから場所をおすすめする際に使えます。（その場所にいなかったり、その日に一度チェックインをしている場合はこの機能は使えません）
-*  **「この場所をおすすめする」**を押すと、ユーザから場所のおすすめをする画面が表示されます。
-![detail](https://github.com/Takatymo/Zone/wiki/README_images/detail.png "detail")
-
-### ユーザからのおすすめ機能
-おすすめする際はポイントと、その場所の良かったところを入力して**Save**を押してください。その後、おすすめした場所にポイントが加算されユーザのポイントは差し引かれます。
-このお勧めはシステムからのレコメンドに影響されます。
-![user_recommend](https://github.com/Takatymo/Zone/wiki/README_images/user_recommend.png "user_recommend")
-
-##models(モデル)
-
-
-### NomadUser
-* **Field**
- - nickname(CharField)
- - gender(CharField)
- - age(IntegerField)
- - job(CharField)
- - point(IntegerField)
-
-### Place
-* **Field**
- - google_id(CharField) 
- - nomad(ForeignKey NomadUser)
- - category(CharField)
- - name(CharField)
- - name_kana(CharField)
- - address(CharField)
- - longitude(FloatField)
- - latitude(FloatField)
- - tell(CharField)
- - seats_num(Integer)
- - url_pc(CharField)
- - url_mobile(CharField)
- - open_time(CharField)
- - holiday(CharField)
- - add_date(TimeField)
- - total_point(IntegerField)
-* **method**
- - has_tool
-
-### Picture
-* **field**
- - place(ForeignKey Place)
- - nomad(ForeignKey NomadUser)
- - data(ImageField)
- - add_date(TimeField)
-
-### Tool
-* **field**
- - jp_title(CharField)
- - en_title(CharField)
-
-### Equipment
-* **field**
- - place(ForeignKey Place)
- - tool(ForeignKey Tool)
-
-### Mood
-* **field**
- - jp_title(CharField)
- - en_title(CharField)
-
-### Preference
-* **field**
- - nomad(ForeignKey NomadUser)
- - mood(ForeignKey Mood)
-
-### PlacePoint
-* **field**
- - place(ForeignKey Place)
- - mood(ForeignKey Mood)
- - point(IntegerField)
-
-### CheckInHIstory
-* **field**
- - nomad(ForeignKey NomadUser)
- - place(ForeignKey Place)
- - create_at(DateTimeField)
-
-##Views（コントローラ）
-###更新予定
