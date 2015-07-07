@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from .forms import UserForm
 import requests, functools
-from django.db.models import Sum
+from django.db.models import Sum, Count
 
 # Create your views here.
 LAT_FROM_CEN = 0.002265
@@ -33,9 +33,13 @@ def recommend_form(request):
 
 def preference_form(request):
     if request.method == 'POST':
-        searched_places = Place.objects.all()
+        searched_places = Place.objects.filter(id__in=request.POST.getlist('place_id_list[]'))
         checked_list = request.POST.getlist('categories[]')
         searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
+        checked_list = request.POST.getlist('moods[]')
+        place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point')).filter(total_point__gte=2)
+        searched_places = functools.reduce(lambda a, b: a.filter(id__in=[item['place'] for item in place_points.filter(mood__en_title=b)]),
+                                           checked_list, searched_places)
         checked_list = request.POST.getlist('tools[]')
         searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
         places = get_place_picture_list(searched_places)
@@ -64,7 +68,7 @@ def search(request):
     address = request.POST['address']
     place_name = request.POST['place_name']
     result = connect_geocode_api(address)
-    if result['status']=='OK':
+    if result['status'] == 'OK':
         location = result['results'][0]['geometry']['location']
         northeast = result['results'][0]['geometry']['viewport']['northeast']
         southwest = result['results'][0]['geometry']['viewport']['southwest']
@@ -74,6 +78,8 @@ def search(request):
                                      longitude__lt=location['lng']+rate*LNG_FROM_CEN,
                                      latitude__gt=location['lat']-rate*LAT_FROM_CEN,
                                      latitude__lt=location['lat']+rate*LAT_FROM_CEN)
+    else:
+        pass
     all_place = all_place.filter(name__icontains=place_name)
     places = get_place_picture_list(all_place)
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)

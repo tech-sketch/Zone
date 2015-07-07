@@ -23,10 +23,12 @@
   color: #fff;
   padding: 2px 0px 0px 0px;
   font-size: 82%;
-  margin-right: -112px;
-  margin: 0px 20px 0 0;
   font-weight: bold;
   line-height: 150%;
+}
+
+#preference_form dd {
+  margin-left: 122px;
 }
 
 #preference_form dd label {
@@ -41,6 +43,7 @@
   white-space: nowrap;
   font-size: 85%;
   cursor: pointer;
+
  }
 
 
