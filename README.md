@@ -92,10 +92,12 @@ $ python manage.py createsuperuser
 $ python manage.py runserver
 ```
 
-ブラウザでhttp://127.0.0.1:8000/　にアクセスします。
+ブラウザでhttp://127.0.0.1:8000/
+にアクセスします。
 
 ##初期データの登録
-ブラウザでhttp://127.0.0.1:8000/admin　にアクセスします。
+ブラウザでhttp://127.0.0.1:8000/admin
+にアクセスします。
 
 ### Place
  - Nomad:  作成したスーパーユーザを選択
@@ -126,6 +128,7 @@ $ python manage.py runserver
 ### Preference
 - Nomad: 作成したスーパーユーザを選択
 - Mood: 作成したMoodの中から適当に選択
+
 ##画面
 * TOP画面
 * Map画面
