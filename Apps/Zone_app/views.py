@@ -66,7 +66,7 @@ def search(request):
     address = request.POST['address']
     place_name = request.POST['place_name']
     result = connect_geocode_api(address)
-    if result['status']=='OK':
+    if result['status'] == 'OK':
         location = result['results'][0]['geometry']['location']
         northeast = result['results'][0]['geometry']['viewport']['northeast']
         southwest = result['results'][0]['geometry']['viewport']['southwest']
@@ -76,7 +76,8 @@ def search(request):
                                      longitude__lt=location['lng']+rate*LNG_FROM_CEN,
                                      latitude__gt=location['lat']-rate*LAT_FROM_CEN,
                                      latitude__lt=location['lat']+rate*LAT_FROM_CEN)
-    all_place = all_place.filter(name__icontains=place_name)
+    else:
+        pass
     places = sort_by_point(all_place)
     moods = Mood.objects.all()
     return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address,
