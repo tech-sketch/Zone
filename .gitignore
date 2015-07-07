@@ -1,5 +1,6 @@
 .idea
 Data/media/*.jpg
+Data/media/*.png
 !Data/media/loading.gif
 !Data/media/no_image.png
 Data/*.csv
