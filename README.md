@@ -92,19 +92,42 @@ $ python manage.py createsuperuser
 $ python manage.py runserver
 ```
 
-ブラウザでhttp://127.0.0.1:8000/にアクセスします。
+ブラウザでhttp://127.0.0.1:8000/
+にアクセスします。
 
 ##初期データの登録
-ブラウザでhttp://127.0.0.1:8000/adminにアクセスします。
+ブラウザでhttp://127.0.0.1:8000/admin
+にアクセスします。
 
 ### Place
-更新予定
+ - Nomad:  作成したスーパーユーザを選択
+ - Name: 新宿区役所
+ - Address: 東京都新宿区歌舞伎町１−４−１
+ - Longitude: 139.7030634
+ - Latitude: 35.6933473
 
 ### Mood
-更新予定
+- jp_title: 店員が気さく
+- en_title: frank
+
+- jp_title: メニューが豊富
+- en_title: menu
+
+- jp_title: コーヒー
+- en_title: coffee
+
+- jp_title: おしゃれ
+- en_title: fashionable
+
+- jp_title: 落ちつていている
+- en_title: relax
+
+- jp_title: レトロ
+- en_title: retro
 
 ### Preference
-更新予定
+- Nomad: 作成したスーパーユーザを選択
+- Mood: 作成したMoodの中から適当に選択
 
 ##画面
 * TOP画面
