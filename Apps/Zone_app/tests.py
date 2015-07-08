@@ -13,11 +13,35 @@ class AuthorizationTestCase(TestCase):
         self.user_to_login = {'username': 'user1', 'password': '1111'}
         self.user_not_to_login = {'username': 'user1', 'password': '2222'}
 
-    def test_login(self):
-        response = self.client.post('/login/', self.user_not_to_login, follow=True)
+    def test_login_logout(self):
+        response = self.client.post('/login/', self.user_not_to_login)
         self.assertNotIn('_auth_user_id', self.client.session)
+        self.assertTemplateUsed(response, 'login.html')
+        self.assertContains(response, 'Your username and password didn\'t match. Please try again.')
+
         response = self.client.post('/login/', self.user_to_login, follow=True)
         self.assertIn('_auth_user_id', self.client.session)
+        self.assertRedirects(response, '/maps/', status_code=302, target_status_code=200)
+
+        response = self.client.get('/logout/', follow=True)
+        self.assertNotIn('_auth_user_id', self.client.session)
+        self.assertRedirects(response, '/', status_code=302, target_status_code=200)
+
+class MessageTestCase(TestCase):
+    def setUp(self):
+        user = NomadUser.objects.create_user(username='user1', password='1111')
+        self.placeid = Place.objects.create(nomad=user, name='place1').pk
+
+    def test_get_correct_message(self):
+        response = self.client.get('/detail/'+str(self.placeid))
+        messages = list(response.context['messages'])
+        self.assertIs(len(messages), 1)
+        self.assertEqual(str(messages[0]), 'チェックイン・おすすめ機能を使うにはログインが必要です。')
+
+        self.client.login(username='user1', password='1111')
+        response = self.client.get('/detail/'+str(self.placeid))
+        messages = list(response.context['messages'])
+        self.assertIs(len(messages), 0)
 
 class ScreenTransitionTestCase(TestCase):
     def setUp(self):
@@ -28,19 +52,3 @@ class ScreenTransitionTestCase(TestCase):
 
     def test_ScreenTransition_before_login(self):
         pass
-
-class MessageTestCase(TestCase):
-    def setUp(self):
-        user = NomadUser.objects.create_user(username='user1', password='1111')
-        self.placeid = Place.objects.create(nomad=user, name='place1').pk
-
-    def test_get_correct_message(self):
-        #request = RequestFactory().get('/')
-        #setattr(request, 'session', self.client.session)
-        #messages = FallbackStorage(request)
-        #setattr(request, '_messages', messages)
-        #add_message(request, 25, 'test')
-        response = self.client.get('/detail/'+str(self.placeid))
-        messages = list(response.context['messages'])
-        self.assertIs(len(messages), 1)
-        self.assertEqual(str(messages[0]), 'チェックイン・おすすめ機能を使うにはログインが必要です。')
