@@ -6,6 +6,11 @@ var defaultMapOptions = {
     center: new google.maps.LatLng(35.682323, 139.765955),　//東京駅
     zoom: 15
 };
+
+var grandMapOptions =  {
+    center: new google.maps.LatLng(35.6959659,139.6904433),　//東京グランド
+    zoom: 15
+};
 var markerList = new google.maps.MVCArray();
 var overlayList = new google.maps.MVCArray();
 var placeIdList = [];
@@ -59,6 +64,9 @@ function initialize(x, y) {
             center: myLatlng,
             zoom: zoom_level
     };
+    // for demo
+    mapOptions = grandMapOptions;
+
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
         // マーカーの画像URL
@@ -77,6 +85,8 @@ function initialize(x, y) {
             title:"Your position",
             icon: markerImg,
     });
+    // for demo
+    userMarker.setPosition(new google.maps.LatLng(35.6959659,139.6904433))
 }
 
 function makePlacePin() {
@@ -120,13 +130,17 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     var position = locationCard.offset().top - locationCard.parent('div').offset().top;
 
     locationCard.on("click", function(){
+        $("#loading").fadeIn("quick");
         $.get('/detail/' + placeId, function(html){
+            $("#loading").fadeOut("quick");
             showDetail(html);
         });
     });
     locationCard.hover(openInfoWindow, closeInfoWindow);
     google.maps.event.addListener(placeMarker, 'click', function(){
+        $("#loading").fadeIn("quick");
         $.get('/detail/' + placeId, function(html){
+            $("#loading").fadeOut("quick");
             showDetail(html);
         });
     });

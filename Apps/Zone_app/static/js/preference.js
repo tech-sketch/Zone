@@ -41,7 +41,9 @@ function showPreference(html){
 }
 
 $("#preference").on("click", function(){
+    $("#loading").fadeIn("quick");
     $.get('/preference_form/', function(html){
+        $("#loading").fadeOut("quick");
         showPreference(html);
         $('#preference_form input[name=category]').each(function(i, thisCheckBox){
             rememberChecked(thisCheckBox, categoriesChecked);
