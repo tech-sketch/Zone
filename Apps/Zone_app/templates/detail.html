@@ -7,7 +7,7 @@
 <hidden type="input" id="detail_lng" value="{{ place.longitude }}"></hidden>
 
 <div class="top_picture">
-    <img src={{ picture_url }} alt={{ place.name }} style="width: 250pt; height: 250pt; float: left; margin: 0 5pt 0 0;"/>
+    <img src={{ picture_url }} alt={{ place.name }} style="width: 250pt; height: 250pt; float: left; margin: 0 10pt 0 0;"/>
     <div id="detail_info">
         <div id="detail_total_point">
             合計ポイント:{{place.total_point}}point<br/>
@@ -24,10 +24,16 @@
         {{place.tell}}
         <br>
         URL：
-        {{place.URL_PC}}
+        <a href=" {{place.URL_PC}} "> {{place.URL_PC}}</a>
         <br>
         営業時間:
         {{place.open_time}}
+        <br>
+        <br>
+        {{place.PR}}
+        {% if place.URL_Mobile %}
+        <br>（参考URL）<a href=" {{place.URL_Mobile}} "> {{place.URL_Mobile}}</a>
+        {% endif %}
     </div>
 </div>
 <div style="clear:both;"></div>
