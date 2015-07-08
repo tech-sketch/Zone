@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Apps.Zone_app',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'Zone.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['Zone_app/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,9 +78,9 @@ WSGI_APPLICATION = 'Zone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'xxxxxxx',
-        'USER': 'xxxxxxxx',
-        'PASSWORD': 'xxxxxxxxx',
+        'NAME': 'Zone',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
     }
 }
 
@@ -102,3 +103,13 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+AUTH_USER_MODEL = 'Zone_app.NomadUser'
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'Data', 'media')
+MEDIA_URL = '/media/'
+
+LOGIN_REDIRECT_URL = '/maps/'
+

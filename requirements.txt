@@ -1,2 +1,4 @@
 Django==1.8.2
+Pillow==2.8.2
 psycopg2==2.6
+requests==2.7.0

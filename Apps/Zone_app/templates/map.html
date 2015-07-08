@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}MAP{% endblock title %}
+{% block content %}
+<div style="margin-top:-10pt; margin-left: 1%;">
+    <a id="preference"> あなたのこだわりで絞り込む　></a>
+</div>
+
+<div class="map_box">
+<hidden type="input" id="user_auth" value="{{ user.is_authenticated }}"></hidden>
+<hidden type="input" id="location_lat" value="{{location.lat}}"></hidden>
+<hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
+<hidden type="input" id="zoom_level" value="{{zoom_level}}"></hidden>
+    <div id="select">
+        {% for message in messages%}{{ message }} {% endfor %}
+        {% for place in places %}
+            <div class="location_card">
+                <hidden type="input" id="name" value="{{place.name}}"></hidden>
+                <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
+                <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
+                <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
+                {%if place.picture%}
+                    <img src="{{ place.picture }}" alt="{{ place.name }}">
+                {% else %}
+                    <img src="/media/no_image.png" alt="{{ place.name }}">
+                {% endif %}
+                <h3>{{place.name}}</h3>
+                <div id="info">
+                    <div id="total_point_{{place.id}}">
+                        合計ポイント:{{place.total_point}}point
+                    </div>
+                    wi-fi：
+                    {% if place.wifi %}
+                        {{ place.wifi }}
+                    {% endif %}
+                    <br>電源：
+                    {% if place.outlet %}
+                        あり
+                    {% endif %}
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div id="map-canvas"></div>
+    <img id="loading" src="/media/loading.gif" style="position: absolute; top: 50%; left: 50%;"/>
+</div>
+
+<link href="{% static 'css/map.css' %}" rel="stylesheet">
+<link href="{% static 'css/preference_form.css' %}" rel="stylesheet">
+<script src="{% static 'js/show_detail.js' %}"></script>
+<script src="{% static 'js/preference.js' %}"></script>
+<script src="{% static 'js/map.js' %}"></script>
+<script src="{% static 'js/CSRF.js' %}"></script>
+{% if user.is_authenticated %}
+<script src="{% static 'js/show_recommend.js'%}"></script>
+{% endif %}
+<script src="{% static 'js/check_in.js' %}"></script>
+<script src="{% static 'js/recommend_logic.js' %}"></script>
+<script>
+$(document).on('click', '.bootbox', function (event) {
+    if(event.target == this)bootbox.hideAll()
+});
+</script>
+{% endblock content %}
