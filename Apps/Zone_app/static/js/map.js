@@ -70,7 +70,7 @@ function initialize(x, y) {
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
         // マーカーの画像URL
-        "http://127.0.0.1:8000/static/images/man.png",
+        "/static/images/man.png",
         // マーカーのサイズ
         new google.maps.Size(32, 32),
         // 画像の基準位置
