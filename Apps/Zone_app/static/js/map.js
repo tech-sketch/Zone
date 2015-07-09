@@ -65,7 +65,7 @@ function initialize(x, y) {
             zoom: zoom_level
     };
     // for demo
-    mapOptions = grandMapOptions;
+    //mapOptions = grandMapOptions;
 
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
@@ -86,7 +86,7 @@ function initialize(x, y) {
             icon: markerImg,
     });
     // for demo
-    userMarker.setPosition(new google.maps.LatLng(35.6959659,139.6904433))
+    //userMarker.setPosition(new google.maps.LatLng(35.6959659,139.6904433))
 }
 
 function makePlacePin() {
