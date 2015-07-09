@@ -85,8 +85,7 @@ function initialize(x, y) {
             title:"Your position",
             icon: markerImg,
     });
-    // for demo
-    //userMarker.setPosition(new google.maps.LatLng(35.6959659,139.6904433))
+    userMarker.setPosition(myLatlng)
 }
 
 function makePlacePin() {
