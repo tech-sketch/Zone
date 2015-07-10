@@ -110,16 +110,21 @@ def new(request):
 
 def create(request):
     nomad_user = UserForm(request.POST)
-    new_nomad_user = nomad_user.save()
-    new_nomad_user.set_password(new_nomad_user.password)
-    new_nomad_user.save()
+    print(nomad_user)
+    if nomad_user.is_valid():
+        new_nomad_user = nomad_user.save()
+        new_nomad_user.set_password(new_nomad_user.password)
+        print("Yes")
+        new_nomad_user.save()
 
-    for mood in Mood.objects.all():
-        if mood.en_title in request.POST:
-            preference = Preference()
-            preference.nomad = new_nomad_user
-            preference.mood = mood
-            preference.save()
+        for mood in Mood.objects.all():
+            if mood.en_title in request.POST:
+                preference = Preference()
+                preference.nomad = new_nomad_user
+                preference.mood = mood
+                preference.save()
+    print("Done")
+
     return redirect('/')
 
 def save_recommend(request):

@@ -32,6 +32,7 @@
         <ul class="nav navbar-nav">
             <!--<li><a href="/map">地図</a></li>
             <li><a href="/list">一覧</a></li>-->
+
             <li>
             <form method="post" action="{% url 'maps' %}" id="search_form" class="navbar-form">{% csrf_token %}
                 <input type="text" onkeypress="if(event.keyCode==13)searchPlaces();" class="form-control" name="address" placeholder="どこでお探しですか" value="{{address}}" style="margin:-5pt 5pt 0 0;">
@@ -43,6 +44,13 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
+
+             {% if user.icon %}
+        <div><img src="{{ user.icon.url }}"></div>
+      {%  endif %}
+
+
+
             <li><p class="navbar-text">{{ user.username }}</p></li>
             <li><p class="navbar-text" id="user_point">現在のpoint:{{ user.point }}</p></li>
             <li><a href="{% url 'logout' %}">ログアウト</a></li>
