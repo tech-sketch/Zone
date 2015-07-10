@@ -59,11 +59,6 @@ function initialize(x, y) {
             center: myLatlng,
             zoom: zoom_level
     };
-<<<<<<< HEAD
-=======
-    // for demo
-    //mapOptions = grandMapOptions;
->>>>>>> develop
 
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
