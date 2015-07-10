@@ -6,11 +6,6 @@ var defaultMapOptions = {
     center: new google.maps.LatLng(35.682323, 139.765955),　//東京駅
     zoom: 15
 };
-
-var grandMapOptions =  {
-    center: new google.maps.LatLng(35.6959659,139.6904433),　//東京グランド
-    zoom: 15
-};
 var markerList = new google.maps.MVCArray();
 var overlayList = new google.maps.MVCArray();
 var placeIdList = [];
@@ -64,8 +59,6 @@ function initialize(x, y) {
             center: myLatlng,
             zoom: zoom_level
     };
-    // for demo
-    //mapOptions = grandMapOptions;
 
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
