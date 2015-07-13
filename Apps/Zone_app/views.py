@@ -109,6 +109,7 @@ def new(request):
     return render_to_response('new.html', {'user_form': user_form, 'moods': moods}, context_instance=RequestContext(request))
 
 def create(request):
+
     nomad_user = UserForm(request.POST, request.FILES)
 
     if nomad_user.is_valid():
@@ -124,6 +125,7 @@ def create(request):
                 preference.save()
 
     return redirect('/')
+
 
 def save_recommend(request):
     place = Place.objects.get(id=request.POST['place'])

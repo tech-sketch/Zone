@@ -44,11 +44,10 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-
-            {% if user.icon.url %}
+            {% if user.icon %}
             <li><img src="{{ user.icon.url }}" width="45" height="45" alt={{ user.username }}></li>
             {% else %}
-            <img src="/media/no_image.png" width="45" height="45" alt="{{ user.username }}">
+            <li><img src="/media/no_image.png" width="45" height="45" alt="{{ user.username }}"></li>
             {%  endif %}
             <li><p class="navbar-text">{{ user.username }}</p></li>
             <li><p class="navbar-text" id="user_point">現在のpoint:{{ user.point }}</p></li>
