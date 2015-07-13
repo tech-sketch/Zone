@@ -109,12 +109,11 @@ def new(request):
     return render_to_response('new.html', {'user_form': user_form, 'moods': moods}, context_instance=RequestContext(request))
 
 def create(request):
-    nomad_user = UserForm(request.POST)
-    print(nomad_user)
+    nomad_user = UserForm(request.POST, request.FILES)
+
     if nomad_user.is_valid():
         new_nomad_user = nomad_user.save()
         new_nomad_user.set_password(new_nomad_user.password)
-        print("Yes")
         new_nomad_user.save()
 
         for mood in Mood.objects.all():
@@ -123,7 +122,6 @@ def create(request):
                 preference.nomad = new_nomad_user
                 preference.mood = mood
                 preference.save()
-    print("Done")
 
     return redirect('/')
 

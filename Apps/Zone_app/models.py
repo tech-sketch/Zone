@@ -22,7 +22,7 @@ class NomadUser(AbstractUser):
     age = models.IntegerField(null=True, blank=True)
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], default=0)
-    icon = models.ImageField(upload_to='icons/', blank=True, storage=storage.FileSystemStorage())
+    icon = models.ImageField(upload_to='icons/', blank=True)
 
     def can_check_in(self, place_id):
         check_in_historys = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
@@ -31,6 +31,9 @@ class NomadUser(AbstractUser):
                                                       nomad_id=self.id,
                                                       place_id=place_id)
         return len(check_in_historys) == 0
+
+    def __unicode__(self):
+        return self.icon
 
 
 class Place(models.Model):
