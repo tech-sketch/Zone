@@ -4,7 +4,6 @@
 
 <form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
     {{ user_form.as_p }}
-    {{ user_profile_form.as_p }}
     {% for mood in moods %}
     <input type="checkbox" name="{{mood.en_title}}" value="true">
     {{mood.jp_title}}
