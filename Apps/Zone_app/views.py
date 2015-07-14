@@ -146,9 +146,9 @@ def create(request):
     return redirect('/')
 
 """
-Please fix: edit is long method
+Please fix: edit method is too long
 """
-@login_required
+@login_required(login_url='/')
 def user_edit(request):
     nomad_user = request.user
 
