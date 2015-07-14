@@ -4,6 +4,7 @@ from django import forms
 from .models import NomadUser
 
 
+
 class UserForm(ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'required': 'true'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'required': 'true'}))
@@ -12,4 +13,4 @@ class UserForm(ModelForm):
 
     class Meta:
         model = NomadUser
-        fields = ('username', 'password', 'email', 'age', 'gender', 'job')
+        fields = ('username', 'password', 'email', 'age', 'gender', 'job', 'icon')

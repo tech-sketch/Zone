@@ -2,7 +2,7 @@
 {% block title %}CreateUser{% endblock title %}
 {% block content %}
 
-<form action="{% url 'create' %}" method="POST">{% csrf_token %}
+<form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
     {{ user_form.as_p }}
     {% for mood in moods %}
     <input type="checkbox" name="{{mood.en_title}}" value="true">
