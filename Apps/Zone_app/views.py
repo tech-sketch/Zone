@@ -1,13 +1,18 @@
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from .models import *
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
-from .forms import UserForm
-import requests, functools
 from django.db.models import Sum, Count
+from django.contrib.auth.decorators import login_required
+
+from .forms import UserForm, UserEditForm
+from .models import *
+
+import requests
+import functools
+
 
 # Create your views here.
 LAT_FROM_CEN = 0.002265
@@ -19,6 +24,7 @@ DEFAULT_ZOOM_LEVEL = 17
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
+
 def recommend(request):
     user_preferences = Preference.objects.filter(nomad=request.user).values('mood')
     place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
@@ -29,9 +35,11 @@ def recommend(request):
     return render_to_response('detail.html', {'place': recommend_place, 'picture_url': picture_url,
                                                         "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
 
+
 def recommend_form(request):
     moods = Mood.objects.all()
     return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
+
 
 def preference_form(request):
     if request.method == 'POST':
@@ -51,6 +59,7 @@ def preference_form(request):
     tools = Tool.objects.all()
     return render_to_response('preference_form.html', {'moods': moods, 'tools': tools}, context_instance=RequestContext(request))
 
+
 def maps(request):
     if request.POST:
         return search(request)
@@ -59,7 +68,9 @@ def maps(request):
     places = get_place_picture_list(Place.objects.all())
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     return render_to_response('map.html', {'places': places, 'moods': moods, 'zoom_level': zoom_level},
-                                                context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))
+
+
 def search(request):
     location = {}
     if 'zoom_level' in request.POST:
@@ -90,6 +101,7 @@ def search(request):
                                            'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
                               context_instance=RequestContext(request))
 
+
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
     if not request.user.is_authenticated():
@@ -103,10 +115,13 @@ def detail(request, place_id):
     return render_to_response('detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
                                                   "picture_url": picture_url}, context_instance=RequestContext(request))
 
+
 def new(request):
     user_form = UserForm()
     moods = Mood.objects.all()
-    return render_to_response('new.html', {'user_form': user_form, 'moods': moods}, context_instance=RequestContext(request))
+    return render_to_response('new.html', {'user_form': user_form, 'moods': moods},
+                              context_instance=RequestContext(request))
+
 
 def create(request):
 
@@ -116,7 +131,6 @@ def create(request):
         new_nomad_user = nomad_user.save()
         new_nomad_user.set_password(new_nomad_user.password)
         new_nomad_user.save()
-
         for mood in Mood.objects.all():
             if mood.en_title in request.POST:
                 preference = Preference()
@@ -124,7 +138,48 @@ def create(request):
                 preference.mood = mood
                 preference.save()
 
+    else:
+        return render_to_response('new.html',
+                                  {'user_form': nomad_user, 'moods': Mood.objects.all(), 'err_message': "error"},
+                                  context_instance=RequestContext(request))
+
     return redirect('/')
+
+"""
+Please fix: edit method is too long
+"""
+@login_required(login_url='/')
+def user_edit(request):
+    nomad_user = request.user
+
+    if request.method == 'GET':
+        user_form = UserEditForm(initial={'email': nomad_user.email, 'age': nomad_user.age,
+                                          'gender': nomad_user.gender, 'job': nomad_user.job})
+        return render_to_response('edit.html', {'user_form': user_form, 'username': nomad_user.username},
+                                  context_instance=RequestContext(request))
+    elif request.method == 'POST':
+        nomad_user = NomadUser.objects.get(id=request.user.id)
+        user_form = UserEditForm(request.POST, request.FILES)
+
+        if user_form.is_valid():
+            nomad_user.email = request.POST['email']
+            nomad_user.age = request.POST['age']
+            nomad_user.gender = request.POST['gender']
+            nomad_user.job = request.POST['job']
+            if request.FILES:
+                nomad_user.icon = request.FILES['icon']
+            nomad_user.save()
+        else:
+            return render_to_response('edit.html',
+                                      {'user_form': user_form, 'username': request.user.username,
+                                       'err_message': "error", 'edit': True},
+                                      context_instance=RequestContext(request))
+    return redirect('/')
+
+@login_required(login_url='/')
+def mypage(request):
+    return render_to_response('mypage.html', {'username': request.user.username},
+                              context_instance=RequestContext(request))
 
 
 def save_recommend(request):
@@ -148,6 +203,7 @@ def save_recommend(request):
     request.user.save()
     return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'], request.user.point, place.total_point))
 
+
 def add_point(request):
     if not request.user.can_check_in(request.GET['place_id']):
         return HttpResponse("{0},{1}".format(request.user.point, "同じ場所では一日一回までです。"))
@@ -160,6 +216,7 @@ def add_point(request):
     check_in_history.place = place
     check_in_history.save()
     return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
+
 
 def get_place_picture_list(places):
     place_picture__list = []
@@ -180,6 +237,7 @@ def get_zoom_level(lat_east, lat_west):
         n *= 2
         zoom_level -= 1
     return zoom_level
+
 
 def connect_geocode_api(address):
     url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
