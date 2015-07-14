@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-# Create your models here.
+
 class NomadUser(AbstractUser):
     GENDER_CHOICES = (
         ('M', '男'),
@@ -17,7 +17,7 @@ class NomadUser(AbstractUser):
 
     nickname = models.CharField(max_length=40,  null=True, blank=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
-    age = models.IntegerField(null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(7), MaxValueValidator(100)])
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], default=0)
     icon = models.ImageField(upload_to='icons/', default='icons/no_image.png')
@@ -84,6 +84,7 @@ class Place(models.Model):
         else:
             return ["/media/no_image.png"]
 
+
 class Picture(models.Model):
     def __str__(self):
         return self.data.url + '({0})'.format(self.place.name)
@@ -99,11 +100,13 @@ class Tool(models.Model):
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
 
+
 class Equipment(models.Model):
     def __str__(self):
         return self.place.name + "({0})".format(self.tool.jp_title)
     place = models.ForeignKey(Place)
     tool = models.ForeignKey(Tool)
+
 
 class Mood(models.Model):
     def __str__(self):
@@ -111,11 +114,13 @@ class Mood(models.Model):
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
 
+
 class Preference(models.Model):
     def __str__(self):
         return self.nomad.username + "({0})".format(self.mood.jp_title)
     nomad = models.ForeignKey(NomadUser)
     mood = models.ForeignKey(Mood)
+
 
 class PlacePoint(models.Model):
     def __str__(self):
@@ -123,6 +128,7 @@ class PlacePoint(models.Model):
     place = models.ForeignKey(Place, related_name="related_place_point")
     mood = models.ForeignKey(Mood, null=True, blank=True)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], null=True, blank=True, default=0)
+
 
 class CheckInHistory(models.Model):
     def __str__(self):

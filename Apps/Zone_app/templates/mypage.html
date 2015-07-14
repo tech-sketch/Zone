@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}CreateUser{% endblock title %}
+{% block content %}
+
+<h2>My page {{username}} </h2>
+<a href="{% url 'edit' %}">個人設定</a><br>
+閲覧履歴(開発中)<br>
+チェックイン履歴(開発中)<br>
+レコメンド画面の表示・非表示(開発中)<br>
+{% endblock content %}

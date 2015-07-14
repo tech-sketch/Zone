@@ -45,7 +45,8 @@
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
             {% if user.icon %}
-            <li><img src="{{ user.icon.url }}" width="45" height="45" alt={{ user.username }}></li>
+            <li><a href="{% url 'mypage' %}"><img src="{{ user.icon.url }}" width="25" height="25" alt={{ user.username }}>
+            My Page</a></li>
             {% else %}
             <li><img src="/media/no_image.png" width="45" height="45" alt="{{ user.username }}"></li>
             {%  endif %}
