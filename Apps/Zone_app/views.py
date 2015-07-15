@@ -2,10 +2,10 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render
 from .models import *
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib import messages
-from django.http import HttpResponse
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from .forms import UserForm, MoodForm
 import requests, functools
 from django.db.models import Sum
@@ -118,6 +118,7 @@ def signup(request):
             return render(request, 'signup.html', {'user_form': user_form, 'mood_form': mood_form})
     else:
         return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
+
 
 def save_recommend(request):
     place = Place.objects.get(id=request.POST['place'])

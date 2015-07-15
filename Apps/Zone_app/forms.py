@@ -4,7 +4,6 @@ from django import forms
 from .models import NomadUser, Mood
 
 
-
 class UserForm(ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'required': 'true'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'required': 'true'}))
@@ -15,5 +14,15 @@ class UserForm(ModelForm):
         model = NomadUser
         fields = ('username', 'password', 'email', 'age', 'gender', 'job', 'icon')
 
+    def save(self, commit=True):
+        # Save the provided password in hashed format
+        user = super(UserForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+
+
 class MoodForm(forms.Form):
     moods = forms.ModelMultipleChoiceField(Mood.objects.all(), required=True, widget=forms.CheckboxSelectMultiple(), label='Select Mood')
+
