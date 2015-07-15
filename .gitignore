@@ -10,3 +10,4 @@ my_venv
 __pycache__
 Apps/Zone_app/management/commands/secret.txt
 Apps/Zone_app/management/commands/outputfile.txt
+settings.py

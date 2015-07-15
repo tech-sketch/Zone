@@ -32,13 +32,15 @@ def recommend(request):
     recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
     picture_url = recommend_place.get_pictures_url()[0]
     wifi = recommend_place.get_wifi_list()
-    return render_to_response('detail.html', {'place': recommend_place, 'picture_url': picture_url,
-                                                        "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
+    return render_to_response('detail.html',
+                              {'place': recommend_place, 'picture_url': picture_url,
+                               "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
 
 
 def recommend_form(request):
     moods = Mood.objects.all()
-    return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
+    return render_to_response("recommend_form.html", {"user": request.user, "moods": moods},
+                              context_instance=RequestContext(request))
 
 
 def preference_form(request):
@@ -51,13 +53,15 @@ def preference_form(request):
         searched_places = functools.reduce(lambda a, b: a.filter(id__in=[item['place'] for item in place_points.filter(mood__en_title=b)]),
                                            checked_list, searched_places)
         checked_list = request.POST.getlist('tools[]')
-        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
+        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b),
+                                           checked_list, searched_places)
         places = get_place_picture_list(searched_places)
         places = sorted(places, key=lambda x: x['total_point'], reverse=True)
         return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
     moods = Mood.objects.all()
     tools = Tool.objects.all()
-    return render_to_response('preference_form.html', {'moods': moods, 'tools': tools}, context_instance=RequestContext(request))
+    return render_to_response('preference_form.html', {'moods': moods, 'tools': tools},
+                              context_instance=RequestContext(request))
 
 
 def maps(request):
@@ -112,8 +116,9 @@ def detail(request, place_id):
         messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
     picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
-    return render_to_response('detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
-                                                  "picture_url": picture_url}, context_instance=RequestContext(request))
+    return render_to_response('detail.html',
+                              {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
+                               "picture_url": picture_url}, context_instance=RequestContext(request))
 
 
 def new(request):
@@ -145,9 +150,7 @@ def create(request):
 
     return redirect('/')
 
-"""
-Please fix: edit method is too long
-"""
+
 @login_required(login_url='/')
 def user_edit(request):
     nomad_user = request.user
@@ -176,6 +179,7 @@ def user_edit(request):
                                       context_instance=RequestContext(request))
     return redirect('/')
 
+
 @login_required(login_url='/')
 def mypage(request):
     return render_to_response('mypage.html', {'username': request.user.username},
@@ -201,7 +205,8 @@ def save_recommend(request):
     place.save()
     request.user.point -= int(request.POST['point'])
     request.user.save()
-    return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'], request.user.point, place.total_point))
+    return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'],
+                                                               request.user.point, place.total_point))
 
 
 def add_point(request):
@@ -224,8 +229,9 @@ def get_place_picture_list(places):
         total_point = place.total_point
         picture = place.get_pictures_url()[0]
         wifi = place.get_wifi_list()
-        place_picture__list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
-                           'latitude': place.latitude, 'wifi': ' '.join(wifi), 'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
+        place_picture__list.append({'picture': picture, 'name': place.name, 'address': place.address,
+                                    'longitude': place.longitude, 'latitude': place.latitude, 'wifi': ' '.join(wifi),
+                                    'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
     return place_picture__list
 
 
