@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
-from .forms import UserForm, MoodForm
+from .forms import UserForm, MoodForm, ContactForm
 import requests, functools
 from django.db.models import Sum, Count
 
@@ -18,7 +18,16 @@ DEFAULT_ZOOM_LEVEL = 17
 
 
 def index(request):
-    return render_to_response('index.html', {}, context_instance=RequestContext(request))
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+        else:
+            return render(request, 'index.html', {'contact_form': form})
+    else:
+        return render(request, 'index.html', {'contact_form': ContactForm()})
+
 
 def recommend(request):
     user_preferences = Preference.objects.filter(nomad=request.user).values('mood')
