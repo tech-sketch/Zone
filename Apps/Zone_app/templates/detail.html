@@ -37,9 +37,9 @@
     </div>
 </div>
 <div style="clear:both;"></div>
-{% for message in messages %}
+{% if not user.is_authenticated %}
 <script type="text/javascript">
         $('.modal-footer').children().attr('disabled', true);
-        $('.modal-footer').prepend('<p style="font-size:10pt; color: red; float: left; ">{{ message }}</p>');
+        $('.modal-footer').prepend('<p style="font-size:10pt; color: red; float: left; ">チェックイン・おすすめ機能を使うにはログインが必要です。</p>');
 </script>
-{% endfor %}
+{% endif %}

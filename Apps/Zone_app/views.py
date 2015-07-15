@@ -7,7 +7,6 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from .forms import UserForm, MoodForm, ContactForm
-from .forms import UserForm, ContactForm
 import requests, functools
 from django.db.models import Sum
 
@@ -103,12 +102,6 @@ def search(request):
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
-    if not request.user.is_authenticated():
-        # メッセージの削除
-        storage = messages.get_messages(request)
-        if len(storage):
-            del storage._loaded_messages[0]
-        messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
     picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
     return render_to_response('detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
