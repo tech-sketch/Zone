@@ -1,11 +1,12 @@
 
 from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from .models import *
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse
-from .forms import UserForm
+from django.core.urlresolvers import reverse
+from .forms import UserForm, MoodForm
 import requests, functools
 from django.db.models import Sum, Count
 
@@ -83,12 +84,19 @@ def search(request):
     else:
         pass
     all_place = all_place.filter(name__icontains=place_name)
+    print(place_name)
     places = get_place_picture_list(all_place)
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     moods = Mood.objects.all()
     return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address,
                                            'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
                               context_instance=RequestContext(request))
+
+
+def search_place(request):
+    if request.method == 'GET':
+        return render(request, 'index', {})
+
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
@@ -103,24 +111,21 @@ def detail(request, place_id):
     return render_to_response('detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
                                                   "picture_url": picture_url}, context_instance=RequestContext(request))
 
-def new(request):
-    user_form = UserForm()
-    moods = Mood.objects.all()
-    return render_to_response('new.html', {'user_form': user_form, 'moods': moods}, context_instance=RequestContext(request))
 
-def create(request):
-    nomad_user = UserForm(request.POST)
-    new_nomad_user = nomad_user.save()
-    new_nomad_user.set_password(new_nomad_user.password)
-    new_nomad_user.save()
+def signup(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        mood_form = MoodForm(request.POST)
+        if user_form.is_valid() and mood_form.is_valid():
+            user = user_form.save()
+            for mood in mood_form.cleaned_data['moods']:
+                Preference(nomad=user, mood=mood).save()
+            return redirect(reverse('index'))
+        else:
+            return render(request, 'signup.html', {'user_form': user_form, 'mood_form': mood_form})
+    else:
+        return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
 
-    for mood in Mood.objects.all():
-        if mood.en_title in request.POST:
-            preference = Preference()
-            preference.nomad = new_nomad_user
-            preference.mood = mood
-            preference.save()
-    return redirect('/')
 
 def save_recommend(request):
     place = Place.objects.get(id=request.POST['place'])
