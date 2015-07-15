@@ -130,3 +130,13 @@ class CheckInHistory(models.Model):
     nomad = models.ForeignKey(NomadUser)
     place = models.ForeignKey(Place)
     create_at = models.DateTimeField(default=datetime.now)
+
+
+class Contact(models.Model):
+
+    def __str__(self):
+        return 'By {name}: {message}'.format(name=self.name, message=self.message)
+
+    name = models.CharField(max_length=40, blank=False)
+    email = models.EmailField(blank=False)
+    message = models.TextField(blank=False)
