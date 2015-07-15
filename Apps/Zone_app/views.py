@@ -71,7 +71,8 @@ def maps(request):
     moods = Mood.objects.all()
     places = get_place_picture_list(Place.objects.all())
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    return render_to_response('map.html', {'places': places, 'moods': moods, 'zoom_level': zoom_level},
+    return render_to_response('map.html',
+                              {'places': places, 'moods': moods, 'zoom_level': zoom_level},
                               context_instance=RequestContext(request))
 
 
@@ -105,7 +106,7 @@ def search(request):
                                            'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
                               context_instance=RequestContext(request))
 
-
+# 履歴はここ
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
     if not request.user.is_authenticated():
@@ -182,8 +183,20 @@ def user_edit(request):
 
 @login_required(login_url='/')
 def mypage(request):
-    return render_to_response('mypage.html', {'username': request.user.username},
+    check_in_historys = CheckInHistory.objects.filter(nomad_id=request.user.id)
+    check_in_historys = check_in_historys.order_by('create_at')
+    #place_list = [Place.objects.get(id=check_in_history.place_id) for check_in_history in check_in_historys]
+
+    return render_to_response('mypage.html', {'username': request.user.username,
+                                              'check_in_historys': check_in_historys},
                               context_instance=RequestContext(request))
+
+
+def display_recommend(request):
+    nomad_user = NomadUser.objects.get(id=request.user.id)
+    nomad_user.display_recommend = not nomad_user.display_recommend
+    nomad_user.save()
+    return redirect('/mypage')
 
 
 def save_recommend(request):

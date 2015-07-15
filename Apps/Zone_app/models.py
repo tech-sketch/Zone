@@ -21,6 +21,7 @@ class NomadUser(AbstractUser):
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], default=0)
     icon = models.ImageField(upload_to='icons/', default='icons/no_image.png')
+    display_recommend = models.BooleanField(default=True)
 
     def can_check_in(self, place_id):
         check_in_historys = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),

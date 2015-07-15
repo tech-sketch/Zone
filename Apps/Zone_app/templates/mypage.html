@@ -5,6 +5,22 @@
 <h2>My page {{username}} </h2>
 <a href="{% url 'edit' %}">個人設定</a><br>
 閲覧履歴(開発中)<br>
-チェックイン履歴(開発中)<br>
-レコメンド画面の表示・非表示(開発中)<br>
+チェックイン履歴<br>
+
+<table width="50%" style="table-layout: auto;" border="1">
+<td>店舗名</td><td>チェックイン日</td>
+{% for check_in in check_in_historys %}
+    <tr>
+        <td>{{check_in.place.name}}</td>
+        <td>{{check_in.create_at}}</td>
+    </tr>
+{% endfor %}
+</table>
+<br>
+<a href="{% url 'display_recommend' %}">レコメンド画面の表示・非表示</a><br>
+{% if user.display_recommend %}
+表示中
+{% else %}
+非表示
+{% endif %}
 {% endblock content %}

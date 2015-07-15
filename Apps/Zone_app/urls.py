@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^create/$', views.create, name='create'),
     url(r'^edit/$', views.user_edit, name='edit'),
     url(r'^mypage/$', views.mypage, name='mypage'),
+    url(r'^mypage/recommend_switch$', views.display_recommend, name='display_recommend'),
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'index.html'}, name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
     url(r'^detail/(?P<place_id>[0-9]+)$', views.detail, name='detail'),
