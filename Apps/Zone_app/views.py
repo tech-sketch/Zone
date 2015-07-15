@@ -84,18 +84,12 @@ def search(request):
     else:
         pass
     all_place = all_place.filter(name__icontains=place_name)
-    print(place_name)
     places = get_place_picture_list(all_place)
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     moods = Mood.objects.all()
     return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address,
                                            'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
                               context_instance=RequestContext(request))
-
-
-def search_place(request):
-    if request.method == 'GET':
-        return render(request, 'index', {})
 
 
 def detail(request, place_id):
