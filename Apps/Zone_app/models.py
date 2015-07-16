@@ -89,7 +89,8 @@ class Place(models.Model):
         picture = self.get_pictures_url()[0]
         wifi = self.get_wifi_list()
         return {'picture': picture, 'name': self.name, 'address': self.address, 'longitude': self.longitude,
-                 'latitude': self.latitude, 'wifi': ' '.join(wifi), 'outlet': self.has_tool('outlet'), 'id': self.id, 'total_point': self.total_point}
+                'latitude': self.latitude, 'wifi': ' '.join(wifi), 'outlet': self.has_tool('outlet'),
+                'id': self.id, 'total_point': self.total_point}
 
 
 class Picture(models.Model):

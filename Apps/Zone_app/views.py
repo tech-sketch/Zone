@@ -136,7 +136,6 @@ def detail(request, place_id):
                                "picture_url": picture_url}, context_instance=RequestContext(request))
 
 
-
 def signup(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST)
@@ -150,7 +149,6 @@ def signup(request):
             return render(request, 'signup.html', {'user_form': user_form, 'mood_form': mood_form})
     else:
         return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
-
 
 
 @login_required(login_url='/')
@@ -236,7 +234,6 @@ def add_point(request):
 
 def get_place_picture_list(places):
     return [place.get_dict() for place in places]
-
 
 
 def get_zoom_level(lat_east, lat_west):
