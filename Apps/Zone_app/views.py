@@ -1,9 +1,20 @@
 
 from django.template import RequestContext
+from django.shortcuts import render_to_response, render
+from .models import *
+from django.shortcuts import redirect, render
+
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
+
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+
+from .forms import UserForm, MoodForm, ContactForm
+import requests, functools
+from django.db.models import Sum
+
 from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
 
@@ -22,7 +33,15 @@ DEFAULT_ZOOM_LEVEL = 17
 
 
 def index(request):
-    return render_to_response('index.html', {}, context_instance=RequestContext(request))
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+        else:
+            return render(request, 'index.html', {'contact_form': form})
+    else:
+        return render(request, 'index.html', {'contact_form': ContactForm()})
 
 
 def recommend(request):
@@ -109,12 +128,6 @@ def search(request):
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
-    if not request.user.is_authenticated():
-        # メッセージの削除
-        storage = messages.get_messages(request)
-        if len(storage):
-            del storage._loaded_messages[0]
-        messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
 
     picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
@@ -123,29 +136,21 @@ def detail(request, place_id):
                                "picture_url": picture_url}, context_instance=RequestContext(request))
 
 
-def new(request):
-    user_form = UserForm()
-    moods = Mood.objects.all()
-    return render_to_response('new.html', {'user_form': user_form, 'moods': moods},
-                              context_instance=RequestContext(request))
 
+def signup(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        mood_form = MoodForm(request.POST)
+        if user_form.is_valid() and mood_form.is_valid():
+            user = user_form.save()
+            for mood in mood_form.cleaned_data['moods']:
+                Preference(nomad=user, mood=mood).save()
+            return redirect(reverse('index'))
+        else:
+            return render(request, 'signup.html', {'user_form': user_form, 'mood_form': mood_form})
+    else:
+        return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
 
-def create(request):
-
-    nomad_user = UserForm(request.POST, request.FILES)
-
-    if nomad_user.is_valid():
-        new_nomad_user = nomad_user.save()
-        new_nomad_user.set_password(new_nomad_user.password)
-        new_nomad_user.save()
-        for mood in Mood.objects.all():
-            if mood.en_title in request.POST:
-                preference = Preference()
-                preference.nomad = new_nomad_user
-                preference.mood = mood
-                preference.save()
-
-    return redirect('/')
 
 
 @login_required(login_url='/')
@@ -230,15 +235,8 @@ def add_point(request):
 
 
 def get_place_picture_list(places):
-    place_picture__list = []
-    for place in places:
-        total_point = place.total_point
-        picture = place.get_pictures_url()[0]
-        wifi = place.get_wifi_list()
-        place_picture__list.append({'picture': picture, 'name': place.name, 'address': place.address,
-                                    'longitude': place.longitude, 'latitude': place.latitude, 'wifi': ' '.join(wifi),
-                                    'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
-    return place_picture__list
+    return [place.get_dict() for place in places]
+
 
 
 def get_zoom_level(lat_east, lat_west):

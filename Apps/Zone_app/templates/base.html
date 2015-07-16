@@ -63,7 +63,7 @@
             <li><a href="{% url 'logout' %}">ログアウト</a></li>
 
             {% else %}
-                <li><a href="{% url 'new' %}">Sing up</a></li>
+                <li><a href="{% url 'signup' %}">Sing up</a></li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
                     <ul id="login-dp" class="dropdown-menu">
@@ -98,7 +98,7 @@
                                          </form>
                                     </div>
                                     <div class="bottom text-center">
-                                        New here ? <a href="{% url 'new' %}"><b>Join Us</b></a>
+                                        New here ? <a href="{% url 'signup' %}"><b>Join Us</b></a>
                             </div>
                         </div>
                     </li>
