@@ -156,15 +156,9 @@ def add_point(request):
     check_in_history.save()
     return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
 
+
 def get_place_picture_list(places):
-    place_picture__list = []
-    for place in places:
-        total_point = place.total_point
-        picture = place.get_pictures_url()[0]
-        wifi = place.get_wifi_list()
-        place_picture__list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
-                           'latitude': place.latitude, 'wifi': ' '.join(wifi), 'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
-    return place_picture__list
+    return [place.get_dict() for place in places]
 
 
 def get_zoom_level(lat_east, lat_west):
