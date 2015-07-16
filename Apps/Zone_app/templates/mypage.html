@@ -2,11 +2,17 @@
 {% block title %}CreateUser{% endblock title %}
 {% block content %}
 
-<h2>My page {{username}} </h2>
-<a href="{% url 'edit' %}">個人設定</a><br>
-閲覧履歴(開発中)<br>
-チェックイン履歴<br>
+<h1>My page {{username}} </h1>
 
+<br>
+
+<h3><a href="{% url 'edit' %}">個人設定</a></h3><br>
+
+<h3>閲覧履歴(開発中)</h3>
+
+<br>
+
+<h3>チェックイン履歴</h3>
 <table width="50%" style="table-layout: auto;" border="1">
 <td>店舗名</td><td>チェックイン日</td>
 {% for check_in in check_in_historys %}
@@ -16,7 +22,9 @@
     </tr>
 {% endfor %}
 </table>
+
 <br>
+<h3>レコメンド表示</h3>
 <button type="button" onclick="location.href='{% url 'display_recommend' %}'">
     レコメンド：
     {% if user.display_recommend %}
