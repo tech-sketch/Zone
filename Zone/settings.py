@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'Zone',
         'USER': 'postgres',
-        'PASSWORD': '',
+        'PASSWORD': '17suraimuAAA',
     }
 }
 
