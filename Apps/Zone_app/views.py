@@ -1,19 +1,15 @@
-
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render
 from .models import *
 from django.shortcuts import redirect, render
-from django.contrib import messages
+
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from .forms import UserForm, MoodForm, ContactForm
 import requests, functools
 from django.db.models import Sum
+from .utils import GoogleMapAPI
 
-# Create your views here.
-LAT_FROM_CEN = 0.002265
-LNG_FROM_CEN = 0.00439
-DEFAULT_LAT_SIZE = 0.002697960583020631
 DEFAULT_ZOOM_LEVEL = 17
 
 
@@ -69,35 +65,21 @@ def maps(request):
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     return render_to_response('map.html', {'places': places, 'moods': moods, 'zoom_level': zoom_level},
                                                 context_instance=RequestContext(request))
+
+
 def search(request):
-    location = {}
-    if 'zoom_level' in request.POST:
-        zoom_level = int(request.POST['zoom_level'])
-    else:
-        zoom_level = DEFAULT_ZOOM_LEVEL
-    all_place = Place.objects.all()
     address = request.POST['address']
     place_name = request.POST['place_name']
-    result = connect_geocode_api(address)
-    if result['status'] == 'OK':
-        location = result['results'][0]['geometry']['location']
-        northeast = result['results'][0]['geometry']['viewport']['northeast']
-        southwest = result['results'][0]['geometry']['viewport']['southwest']
-        zoom_level = get_zoom_level(northeast['lat'], southwest['lat'])
-        rate = pow(2, (DEFAULT_ZOOM_LEVEL - zoom_level))
-        all_place = all_place.filter(longitude__gt=location['lng']-rate*LNG_FROM_CEN,
-                                     longitude__lt=location['lng']+rate*LNG_FROM_CEN,
-                                     latitude__gt=location['lat']-rate*LAT_FROM_CEN,
-                                     latitude__lt=location['lat']+rate*LAT_FROM_CEN)
-    else:
-        pass
-    all_place = all_place.filter(name__icontains=place_name)
-    places = get_place_picture_list(all_place)
-    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
+    places = Place.objects.all().filter(name__icontains=place_name)
+    map_api = GoogleMapAPI()
+    map_api.fetch_detail(address)
+    if map_api.is_valid():
+        places = map_api.filter_suitable_places(places)
+    places = get_place_picture_list(places)
+    places =sorted(places, key=lambda x: x['total_point'], reverse=True)
     moods = Mood.objects.all()
-    return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address,
-                                           'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
-                              context_instance=RequestContext(request))
+    return render(request, 'map.html', {'places': places, 'moods': moods, 'address': address,
+                                        'place_name': place_name, 'location': map_api.get_location(), 'zoom_level': map_api.get_zoom_level()})
 
 
 def detail(request, place_id):
@@ -159,17 +141,3 @@ def add_point(request):
 
 def get_place_picture_list(places):
     return [place.get_dict() for place in places]
-
-
-def get_zoom_level(lat_east, lat_west):
-    rate = round((lat_east-lat_west)/(DEFAULT_LAT_SIZE/16), 0)
-    zoom_level = 21
-    n = 2
-    while rate >= n:
-        n *= 2
-        zoom_level -= 1
-    return zoom_level
-
-def connect_geocode_api(address):
-    url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
-    return requests.get(url).json()
