@@ -4,11 +4,11 @@ from django import forms
 from .models import NomadUser, Mood, Contact
 
 
-
 class UserForm(ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'required': 'true'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'required': 'true'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'required': 'true', 'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'required': 'true',
+                                                            'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
     age = forms.IntegerField(widget=forms.NumberInput(attrs={'min': 7, 'max': 99}))
 
     class Meta:
@@ -25,13 +25,28 @@ class UserForm(ModelForm):
 
 
 class MoodForm(forms.Form):
-    moods = forms.ModelMultipleChoiceField(Mood.objects.all(), required=True, widget=forms.CheckboxSelectMultiple(), label='Select Mood')
+    moods = forms.ModelMultipleChoiceField(Mood.objects.all(), required=True, widget=forms.CheckboxSelectMultiple(),
+                                           label='Select Mood')
+
 
 class ContactForm(ModelForm):
-    name = forms.CharField(widget=forms.TextInput(attrs={'required': 'true', 'placeholder': 'Name', 'class': 'form-control'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'required': 'true', 'placeholder': 'Email',  'class': 'form-control', 'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
-    message = forms.CharField(widget=forms.Textarea(attrs={'required': 'true', 'placeholder': 'Message', 'class': 'form-control'}))
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={'required': 'true', 'placeholder': 'Name', 'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.EmailInput(
+        attrs={'required': 'true', 'placeholder': 'Email', 'class': 'form-control',
+               'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
+    message = forms.CharField(
+        widget=forms.Textarea(attrs={'required': 'true', 'placeholder': 'Message', 'class': 'form-control'}))
 
     class Meta:
         model = Contact
         fields = ('name', 'email', 'message')
+
+
+class UserEditForm(ModelForm):
+    email = forms.EmailField(widget=forms.EmailInput(
+        attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
+
+    class Meta:
+        model = NomadUser
+        fields = ('email', 'age', 'gender', 'job', 'icon')

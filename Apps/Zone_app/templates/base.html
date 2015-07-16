@@ -10,6 +10,8 @@
     <link href="{% static 'top/css/font-awesome.min.css' %}" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
+
+
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootbox.min.js' %}"></script>
@@ -18,6 +20,7 @@
     </script>
     <script src="{% static 'js/CSRF.js' %}"></script>
     <script src="{% static 'js/search.js'%}"></script>
+
     {% block extrahead %}{% endblock %}
 </head>
 <body>
@@ -44,14 +47,21 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-            {% if user.icon %}
-            <li><img src="{{ user.icon.url }}" width="45" height="45" alt={{ user.username }}></li>
-            {% else %}
-            <li><img src="/media/no_image.png" width="45" height="45" alt="{{ user.username }}"></li>
-            {%  endif %}
-            <li><p class="navbar-text">{{ user.username }}</p></li>
+
             <li><p class="navbar-text" id="user_point">現在のpoint:{{ user.point }}</p></li>
+            <li>
+            <a href="{% url 'mypage' %}">
+            {% if user.icon %}
+            <img src="{{ user.icon.url }}" width="35" height="35" alt={{ user.username }}  hspace="0" vspace="0" style="margin:-5pt -10pt -10pt -10pt;">
+            {% else %}
+            <img src="/media/no_image.png" width="35" height="35" alt="{{ user.username }}" hspace="0" vspace="0" style="margin:-5pt -10pt -10pt -10pt;">
+            {%  endif %}
+            </a>
+
+            </li>
+            <li><a href="{% url 'mypage' %}">{{ user.username }}</a></li>
             <li><a href="{% url 'logout' %}">ログアウト</a></li>
+
             {% else %}
                 <li><a href="{% url 'signup' %}">Sing up</a></li>
                 <li class="dropdown">

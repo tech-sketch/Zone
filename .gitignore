@@ -1,8 +1,10 @@
 .idea
 Data/media/*.jpg
 Data/media/*.png
+Data/media/icons//*
 !Data/media/loading.gif
 !Data/media/no_image.png
+!Data/media/icons/no_image.png
 Data/*.csv
 Apps/Zone_app/migrations/*.py
 !Apps/Zone_app/migrations/__init__.py
@@ -10,3 +12,4 @@ my_venv
 __pycache__
 Apps/Zone_app/management/commands/secret.txt
 Apps/Zone_app/management/commands/outputfile.txt
+Zone/settings.py

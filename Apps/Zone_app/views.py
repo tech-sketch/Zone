@@ -3,12 +3,27 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, render
 from .models import *
 from django.shortcuts import redirect, render
+
+from django.shortcuts import render_to_response
+from django.shortcuts import redirect
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+
 from .forms import UserForm, MoodForm, ContactForm
 import requests, functools
 from django.db.models import Sum
+
+from django.db.models import Sum, Count
+from django.contrib.auth.decorators import login_required
+
+from .forms import UserForm, UserEditForm
+from .models import *
+
+import requests
+import functools
+
 
 # Create your views here.
 LAT_FROM_CEN = 0.002265
@@ -28,6 +43,7 @@ def index(request):
     else:
         return render(request, 'index.html', {'contact_form': ContactForm()})
 
+
 def recommend(request):
     user_preferences = Preference.objects.filter(nomad=request.user).values('mood')
     place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
@@ -35,12 +51,16 @@ def recommend(request):
     recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
     picture_url = recommend_place.get_pictures_url()[0]
     wifi = recommend_place.get_wifi_list()
-    return render_to_response('detail.html', {'place': recommend_place, 'picture_url': picture_url,
-                                                        "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
+    return render_to_response('detail.html',
+                              {'place': recommend_place, 'picture_url': picture_url,
+                               "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
+
 
 def recommend_form(request):
     moods = Mood.objects.all()
-    return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
+    return render_to_response("recommend_form.html", {"user": request.user, "moods": moods},
+                              context_instance=RequestContext(request))
+
 
 def preference_form(request):
     if request.method == 'POST':
@@ -52,13 +72,16 @@ def preference_form(request):
         searched_places = functools.reduce(lambda a, b: a.filter(id__in=[item['place'] for item in place_points.filter(mood__en_title=b)]),
                                            checked_list, searched_places)
         checked_list = request.POST.getlist('tools[]')
-        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
+        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b),
+                                           checked_list, searched_places)
         places = get_place_picture_list(searched_places)
         places = sorted(places, key=lambda x: x['total_point'], reverse=True)
         return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
     moods = Mood.objects.all()
     tools = Tool.objects.all()
-    return render_to_response('preference_form.html', {'moods': moods, 'tools': tools}, context_instance=RequestContext(request))
+    return render_to_response('preference_form.html', {'moods': moods, 'tools': tools},
+                              context_instance=RequestContext(request))
+
 
 def maps(request):
     if request.POST:
@@ -67,8 +90,11 @@ def maps(request):
     moods = Mood.objects.all()
     places = get_place_picture_list(Place.objects.all())
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    return render_to_response('map.html', {'places': places, 'moods': moods, 'zoom_level': zoom_level},
-                                                context_instance=RequestContext(request))
+    return render_to_response('map.html',
+                              {'places': places, 'moods': moods, 'zoom_level': zoom_level},
+                              context_instance=RequestContext(request))
+
+
 def search(request):
     location = {}
     if 'zoom_level' in request.POST:
@@ -102,10 +128,14 @@ def search(request):
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
+
     picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
-    return render_to_response('detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
-                                                  "picture_url": picture_url}, context_instance=RequestContext(request))
+    return render_to_response('detail.html',
+                              {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
+                               "picture_url": picture_url}, context_instance=RequestContext(request))
+
+
 
 def signup(request):
     if request.method == 'POST':
@@ -120,6 +150,51 @@ def signup(request):
             return render(request, 'signup.html', {'user_form': user_form, 'mood_form': mood_form})
     else:
         return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
+
+
+
+@login_required(login_url='/')
+def user_edit(request):
+    nomad_user = request.user
+
+    if request.method == 'GET':
+        user_form = UserEditForm(initial={'email': nomad_user.email, 'age': nomad_user.age,
+                                          'gender': nomad_user.gender, 'job': nomad_user.job})
+        return render_to_response('edit.html', {'user_form': user_form},
+                                  context_instance=RequestContext(request))
+    elif request.method == 'POST':
+        nomad_user = NomadUser.objects.get(id=request.user.id)
+        user_form = UserEditForm(request.POST, request.FILES)
+
+        if user_form.is_valid():
+            nomad_user.email = request.POST['email']
+            nomad_user.age = request.POST['age']
+            nomad_user.gender = request.POST['gender']
+            nomad_user.job = request.POST['job']
+            if request.FILES:
+                nomad_user.icon = request.FILES['icon']
+            nomad_user.save()
+        else:
+            return render_to_response('edit.html', {'user_form': user_form},
+                                      context_instance=RequestContext(request))
+    return redirect('/')
+
+
+@login_required(login_url='/')
+def mypage(request):
+    check_in_historys = CheckInHistory.objects.filter(nomad_id=request.user.id)
+    check_in_historys = check_in_historys.order_by('create_at')
+
+    return render_to_response('mypage.html', {'check_in_historys': check_in_historys},
+                              context_instance=RequestContext(request))
+
+
+@login_required(login_url='/')
+def display_recommend(request):
+    nomad_user = NomadUser.objects.get(id=request.user.id)
+    nomad_user.display_recommend = not nomad_user.display_recommend
+    nomad_user.save()
+    return redirect('/mypage')
 
 
 def save_recommend(request):
@@ -141,7 +216,9 @@ def save_recommend(request):
     place.save()
     request.user.point -= int(request.POST['point'])
     request.user.save()
-    return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'], request.user.point, place.total_point))
+    return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'],
+                                                               request.user.point, place.total_point))
+
 
 def add_point(request):
     if not request.user.can_check_in(request.GET['place_id']):
@@ -161,6 +238,7 @@ def get_place_picture_list(places):
     return [place.get_dict() for place in places]
 
 
+
 def get_zoom_level(lat_east, lat_west):
     rate = round((lat_east-lat_west)/(DEFAULT_LAT_SIZE/16), 0)
     zoom_level = 21
@@ -169,6 +247,7 @@ def get_zoom_level(lat_east, lat_west):
         n *= 2
         zoom_level -= 1
     return zoom_level
+
 
 def connect_geocode_api(address):
     url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
