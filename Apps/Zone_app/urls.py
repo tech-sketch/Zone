@@ -23,4 +23,3 @@ urlpatterns = [
     url(r'^preference_form/$', views.preference_form, name='preference_form'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

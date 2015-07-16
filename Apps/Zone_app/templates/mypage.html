@@ -17,10 +17,14 @@
 {% endfor %}
 </table>
 <br>
-<a href="{% url 'display_recommend' %}">レコメンド画面の表示・非表示</a><br>
-{% if user.display_recommend %}
-表示中
-{% else %}
-非表示
-{% endif %}
+<button type="button" onclick="location.href='{% url 'display_recommend' %}'">
+    レコメンド：
+    {% if user.display_recommend %}
+    表示中
+    {% else %}
+    非表示
+    {% endif %}
+
+</button>
+
 {% endblock content %}

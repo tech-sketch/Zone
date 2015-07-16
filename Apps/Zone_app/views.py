@@ -106,7 +106,7 @@ def search(request):
                                            'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
                               context_instance=RequestContext(request))
 
-# 履歴はここ
+
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
     if not request.user.is_authenticated():
@@ -115,6 +115,7 @@ def detail(request, place_id):
         if len(storage):
             del storage._loaded_messages[0]
         messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
+
     picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
     return render_to_response('detail.html',
@@ -185,7 +186,6 @@ def user_edit(request):
 def mypage(request):
     check_in_historys = CheckInHistory.objects.filter(nomad_id=request.user.id)
     check_in_historys = check_in_historys.order_by('create_at')
-    #place_list = [Place.objects.get(id=check_in_history.place_id) for check_in_history in check_in_historys]
 
     return render_to_response('mypage.html', {'username': request.user.username,
                                               'check_in_historys': check_in_historys},

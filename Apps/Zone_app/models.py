@@ -25,10 +25,10 @@ class NomadUser(AbstractUser):
 
     def can_check_in(self, place_id):
         check_in_historys = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
-                                                      create_at__month=datetime.now().strftime("%m"),
-                                                      create_at__year=datetime.now().strftime("%Y"),
-                                                      nomad_id=self.id,
-                                                      place_id=place_id)
+                                                          create_at__month=datetime.now().strftime("%m"),
+                                                          create_at__year=datetime.now().strftime("%Y"),
+                                                          nomad_id=self.id,
+                                                          place_id=place_id)
         return len(check_in_historys) == 0
 
     def __unicode__(self):
@@ -128,7 +128,8 @@ class PlacePoint(models.Model):
         return self.place.name + ':{0}({1}point)'.format(self.mood.jp_title, self.point)
     place = models.ForeignKey(Place, related_name="related_place_point")
     mood = models.ForeignKey(Mood, null=True, blank=True)
-    point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], null=True, blank=True, default=0)
+    point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)],
+                                null=True, blank=True, default=0)
 
 
 class CheckInHistory(models.Model):
