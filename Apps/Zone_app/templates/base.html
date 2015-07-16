@@ -13,7 +13,6 @@
 
 
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
-    <script src="./bootstrap-dropdown.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootbox.min.js' %}"></script>
     <script type="text/javascript"
@@ -55,7 +54,7 @@
             {% if user.icon %}
             <img src="{{ user.icon.url }}" width="35" height="35" alt={{ user.username }}  hspace="0" vspace="0" style="margin:-5pt -10pt -10pt -10pt;">
             {% else %}
-            <img src="/media/no_image.png" width="45" height="45" alt="{{ user.username }}" align="left">
+            <img src="/media/no_image.png" width="35" height="35" alt="{{ user.username }}" hspace="0" vspace="0" style="margin:-5pt -10pt -10pt -10pt;">
             {%  endif %}
             </a>
 

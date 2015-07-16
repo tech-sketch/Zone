@@ -2,11 +2,8 @@
 {% block title %}CreateUser{% endblock title %}
 {% block content %}
 
-{% if err_message %}
-{{ err_message }}
-{% endif %}
 
-<h4>Edit {{username}} profile</h4>
+<h4>Edit {{user.username}} profile</h4>
 <form action="{% url 'edit' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
     {{ user_form.as_p }}
     <input type="submit" value="Submit"/>

@@ -145,11 +145,6 @@ def create(request):
                 preference.mood = mood
                 preference.save()
 
-    else:
-        return render_to_response('new.html',
-                                  {'user_form': nomad_user, 'moods': Mood.objects.all(), 'err_message': "error"},
-                                  context_instance=RequestContext(request))
-
     return redirect('/')
 
 
@@ -160,7 +155,7 @@ def user_edit(request):
     if request.method == 'GET':
         user_form = UserEditForm(initial={'email': nomad_user.email, 'age': nomad_user.age,
                                           'gender': nomad_user.gender, 'job': nomad_user.job})
-        return render_to_response('edit.html', {'user_form': user_form, 'username': nomad_user.username},
+        return render_to_response('edit.html', {'user_form': user_form},
                                   context_instance=RequestContext(request))
     elif request.method == 'POST':
         nomad_user = NomadUser.objects.get(id=request.user.id)
@@ -175,9 +170,7 @@ def user_edit(request):
                 nomad_user.icon = request.FILES['icon']
             nomad_user.save()
         else:
-            return render_to_response('edit.html',
-                                      {'user_form': user_form, 'username': request.user.username,
-                                       'err_message': "error", 'edit': True},
+            return render_to_response('edit.html', {'user_form': user_form},
                                       context_instance=RequestContext(request))
     return redirect('/')
 
@@ -187,11 +180,11 @@ def mypage(request):
     check_in_historys = CheckInHistory.objects.filter(nomad_id=request.user.id)
     check_in_historys = check_in_historys.order_by('create_at')
 
-    return render_to_response('mypage.html', {'username': request.user.username,
-                                              'check_in_historys': check_in_historys},
+    return render_to_response('mypage.html', {'check_in_historys': check_in_historys},
                               context_instance=RequestContext(request))
 
 
+@login_required(login_url='/')
 def display_recommend(request):
     nomad_user = NomadUser.objects.get(id=request.user.id)
     nomad_user.display_recommend = not nomad_user.display_recommend

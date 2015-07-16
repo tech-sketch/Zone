@@ -24,8 +24,6 @@ function addPoint(){
 function checkSuccessCallback(position){
     var placeX = $("#detail_lng").attr("value");
     var placeY = $("#detail_lat").attr("value");
-    //var placeX = position.coords.longitude;
-    //var placeY = position.coords.latitude;
     var userX = position.coords.longitude;
     var userY = position.coords.latitude;
     if(cal_length(placeX, placeY, userX, userY) < 50){
