@@ -3,8 +3,6 @@ from django.forms import ModelForm
 from django import forms
 from .models import NomadUser, Mood, Contact
 
-
-
 class UserForm(ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'required': 'true'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'required': 'true'}))
