@@ -89,7 +89,8 @@ class Place(models.Model):
         picture = self.get_pictures_url()[0]
         wifi = self.get_wifi_list()
         return {'picture': picture, 'name': self.name, 'address': self.address, 'longitude': self.longitude,
-                 'latitude': self.latitude, 'wifi': ' '.join(wifi), 'outlet': self.has_tool('outlet'), 'id': self.id, 'total_point': self.total_point}
+                'latitude': self.latitude, 'wifi': ' '.join(wifi), 'outlet': self.has_tool('outlet'),
+                'id': self.id, 'total_point': self.total_point}
 
 
 class Picture(models.Model):
@@ -154,3 +155,11 @@ class Contact(models.Model):
     name = models.CharField(max_length=40, blank=False)
     email = models.EmailField(blank=False)
     message = models.TextField(blank=False)
+
+
+class BrowseHistory(models.Model):
+    def __str__(self):
+        return self.create_at.strftime('%Y/%m/%d %H:%M:%S') + ' {0}'.format(self.place.name) + '({0})'.format(self.nomad.username)
+    nomad = models.ForeignKey(NomadUser)
+    place = models.ForeignKey(Place)
+    create_at = models.DateTimeField(default=datetime.now)

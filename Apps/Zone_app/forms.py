@@ -46,6 +46,7 @@ class ContactForm(ModelForm):
 class UserEditForm(ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(
         attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
+    age = forms.IntegerField(widget=forms.NumberInput(attrs={'min': 7, 'max': 99}))
 
     class Meta:
         model = NomadUser
