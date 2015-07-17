@@ -175,11 +175,7 @@ def save_recommend(request):
     place.total_point += int(request.POST['point'])
     for mood_en_title in request.POST.getlist('moods[]'):
         mood = Mood.objects.get(en_title=mood_en_title)
-        place_point = PlacePoint()
-        place_point.place = place
-        place_point.mood = mood
-        place_point.point = int(request.POST['point'])
-        place_point.save()
+        PlacePoint(place=place, mood=mood, point=int(request.POST['point'])).save()
     place.save()
     request.user.point -= int(request.POST['point'])
     request.user.save()
@@ -194,10 +190,7 @@ def add_point(request):
     request.user.point += 10
     request.user.save()
     place = Place.objects.get(id=request.GET['place_id'])
-    check_in_history = CheckInHistory()
-    check_in_history.nomad = request.user
-    check_in_history.place = place
-    check_in_history.save()
+    CheckInHistory(nomad=request.user, place=place).save()
     return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
 
 
