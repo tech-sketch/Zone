@@ -138,9 +138,10 @@ def detail(request, place_id):
 
 def signup(request):
     if request.method == 'POST':
-        user_form = UserForm(request.POST)
+        user_form = UserForm(request.POST, request.FILES)
         mood_form = MoodForm(request.POST)
         if user_form.is_valid() and mood_form.is_valid():
+            print(user_form.cleaned_data)
             user = user_form.save()
             for mood in mood_form.cleaned_data['moods']:
                 Preference(nomad=user, mood=mood).save()
@@ -165,12 +166,12 @@ def user_edit(request):
         user_form = UserEditForm(request.POST, request.FILES)
 
         if user_form.is_valid():
-            nomad_user.email = request.POST['email']
-            nomad_user.age = request.POST['age']
-            nomad_user.gender = request.POST['gender']
-            nomad_user.job = request.POST['job']
+            nomad_user.email = user_form.cleaned_data['email']
+            nomad_user.age = user_form.cleaned_data['age']
+            nomad_user.gender = user_form.cleaned_data['gender']
+            nomad_user.job = user_form.cleaned_data['job']
             if request.FILES:
-                nomad_user.icon = request.FILES['icon']
+                nomad_user.icon = user_form.cleaned_data['icon']
             nomad_user.save()
         else:
             return render_to_response('edit.html', {'user_form': user_form},
