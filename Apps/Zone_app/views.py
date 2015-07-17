@@ -132,8 +132,6 @@ def signup(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST, request.FILES)
         mood_form = MoodForm(request.POST)
-        print(user_form)
-        print(user_form.cleaned_data)
         if user_form.is_valid() and mood_form.is_valid():
             user = user_form.save()
             for mood in mood_form.cleaned_data['moods']:
