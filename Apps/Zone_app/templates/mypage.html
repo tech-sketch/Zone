@@ -9,7 +9,15 @@
 <h3><a href="{% url 'edit' %}">個人設定</a></h3><br>
 
 <h3>閲覧履歴(開発中)</h3>
-
+<table width="50%" style="table-layout: auto;" border="1">
+<td>店舗名</td><td>閲覧日</td>
+{% for browse_history in browse_historys %}
+    <tr>
+        <td>{{browse_history.place.name}}</td>
+        <td>{{browse_history.create_at}}</td>
+    </tr>
+{% endfor %}
+</table>
 <br>
 
 <h3>チェックイン履歴</h3>

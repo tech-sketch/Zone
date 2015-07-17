@@ -155,3 +155,11 @@ class Contact(models.Model):
     name = models.CharField(max_length=40, blank=False)
     email = models.EmailField(blank=False)
     message = models.TextField(blank=False)
+
+
+class BrowseHistory(models.Model):
+    def __str__(self):
+        return self.create_at.strftime('%Y/%m/%d %H:%M:%S') + ' {0}'.format(self.place.name) + '({0})'.format(self.nomad.username)
+    nomad = models.ForeignKey(NomadUser)
+    place = models.ForeignKey(Place)
+    create_at = models.DateTimeField(default=datetime.now)

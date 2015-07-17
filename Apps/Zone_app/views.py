@@ -1,29 +1,16 @@
-
-from django.template import RequestContext
-from django.shortcuts import render_to_response, render
-from .models import *
-from django.shortcuts import redirect, render
-
-from django.shortcuts import render_to_response
-from django.shortcuts import redirect
-
-from django.contrib import messages
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse
-
-from .forms import UserForm, MoodForm, ContactForm
-import requests, functools
-from django.db.models import Sum
-
-from django.db.models import Sum, Count
-from django.contrib.auth.decorators import login_required
-
-from .forms import UserForm, UserEditForm
-from .models import *
-
 import requests
 import functools
 
+from django.template import RequestContext
+from django.shortcuts import render, render_to_response, redirect
+from django.contrib import messages
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse
+from django.db.models import Sum, Count
+from django.contrib.auth.decorators import login_required
+
+from .models import *
+from .forms import UserForm, MoodForm, ContactForm, UserEditForm
 
 # Create your views here.
 LAT_FROM_CEN = 0.002265
@@ -129,6 +116,11 @@ def search(request):
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
 
+    browse_history = BrowseHistory()
+    browse_history.nomad = request.user
+    browse_history.place = place
+    browse_history.save()
+
     picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
     return render_to_response('detail.html',
@@ -184,8 +176,11 @@ def user_edit(request):
 def mypage(request):
     check_in_historys = CheckInHistory.objects.filter(nomad_id=request.user.id)
     check_in_historys = check_in_historys.order_by('create_at')
+    browse_historys = BrowseHistory.objects.filter(nomad_id=request.user.id)
+    browse_historys = browse_historys.order_by('create_at')
 
-    return render_to_response('mypage.html', {'check_in_historys': check_in_historys},
+    return render_to_response('mypage.html',
+                              {'check_in_historys': check_in_historys, 'browse_historys': browse_historys},
                               context_instance=RequestContext(request))
 
 
