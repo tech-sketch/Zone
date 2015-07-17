@@ -173,9 +173,9 @@ def user_edit(request):
 @login_required(login_url='/')
 def mypage(request):
     check_in_historys = CheckInHistory.objects.filter(nomad_id=request.user.id)
-    check_in_historys = check_in_historys.order_by('create_at')
+    check_in_historys = check_in_historys.order_by('-create_at')[:10]
     browse_historys = BrowseHistory.objects.filter(nomad_id=request.user.id)
-    browse_historys = browse_historys.order_by('create_at')
+    browse_historys = browse_historys.order_by('-create_at')[:10]
 
     return render_to_response('mypage.html',
                               {'check_in_historys': check_in_historys, 'browse_historys': browse_historys},
