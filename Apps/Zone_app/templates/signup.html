@@ -2,7 +2,7 @@
 {% block title %}CreateUser{% endblock title %}
 {% block content %}
 
-<form action="{% url 'signup' %}" method="POST">
+<form action="{% url 'signup' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ user_form.as_p }}
     {{ mood_form.as_p }}
