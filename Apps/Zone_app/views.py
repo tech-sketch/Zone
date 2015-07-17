@@ -136,11 +136,12 @@ def detail(request, place_id):
                                "picture_url": picture_url}, context_instance=RequestContext(request))
 
 
-
 def signup(request):
     if request.method == 'POST':
-        user_form = UserForm(request.POST)
+        user_form = UserForm(request.POST, request.FILES)
         mood_form = MoodForm(request.POST)
+        print(user_form)
+        print(user_form.cleaned_data)
         if user_form.is_valid() and mood_form.is_valid():
             user = user_form.save()
             for mood in mood_form.cleaned_data['moods']:
@@ -150,7 +151,6 @@ def signup(request):
             return render(request, 'signup.html', {'user_form': user_form, 'mood_form': mood_form})
     else:
         return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
-
 
 
 @login_required(login_url='/')
@@ -167,12 +167,12 @@ def user_edit(request):
         user_form = UserEditForm(request.POST, request.FILES)
 
         if user_form.is_valid():
-            nomad_user.email = request.POST['email']
-            nomad_user.age = request.POST['age']
-            nomad_user.gender = request.POST['gender']
-            nomad_user.job = request.POST['job']
+            nomad_user.email = user_form.cleaned_data['email']
+            nomad_user.age = user_form.cleaned_data['age']
+            nomad_user.gender = user_form.cleaned_data['gender']
+            nomad_user.job = user_form.cleaned_data['job']
             if request.FILES:
-                nomad_user.icon = request.FILES['icon']
+                nomad_user.icon = user_form.cleaned_data['icon']
             nomad_user.save()
         else:
             return render_to_response('edit.html', {'user_form': user_form},
@@ -236,7 +236,6 @@ def add_point(request):
 
 def get_place_picture_list(places):
     return [place.get_dict() for place in places]
-
 
 
 def get_zoom_level(lat_east, lat_west):

@@ -1,10 +1,10 @@
 .idea
-Data/media/*.jpg
-Data/media/*.png
-Data/media/icons//*
+Data/media/*
+!Data/media/icons
+Data/media/icons/*
 !Data/media/loading.gif
 !Data/media/no_image.png
-!Data/media/icons/no_image.png
+!Data/media/.gitignore
 Data/*.csv
 Apps/Zone_app/migrations/*.py
 !Apps/Zone_app/migrations/__init__.py
