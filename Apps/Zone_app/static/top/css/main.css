@@ -214,7 +214,7 @@ a:before, a:after {
 
 #headerwrap {
 	background: url(../img/header_bg.jpg) no-repeat center top;
-	margin-top: -50px;
+	margin-top: -20px;
 	padding-top: 120px;
 	text-align: center;
 	background-attachment: relative;
@@ -232,6 +232,7 @@ a:before, a:after {
 	padding-bottom: 100px;
 }
 #headerwrap h1 {
+
 	color: #ffffff;
 	font-size: 50px;
 	font-weight: 400;
