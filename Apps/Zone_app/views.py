@@ -92,17 +92,14 @@ def search(request):
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
-
-    browse_history = BrowseHistory()
-    browse_history.nomad = request.user
-    browse_history.place = place
-    browse_history.save()
-
+    user = request.user
+    if user.is_authenticated():
+        browse_history = BrowseHistory()
+        browse_history.save(user, place)
     picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
-    return render_to_response('detail.html',
-                              {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
-                               "picture_url": picture_url}, context_instance=RequestContext(request))
+    return render(request, 'detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
+                               "picture_url": picture_url})
 
 
 def signup(request):
@@ -151,7 +148,7 @@ def user_edit(request):
 def mypage(request):
     check_in_historys = CheckInHistory.objects.filter(nomad_id=request.user.id)
     check_in_historys = check_in_historys.order_by('-create_at')[:10]
-    browse_historys = BrowseHistory.objects.filter(nomad_id=request.user.id)
+    browse_historys = BrowseHistory.objects.filter(nomad=request.user.id)
     browse_historys = browse_historys.order_by('-create_at')[:10]
 
     return render_to_response('mypage.html',

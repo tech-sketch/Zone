@@ -163,3 +163,10 @@ class BrowseHistory(models.Model):
     nomad = models.ForeignKey(NomadUser)
     place = models.ForeignKey(Place)
     create_at = models.DateTimeField(default=datetime.now)
+
+    def save(self, nomad, place, commit=True):
+        self.place = place
+        self.nomad = nomad
+        if commit:
+            super(BrowseHistory, self).save()
+        return self
