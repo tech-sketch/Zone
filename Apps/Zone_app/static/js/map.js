@@ -6,11 +6,6 @@ var defaultMapOptions = {
     center: new google.maps.LatLng(35.682323, 139.765955),　//東京駅
     zoom: 15
 };
-
-var grandMapOptions =  {
-    center: new google.maps.LatLng(35.6959659,139.6904433),　//東京グランド
-    zoom: 15
-};
 var markerList = new google.maps.MVCArray();
 var overlayList = new google.maps.MVCArray();
 var placeIdList = [];
@@ -64,13 +59,16 @@ function initialize(x, y) {
             center: myLatlng,
             zoom: zoom_level
     };
+<<<<<<< HEAD
+=======
     // for demo
-    mapOptions = grandMapOptions;
+    //mapOptions = grandMapOptions;
+>>>>>>> develop
 
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
         // マーカーの画像URL
-        "http://127.0.0.1:8000/static/images/man.png",
+        "/static/images/man.png",
         // マーカーのサイズ
         new google.maps.Size(32, 32),
         // 画像の基準位置
@@ -85,8 +83,7 @@ function initialize(x, y) {
             title:"Your position",
             icon: markerImg,
     });
-    // for demo
-    userMarker.setPosition(new google.maps.LatLng(35.6959659,139.6904433))
+    userMarker.setPosition(myLatlng)
 }
 
 function makePlacePin() {
