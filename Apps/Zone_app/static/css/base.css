@@ -1,7 +1,14 @@
-.navbar-default {
-    border-color: transparent;
-    background-color: #dadada;
+.btn-search {
+    background-color: #ffbf00;
+    color: white;
+    text-shadow: 0 0 3px #bf9004;
 }
+
+.btn-search:focus, .btn-search:hover {
+    background-color: #e9af03;
+    color: white;
+}
+
 .navbar-inverse .navbar-brand {
     font-weight: 500;
     font-size: 20px;

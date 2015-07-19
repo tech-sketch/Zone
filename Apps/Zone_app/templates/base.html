@@ -42,7 +42,7 @@
                 <input type="text" onkeypress="if(event.keyCode==13)searchPlaces();" class="form-control" name="place_name" placeholder="場所の名前" value="{{place_name}}" style="margin:-5pt 0 0 5pt;">
             </form>
             </li>
-            <li><button id="form_btn" onclick="searchPlaces();" class="btn btn-warning" style="margin:7pt 0 0 0;">検索</button></li>
+            <li><button id="form_btn" onclick="searchPlaces();" class="btn btn-search" style="margin:7pt 0 0 0;">検索</button></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
