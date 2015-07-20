@@ -25,25 +25,24 @@ var overlayList = new google.maps.MVCArray();
 var placeIdList = [];
 
 function start(){
-    var mapOptions;
     if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
         var latLng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'))
         map.setCenter(latLng);
         map.setZoom(parseInt($('#zoom_level').attr('value')))
     }else {
-        $('#loading').fadeIn("quick");
         getLocation();
-        $('#loading').fadeOut("quick");
     }
     makePlacePin();
 }
 
 function getLocation(){
+    $('#loading').fadeIn("quick");
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
     }else{
         alert('ブラウザが位置情報取得に対応しておりません。');
     }
+    $('#loading').fadeOut("quick");
 }
 
 function successCallback(position){
@@ -192,9 +191,7 @@ function setCurrentPosition(){
     if(userMarker){
         map.setCenter(userMarker.getPosition());
     }else{
-        $('#loading').fadeIn("quick");
         getLocation();
-        $('#loading').fadeOut("quick");
     }
 }
 
