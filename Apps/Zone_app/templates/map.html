@@ -10,7 +10,9 @@
 <hidden type="input" id="zoom_level" value="{{zoom_level}}"></hidden>
     <div id="select">
         <div id="filter_list">
-                <a id="preference"> あなたのこだわりで絞り込む　></a>
+            <a class="current_position">現在地へ戻る</a>
+            <a class="sort">ソート<span class="caret"></span></a>
+            <a class="preference">絞り込み<span class="caret"></span></a>
         </div>
         <div id="location_list">
         {% for message in messages%}{{ message }} {% endfor %}

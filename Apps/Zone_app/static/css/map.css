@@ -39,6 +39,27 @@
 
 }
 
+#filter_list {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #eee;
+}
+
+#filter_list .current_position {
+    margin-left: 10pt;
+}
+
+#filter_list .preference {
+    display:block;
+    float: right;
+    margin-right: 10pt;
+}
+
+#filter_list .sort {
+    display:block;
+    float: right;
+    margin-right: 10pt;
+}
+
 #location_list .place_picture {
     height: 90pt;
     width: 90pt;
