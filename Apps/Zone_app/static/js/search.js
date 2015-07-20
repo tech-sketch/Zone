@@ -27,8 +27,8 @@ function loadPlaces(response){
         overlay.toggleDOM();
     });
     overlayList.clear();
-    $('#select').html('')
-    $('#select').append($(response).find('#select').children());
+    $('#location_list').html('')
+    $('#location_list').append($(response).find('#location_list').children());
     makePlacePin();
     if($(response).find('#location_lat').attr('value') && $(response).find('#zoom_level').attr('value')){
         map.setZoom(parseInt($(response).find('#zoom_level').attr('value')));

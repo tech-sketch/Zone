@@ -139,7 +139,7 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     google.maps.event.addListener(placeMarker, "mouseover", function(){
         openInfoWindow();
         locationCard.parent('div').animate({scrollTop: position}, 'normal');
-        locationCard.attr('style', 'background-color: #f1f1f1; box-shadow: 0 0px 0px 0 #ddd;');
+        locationCard.attr('style', 'background-color: #f5f5f5;');
     });
     google.maps.event.addListener(placeMarker, "mouseout", function(){
         closeInfoWindow();
