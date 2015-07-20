@@ -1,3 +1,79 @@
+html, button, input, select, textarea {
+	color: #222;
+}
+
+html, body {
+	height: 100%;
+}
+
+img {
+	vertical-align: middle;
+}
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+	resize: vertical;
+}
+
+a img {
+	background: white;
+}
+
+/* Links */
+a {
+	color: #4abcc5;
+	word-wrap: break-word;
+	-webkit-transition: color 0.1s ease-in, background 0.1s ease-in;
+	-moz-transition: color 0.1s ease-in, background 0.1s ease-in;
+	-ms-transition: color 0.1s ease-in, background 0.1s ease-in;
+	-o-transition: color 0.1s ease-in, background 0.1s ease-in;
+	transition: color 0.1s ease-in, background 0.1s ease-in;
+}
+a:hover, a:focus {
+	color: #c0392b;
+	text-decoration: none;
+	outline: 0;
+}
+a:before, a:after {
+	-webkit-transition: color 0.1s ease-in, background 0.1s ease-in;
+	-moz-transition: color 0.1s ease-in, background 0.1s ease-in;
+	-ms-transition: color 0.1s ease-in, background 0.1s ease-in;
+	-o-transition: color 0.1s ease-in, background 0.1s ease-in;
+	transition: color 0.1s ease-in, background 0.1s ease-in;
+}
+
+ul.social-buttons {
+	margin: 0;
+}
+ul.social-buttons li a {
+	font-size: 24px;
+	outline: 0;
+	color: #999;
+}
+ul.social-buttons li a:hover, ul.social-buttons li a:focus, ul.social-buttons li a:active {
+	color: #ffbf00;
+}
+
+/* ==========================================================================
+   MEDIA QUERIES
+   ========================================================================== */
+
+
+@media screen and (max-width:1050px), screen and (max-device-width:1050px) {
+body .header {
+	background-attachment: scroll;
+}
+}
+
+/*ipad portrait*/
+@media only screen and (min-device-width:768px) and (max-device-width : 1024px) and (orientation : portrait) {
+.header {
+	background-attachment: scroll;
+}
+}
+
 .btn-search {
     background-color: #ffbf00;
     color: white;
@@ -22,6 +98,10 @@
     color: white;
 }
 
+.navbar-text{
+    line-height: 16pt
+}
+
 ::-moz-selection {
     background: #f2c2c9;
     color: #a4003a;
@@ -32,6 +112,7 @@
     color: #a4003a;
     text-shadow: none;
 }
+
 body {
     font-family: "Lato";
     font-weight: 300;
@@ -44,10 +125,12 @@ body {
 .banner_image{
     text-align: center;
 }
+
 p.banner_image img {
     -webkit-filter: brightness(60%);
     width: 100%;
 }
+
 .banner_text{
     position: absolute;
     top: 100px;
