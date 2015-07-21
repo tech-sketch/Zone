@@ -83,15 +83,13 @@ class Places(object):
         return self._places
 
     def filter_by_location(self, northeast_lng, northeast_lat, southwest_lng, southwest_lat):
-        self._places = self._places.filter(longitude__gt=southwest_lng,
-                                           longitude__lt=northeast_lng,
-                                           latitude__gt=southwest_lat,
-                                           latitude__lt=northeast_lat)
+        self._places = self._places.filter(longitude__gt=southwest_lng, longitude__lt=northeast_lng,
+                                           latitude__gt=southwest_lat, latitude__lt=northeast_lat)
     def filter_by_name(self, place_name):
         self._places = self._places.filter(name__icontains=place_name)
 
     def sort_by(self, name):
-        self._places.sort(key=attrgetter(name), reverse=True)
+        self._places = sorted(self._places, key=attrgetter(name), reverse=True)
 
     def to_picture_list(self):
         self._picture_list = [place.get_dict() for place in self._places]

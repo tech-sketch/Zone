@@ -69,18 +69,23 @@ def maps(request):
 
 def search(request):
     if request.method == 'GET':
-        northeast_lng = request.GET.get('NE_lng', '')
-        northeast_lat = request.GET.get('NE_lat', '')
-        southwest_lng = request.GET.get('SW_lng', '')
-        southwest_lat = request.GET.get('SW_lat', '')
+        northeast_lng = request.GET.get('northeast_lng', 180)
+        northeast_lat = request.GET.get('northeast_lat', 90)
+        southwest_lng = request.GET.get('southwest_lng', -90)
+        southwest_lat = request.GET.get('southwest_lat', -180)
         place_name = request.GET.get('place_name', '')
         sort_key = request.GET.get('sort_key', 'total_point')
         places = Places()
-        places.filter_by_location(northeast_lng, northeast_lat, southwest_lat, southwest_lng)
         places.filter_by_name(place_name)
+        for place in places.get_places():
+            print(place.latitude)
+            print(place.longitude)
+        places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
+        print(places.get_places())
         places.sort_by(sort_key)
         places.to_picture_list()
-        return render(request, 'map.html', {'places': places})
+        print(places.get_places())
+        return render(request, 'map.html', {'places': places.get_places()})
     else:
         return HttpResponseBadRequest
 

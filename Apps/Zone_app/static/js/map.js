@@ -26,16 +26,12 @@ var overlayList = new google.maps.MVCArray();
 var placeIdList = [];
 
 function start(){
-    map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
+    if(!$('[name=address]').val())getLocation();
+    if(!map)map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
     geocoder = new google.maps.Geocoder();
-    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
-        var latLng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'));
-        map.setCenter(latLng);
-        map.setZoom(parseInt($('#zoom_level').attr('value')));
-    }else {
-        getLocation();
-    }
-    makePlacePin();
+    google.maps.event.addListenerOnce(map, 'bounds_changed', function(){
+        searchPlaces();
+    });
 }
 
 function getLocation(){
@@ -50,8 +46,14 @@ function getLocation(){
 
 function successCallback(position){
     var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    if(!map){
+        var mapOptions = {
+            center: latLng,
+            zoom: currentPositionZoom
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    }
     map.setCenter(latLng);
-    map.setZoom(currentPositionZoom);
     setUserMarker(latLng.lat(), latLng.lng());
 }
 
@@ -97,98 +99,6 @@ function makePlacePin() {
     }
 }
 
-function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
-    var openInfoWindow = function(){
-        if(currentInfoWindow){
-            currentInfoWindow.close();
-        }
-        placeInfoWindow.open(map, placeMarker);
-        currentInfoWindow = placeInfoWindow;
-    };
-    var closeInfoWindow = function(){
-        placeInfoWindow.close(map, placeMarker);
-    };
-    var position = locationCard.offset().top - locationCard.parent('div').offset().top;
-
-    locationCard.on("click", function(){
-        $("#loading").fadeIn("quick");
-        $.get('/detail/' + placeId, function(html){
-            $("#loading").fadeOut("quick");
-            showDetail(html);
-        });
-    });
-    locationCard.hover(openInfoWindow, closeInfoWindow);
-    google.maps.event.addListener(placeMarker, 'click', function(){
-        $("#loading").fadeIn("quick");
-        $.get('/detail/' + placeId, function(html){
-            $("#loading").fadeOut("quick");
-            showDetail(html);
-        });
-    });
-    google.maps.event.addListener(placeMarker, "mouseover", function(){
-        openInfoWindow();
-        locationCard.parent('div').animate({scrollTop: position}, 'normal');
-        locationCard.attr('style', 'background-color: #f5f5f5;');
-    });
-    google.maps.event.addListener(placeMarker, "mouseout", function(){
-        closeInfoWindow();
-        locationCard.attr('style', '');
-    });
-    if(placeIdList.indexOf(placeId) == -1){
-        placeIdList.push(placeId);
-    }
-}
-
-function overlayText(name, lat, lng){
-    function NameMarker(map, lat, lng){
-        this.lat_ = lat;
-        this.lng_ = lng;
-        this.setMap(map);
-    }
-    NameMarker.prototype = new google.maps.OverlayView();
-
-    NameMarker.prototype.draw = function() {
-        if (this.div_) {
-            this.div_.parentNode.removeChild(this.div_);
-        }
-
-        // 出力したい要素生成
-        this.div_ = document.createElement( "div" );
-        this.div_.style.position = "absolute";
-        zoom_level = map.getZoom();
-        if(zoom_level>14)this.div_.style.fontSize = map.getZoom() * map.getZoom() * 0.4 + "%";
-        this.div_.innerHTML = name;
-        // 要素を追加する子を取得
-        var panes = this.getPanes();
-        // 要素追加
-        panes.overlayLayer.appendChild( this.div_ );
-
-        // 緯度、軽度の情報を、Pixel（google.maps.Point）に変換
-        var point = this.getProjection().fromLatLngToDivPixel( new google.maps.LatLng( this.lat_, this.lng_ ) );
-
-        // 取得したPixel情報の座標に、要素の位置を設定
-        this.div_.style.left = point.x + 'px';
-        this.div_.style.top = point.y + 'px';
-        this.div_.id = "overlay_text";
-    }
-
-      /* 削除処理の実装 */
-    NameMarker.prototype.onRemove = function() {
-        if (this.div_) {
-            this.div_.parentNode.removeChild(this.div_);
-            this.div_ = null;
-        }
-    }
-    NameMarker.prototype.toggleDOM = function() {
-        if (this.getMap()) {
-            // Note: setMap(null) calls OverlayView.onRemove()
-            this.setMap(null);
-        } else {
-            this.setMap(this.map_);
-        }
-    };
-    overlayList.push(new NameMarker(map, lat, lng));
-}
 
 function setCurrentPosition(){
     if(userMarker){
@@ -198,7 +108,10 @@ function setCurrentPosition(){
     }
 }
 
+
+
 $('#loading').fadeOut("quick");
 google.maps.event.addDomListener(window, 'load', start);
+
 
 
