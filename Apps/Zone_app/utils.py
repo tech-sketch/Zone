@@ -88,7 +88,7 @@ class Places(object):
     def filter_by_name(self, place_name):
         self._places = self._places.filter(name__icontains=place_name)
 
-    def sort_by(self, name):
+    def sort_by(self, name='total_point'):
         self._places = sorted(self._places, key=attrgetter(name), reverse=True)
 
     def to_picture_list(self):

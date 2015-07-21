@@ -2,7 +2,7 @@ import functools
 from django.template import RequestContext
 from django.shortcuts import render, render_to_response, redirect
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, Http404
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from .models import *
@@ -65,6 +65,7 @@ def maps(request):
         place_name = request.GET.get('place_name', '')
         moods = Mood.objects.all()
         return render(request, 'map.html', {'address': address, 'place_name': place_name, 'moods': moods})
+    return Http404
 
 
 def search(request):
@@ -74,20 +75,14 @@ def search(request):
         southwest_lng = request.GET.get('southwest_lng', -90)
         southwest_lat = request.GET.get('southwest_lat', -180)
         place_name = request.GET.get('place_name', '')
-        sort_key = request.GET.get('sort_key', 'total_point')
         places = Places()
         places.filter_by_name(place_name)
-        for place in places.get_places():
-            print(place.latitude)
-            print(place.longitude)
         places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
-        print(places.get_places())
-        places.sort_by(sort_key)
+        places.sort_by()
         places.to_picture_list()
-        print(places.get_places())
         return render(request, 'map.html', {'places': places.get_places()})
     else:
-        return HttpResponseBadRequest
+        return Http404
 
 
 def detail(request, place_id):
