@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^maps/$', views.search, name='search'),
+    url(r'^map/$', views.search, name='search'),
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
     url(r'^edit/$', views.user_edit, name='edit'),

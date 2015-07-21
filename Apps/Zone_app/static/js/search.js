@@ -2,10 +2,10 @@
 // ======================
 function searchPlaces(){
     var ref = location.pathname;
-    if(ref == "/maps/"){
+    if(ref == "/map/"){
         $("#loading").fadeIn("quick");
-        $.get("/maps/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(),
-         zoom_level: map.getZoom(), referrer: '/maps/'}, function(response){
+        $.get("/map/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(),
+         zoom_level: map.getZoom(), referrer: '/map/'}, function(response){
             placeIdList = [];
             categoriesChecked = [];
             moodsChecked = [];
