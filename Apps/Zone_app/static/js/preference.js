@@ -20,21 +20,18 @@ function showPreference(html){
         else{
             $(this).parent("label").attr('style', "");
         }
-        var length = $('[name=category]:checked').length;
-        categoriesChecked = [];
-        for(var i=0; i<length; i++){
-            categoriesChecked.push($($('[name=category]:checked')[i]).val());
-        }
-        var length = $('[name=mood]:checked').length;
-        moodsChecked = [];
-        for(var i=0; i<length; i++){
-            moodsChecked.push($($('[name=mood]:checked')[i]).val());
-        }
-        var length = $('[name=tool]:checked').length;
-        toolsChecked = [];
-        for(var i=0; i<length; i++){
-            toolsChecked.push($($('[name=tool]:checked')[i]).val());
-        }
+
+        categoriesChecked = $('[name=category]:checked').map(function(){
+            return $(this).val();
+        }).get()
+        moodsChecked = $('[name=mood]:checked').map(function(index, element){
+            return $(this).val();
+        }).get()
+        console.log(moodsChecked)
+        toolsChecked = $('[name=tool]:checked').map(function(index, element){
+            return $(this).val();
+        }).get()
+
         $("#loading").fadeOut("quick");
         $.post("/preference_form/", {categories: categoriesChecked, moods: moodsChecked, tools: toolsChecked, place_id_list: placeIdList}, loadPlaces);
 });
