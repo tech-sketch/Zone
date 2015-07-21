@@ -7,7 +7,7 @@ from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import UserForm, MoodForm, ContactForm, UserEditForm
-from .utils import GoogleMapAPI
+from .utils import Places
 
 
 def index(request):
@@ -59,24 +59,30 @@ def preference_form(request):
     tools = Tool.objects.all()
     return render_to_response('preference_form.html', {'moods': moods, 'tools': tools},
                               context_instance=RequestContext(request))
-
-
-def search(request):
-    if request.method == 'POST':
-        return HttpResponseBadRequest
+def maps(request):
     if request.method == 'GET':
         address = request.GET.get('address', '')
         place_name = request.GET.get('place_name', '')
-        places = Place.objects.all().filter(name__icontains=place_name)
-        map_api = GoogleMapAPI()
-        map_api.fetch_detail(address)
-        if map_api.is_valid():
-            places = map_api.filter_suitable_places(places)
-    places = get_place_picture_list(places)
-    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    moods = Mood.objects.all()
-    return render(request, 'map.html', {'places': places, 'moods': moods, 'address': address,
-                                        'place_name': place_name, 'location': map_api.get_location(), 'zoom_level': map_api.get_zoom_level()})
+        moods = Mood.objects.all()
+        return render(request, 'map.html', {'address': address, 'place_name': place_name, 'moods': moods})
+
+
+def search(request):
+    if request.method == 'GET':
+        northeast_lng = request.GET.get('NE_lng', '')
+        northeast_lat = request.GET.get('NE_lat', '')
+        southwest_lng = request.GET.get('SW_lng', '')
+        southwest_lat = request.GET.get('SW_lat', '')
+        place_name = request.GET.get('place_name', '')
+        sort_key = request.GET.get('sort_key', 'total_point')
+        places = Places()
+        places.filter_by_location(northeast_lng, northeast_lat, southwest_lat, southwest_lng)
+        places.filter_by_name(place_name)
+        places.sort_by(sort_key)
+        places.to_picture_list()
+        return render(request, 'map.html', {'places': places})
+    else:
+        return HttpResponseBadRequest
 
 
 def detail(request, place_id):

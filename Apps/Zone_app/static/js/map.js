@@ -6,7 +6,7 @@ var defaultMapOptions = {
     zoom: defaultZoom
 };
 var currentPositionZoom = 17;
-var map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
+var map;
 
 var userMarker = null;
 var markerImg = new google.maps.MarkerImage(
@@ -26,10 +26,12 @@ var overlayList = new google.maps.MVCArray();
 var placeIdList = [];
 
 function start(){
+    map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
+    geocoder = new google.maps.Geocoder();
     if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
-        var latLng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'))
+        var latLng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'));
         map.setCenter(latLng);
-        map.setZoom(parseInt($('#zoom_level').attr('value')))
+        map.setZoom(parseInt($('#zoom_level').attr('value')));
     }else {
         getLocation();
     }
@@ -70,7 +72,7 @@ function setUserMarker(lat, lng) {
 }
 
 function makePlacePin() {
-    var length = $("[id = name]").length
+    var length = $("[id = name]").length;
 
     for(var i = 0; i < length; i++){
         var name = $($("[id=name]")[i]).attr("value");
@@ -91,7 +93,7 @@ function makePlacePin() {
                 maxWidth: 250,
                 maxHeight: 250,
                 content: name
-        }), locationCard, placeId)
+        }), locationCard, placeId);
     }
 }
 
@@ -153,7 +155,7 @@ function overlayText(name, lat, lng){
         // 出力したい要素生成
         this.div_ = document.createElement( "div" );
         this.div_.style.position = "absolute";
-        zoom_level = map.getZoom()
+        zoom_level = map.getZoom();
         if(zoom_level>14)this.div_.style.fontSize = map.getZoom() * map.getZoom() * 0.4 + "%";
         this.div_.innerHTML = name;
         // 要素を追加する子を取得
@@ -199,23 +201,4 @@ function setCurrentPosition(){
 $('#loading').fadeOut("quick");
 google.maps.event.addDomListener(window, 'load', start);
 
-/*
-function codeAddress() {
-    var address = document.getElementById('address').value;
-    geocoder.geocode( { 'address': address, region: 'JP'}, function(results, status) {
-        for(i in results){
-            if (status == google.maps.GeocoderStatus.OK) {
-                map.setCenter(results[i].geometry.location);
-                var latlng = results[i].geometry.location;
-                new google.maps.InfoWindow({
-                    content: results[i].formatted_address + "<br>(Lat, Lng) = " + latlng.toString()
-                }).open(map, new google.maps.Marker({
-                    position: latlng,
-                    map: map
-                }));
-            } else {
-                alert('Geocode was not successful for the following reason: ' + status);
-            }
-        }
-    });
-}*/
+

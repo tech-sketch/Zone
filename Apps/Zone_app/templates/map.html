@@ -3,7 +3,7 @@
 {% block title %}MAP{% endblock title %}
 {% block content %}
 
-<div class="map_box">
+<div class="map_box" onload="searchPlaces();">
 <hidden type="input" id="user_auth" value="{{ user.is_authenticated }}"></hidden>
 <hidden type="input" id="location_lat" value="{{location.lat}}"></hidden>
 <hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
