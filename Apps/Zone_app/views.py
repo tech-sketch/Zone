@@ -9,8 +9,6 @@ from .models import *
 from .forms import UserForm, MoodForm, ContactForm, UserEditForm
 from .utils import GoogleMapAPI
 
-DEFAULT_ZOOM_LEVEL = 17
-
 
 def index(request):
     if request.method == 'POST':
@@ -64,16 +62,12 @@ def preference_form(request):
 
 
 def maps(request):
-    if request.POST:
+    if request.method == 'POST':
         return search(request)
-    zoom_level = DEFAULT_ZOOM_LEVEL
     moods = Mood.objects.all()
     places = get_place_picture_list(Place.objects.all())
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    return render_to_response('map.html',
-                              {'places': places, 'moods': moods, 'zoom_level': zoom_level},
-                              context_instance=RequestContext(request))
-
+    return render(request, 'map.html', {'places': places, 'moods': moods})
 
 def search(request):
     address = request.POST['address']

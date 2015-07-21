@@ -5,6 +5,7 @@ var defaultMapOptions = {
     center: defaultLatLng,
     zoom: defaultZoom
 };
+var currentPositionZoom = 17;
 var map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
 
 var userMarker = null;
@@ -48,7 +49,7 @@ function getLocation(){
 function successCallback(position){
     var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     map.setCenter(latLng);
-    map.setZoom(parseInt($('#zoom_level').attr('value')))
+    map.setZoom(currentPositionZoom);
     setUserMarker(latLng.lat(), latLng.lng());
 }
 
