@@ -4,7 +4,7 @@ function searchPlaces(){
     var ref = location.pathname;
     if(ref == "/maps/"){
         $("#loading").fadeIn("quick");
-        $.post("/search/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(),
+        $.get("/maps/", {address: $('[name=address]').val(), place_name:  $('[name=place_name]').val(),
          zoom_level: map.getZoom(), referrer: '/maps/'}, function(response){
             placeIdList = [];
             categoriesChecked = [];

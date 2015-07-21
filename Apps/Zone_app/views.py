@@ -2,7 +2,7 @@ import functools
 from django.template import RequestContext
 from django.shortcuts import render, render_to_response, redirect
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from .models import *
@@ -61,22 +61,17 @@ def preference_form(request):
                               context_instance=RequestContext(request))
 
 
-def maps(request):
-    if request.method == 'POST':
-        return search(request)
-    moods = Mood.objects.all()
-    places = get_place_picture_list(Place.objects.all())
-    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    return render(request, 'map.html', {'places': places, 'moods': moods})
-
 def search(request):
-    address = request.POST['address']
-    place_name = request.POST['place_name']
-    places = Place.objects.all().filter(name__icontains=place_name)
-    map_api = GoogleMapAPI()
-    map_api.fetch_detail(address)
-    if map_api.is_valid():
-        places = map_api.filter_suitable_places(places)
+    if request.method == 'POST':
+        return HttpResponseBadRequest
+    if request.method == 'GET':
+        address = request.GET.get('address', '')
+        place_name = request.GET.get('place_name', '')
+        places = Place.objects.all().filter(name__icontains=place_name)
+        map_api = GoogleMapAPI()
+        map_api.fetch_detail(address)
+        if map_api.is_valid():
+            places = map_api.filter_suitable_places(places)
     places = get_place_picture_list(places)
     places = sorted(places, key=lambda x: x['total_point'], reverse=True)
     moods = Mood.objects.all()
