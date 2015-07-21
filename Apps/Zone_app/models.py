@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-# Create your models here.
+
 class NomadUser(AbstractUser):
     GENDER_CHOICES = (
         ('M', '男'),
@@ -21,13 +21,14 @@ class NomadUser(AbstractUser):
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], default=0)
     icon = models.ImageField(upload_to='icons/', default='icons/no_image.png')
+    display_recommend = models.BooleanField(default=True)
 
     def can_check_in(self, place_id):
         check_in_historys = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
-                                                      create_at__month=datetime.now().strftime("%m"),
-                                                      create_at__year=datetime.now().strftime("%Y"),
-                                                      nomad_id=self.id,
-                                                      place_id=place_id)
+                                                          create_at__month=datetime.now().strftime("%m"),
+                                                          create_at__year=datetime.now().strftime("%Y"),
+                                                          nomad_id=self.id,
+                                                          place_id=place_id)
         return len(check_in_historys) == 0
 
     def __unicode__(self):
@@ -84,6 +85,14 @@ class Place(models.Model):
         else:
             return ["/media/no_image.png"]
 
+    def get_dict(self):
+        picture = self.get_pictures_url()[0]
+        wifi = self.get_wifi_list()
+        return {'picture': picture, 'name': self.name, 'address': self.address, 'longitude': self.longitude,
+                'latitude': self.latitude, 'wifi': ' '.join(wifi), 'outlet': self.has_tool('outlet'),
+                'id': self.id, 'total_point': self.total_point}
+
+
 class Picture(models.Model):
     def __str__(self):
         return self.data.url + '({0})'.format(self.place.name)
@@ -99,11 +108,13 @@ class Tool(models.Model):
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
 
+
 class Equipment(models.Model):
     def __str__(self):
         return self.place.name + "({0})".format(self.tool.jp_title)
     place = models.ForeignKey(Place)
     tool = models.ForeignKey(Tool)
+
 
 class Mood(models.Model):
     def __str__(self):
@@ -111,18 +122,22 @@ class Mood(models.Model):
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
 
+
 class Preference(models.Model):
     def __str__(self):
         return self.nomad.username + "({0})".format(self.mood.jp_title)
     nomad = models.ForeignKey(NomadUser)
     mood = models.ForeignKey(Mood)
 
+
 class PlacePoint(models.Model):
     def __str__(self):
         return self.place.name + ':{0}({1}point)'.format(self.mood.jp_title, self.point)
     place = models.ForeignKey(Place, related_name="related_place_point")
     mood = models.ForeignKey(Mood, null=True, blank=True)
-    point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], null=True, blank=True, default=0)
+    point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)],
+                                null=True, blank=True, default=0)
+
 
 class CheckInHistory(models.Model):
     def __str__(self):
@@ -140,3 +155,11 @@ class Contact(models.Model):
     name = models.CharField(max_length=40, blank=False)
     email = models.EmailField(blank=False)
     message = models.TextField(blank=False)
+
+
+class BrowseHistory(models.Model):
+    def __str__(self):
+        return self.create_at.strftime('%Y/%m/%d %H:%M:%S') + ' {0}'.format(self.place.name) + '({0})'.format(self.nomad.username)
+    nomad = models.ForeignKey(NomadUser)
+    place = models.ForeignKey(Place)
+    create_at = models.DateTimeField(default=datetime.now)

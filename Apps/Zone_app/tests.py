@@ -4,6 +4,7 @@ from django.contrib.messages import add_message, get_messages
 from django.contrib.messages.storage.fallback import FallbackStorage
 from .models import NomadUser, Place
 
+
 # Create your tests here.
 class AuthorizationTestCase(TestCase):
     def setUp(self):
@@ -27,6 +28,7 @@ class AuthorizationTestCase(TestCase):
         self.assertNotIn('_auth_user_id', self.client.session)
         self.assertRedirects(response, '/', status_code=302, target_status_code=200)
 
+
 class MessageTestCase(TestCase):
     def setUp(self):
         user = NomadUser.objects.create_user(username='user1', password='1111')
@@ -42,6 +44,7 @@ class MessageTestCase(TestCase):
         response = self.client.get('/detail/'+str(self.placeid))
         messages = list(response.context['messages'])
         self.assertIs(len(messages), 0)
+
 
 class ScreenTransitionTestCase(TestCase):
     def setUp(self):

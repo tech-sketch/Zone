@@ -52,8 +52,11 @@
 <script src="{% static 'js/preference.js' %}"></script>
 <script src="{% static 'js/map.js' %}"></script>
 <script src="{% static 'js/CSRF.js' %}"></script>
+
 {% if user.is_authenticated %}
+{% if user.display_recommend %}
 <script src="{% static 'js/show_recommend.js'%}"></script>
+{% endif %}
 {% endif %}
 <script src="{% static 'js/check_in.js' %}"></script>
 <script src="{% static 'js/recommend_logic.js' %}"></script>

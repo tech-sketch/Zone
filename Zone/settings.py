@@ -15,6 +15,8 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'jas83w-$-_5f9c$cl1ijjs9!hbopqm2xib(d*-&d#buvc%-l9z'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -77,10 +79,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'Zone',
-        'USER': 'admin',
+        'USER': 'admmin',
         'PASSWORD': '',
     }
 }
+
 
 
 # Internationalization
