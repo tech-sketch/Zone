@@ -40,7 +40,7 @@ function showPreference(html){
 });
 }
 
-$("#preference").on("click", function(){
+$(".preference").on("click", function(){
     $("#loading").fadeIn("quick");
     $.get('/preference_form/', function(html){
         $("#loading").fadeOut("quick");

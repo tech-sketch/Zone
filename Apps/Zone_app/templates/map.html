@@ -2,9 +2,6 @@
 {% load staticfiles %}
 {% block title %}MAP{% endblock title %}
 {% block content %}
-<div style="margin-top:-10pt; margin-left: 1%;">
-    <a id="preference"> あなたのこだわりで絞り込む　></a>
-</div>
 
 <div class="map_box">
 <hidden type="input" id="user_auth" value="{{ user.is_authenticated }}"></hidden>
@@ -12,6 +9,12 @@
 <hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
 <hidden type="input" id="zoom_level" value="{{zoom_level}}"></hidden>
     <div id="select">
+        <div id="filter_list">
+            <a class="current_position" onclick="setCurrentPosition();">現在地へ戻る</a>
+            <a class="sort">ソート<span class="caret"></span></a>
+            <a class="preference">絞り込み<span class="caret"></span></a>
+        </div>
+        <div id="location_list">
         {% for message in messages%}{{ message }} {% endfor %}
         {% for place in places %}
             <div class="location_card">
@@ -19,13 +22,17 @@
                 <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
                 <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
                 <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
+                <div class="place_picture">
                 {%if place.picture%}
                     <img src="{{ place.picture }}" alt="{{ place.name }}">
                 {% else %}
                     <img src="/media/no_image.png" alt="{{ place.name }}">
                 {% endif %}
-                <h3>{{place.name}}</h3>
-                <div id="info">
+                </div>
+                <div class="place_name">
+                        <h4>{{place.name}}</h4>
+                </div>
+                <div class="info">
                     <div id="total_point_{{place.id}}">
                         合計ポイント:{{place.total_point}}point
                     </div>
@@ -39,8 +46,11 @@
                     {% endif %}
 
                 </div>
+                <!--<br style="clear: both; height: 0;">
+                <hr style="margin: 3pt 0;">-->
             </div>
         {% endfor %}
+        </div>
     </div>
     <div id="map-canvas"></div>
     <img id="loading" src="/media/loading.gif" style="position: absolute; top: 50%; left: 50%;"/>

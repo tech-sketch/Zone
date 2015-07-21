@@ -1,67 +1,14 @@
 var geocoder;
-var map;
-var userMarker;
-var currentInfoWindow = null;
+var defaultLatLng = new google.maps.LatLng(35.682323, 139.765955);　//東京駅
+var defaultZoom = 15;
 var defaultMapOptions = {
-    center: new google.maps.LatLng(35.682323, 139.765955),　//東京駅
-    zoom: 15
+    center: defaultLatLng,
+    zoom: defaultZoom
 };
-var markerList = new google.maps.MVCArray();
-var overlayList = new google.maps.MVCArray();
-var placeIdList = [];
+var map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
 
-function start(){
-    getLocation();
-}
-
-function getLocation(){
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-    }else{
-        alert('ブラウザが位置情報取得に対応しておりません。');
-    }
-}
-
-function successCallback(position){
-   initialize(position.coords.latitude, position.coords.longitude);
-   makePlacePin();
-   if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
-        map.panTo(new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value')));
-   }
-   else{
-        new google.maps.InfoWindow({
-                content: "現在地"
-              }).open(map, userMarker);
-   }
-}
-
-function errorCallback(error){
-    alert('位置情報が取得できません。');
-    var mapOptions;
-    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
-        mapOptions = {
-            center: new google.maps.LatLng($('#location_lat').attr('value'), $('#location_lng').attr('value')),
-            zoom: parseInt($('#zoom_level').attr('value'))
-        };
-    }
-    else{
-        mapOptions = defaultMapOptions;
-    }
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    makePlacePin();
-}
-
-function initialize(x, y) {
-    geocoder = new google.maps.Geocoder();
-    var myLatlng = new google.maps.LatLng(x, y);
-    var zoom_level = parseInt($('#zoom_level').attr('value'))
-    var mapOptions = {
-            center: myLatlng,
-            zoom: zoom_level
-    };
-
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    var markerImg = new google.maps.MarkerImage(
+var userMarker = null;
+var markerImg = new google.maps.MarkerImage(
         // マーカーの画像URL
         "/static/images/man.png",
         // マーカーのサイズ
@@ -71,18 +18,57 @@ function initialize(x, y) {
         // Anchorポイント
         new google.maps.Point(10, 24)
     );
+var currentInfoWindow = null;
 
+var markerList = new google.maps.MVCArray();
+var overlayList = new google.maps.MVCArray();
+var placeIdList = [];
+
+function start(){
+    if($('#location_lat').attr('value') && $('#location_lng').attr('value')){
+        var latLng = new google.maps.LatLng($('#location_lat').attr('value'),$('#location_lng').attr('value'))
+        map.setCenter(latLng);
+        map.setZoom(parseInt($('#zoom_level').attr('value')))
+    }else {
+        getLocation();
+    }
+    makePlacePin();
+}
+
+function getLocation(){
+    $('#loading').fadeIn("quick");
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+    }else{
+        alert('ブラウザが位置情報取得に対応しておりません。');
+    }
+    $('#loading').fadeOut("quick");
+}
+
+function successCallback(position){
+    var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    map.setCenter(latLng);
+    map.setZoom(parseInt($('#zoom_level').attr('value')))
+    setUserMarker(latLng.lat(), latLng.lng());
+}
+
+function errorCallback(error){
+    alert('位置情報が取得できません。');
+}
+
+function setUserMarker(lat, lng) {
     userMarker = new google.maps.Marker({
-            position: myLatlng,
+            position: new google.maps.LatLng(lat, lng),
             map: map,
             title:"Your position",
             icon: markerImg,
     });
-    userMarker.setPosition(myLatlng)
+    new google.maps.InfoWindow({
+                content: "現在地"
+              }).open(map, userMarker);
 }
 
 function makePlacePin() {
-
     var length = $("[id = name]").length
 
     for(var i = 0; i < length; i++){
@@ -139,7 +125,7 @@ function addListener(placeMarker, placeInfoWindow, locationCard, placeId){
     google.maps.event.addListener(placeMarker, "mouseover", function(){
         openInfoWindow();
         locationCard.parent('div').animate({scrollTop: position}, 'normal');
-        locationCard.attr('style', 'background-color: #f1f1f1; box-shadow: 0 0px 0px 0 #ddd;');
+        locationCard.attr('style', 'background-color: #f5f5f5;');
     });
     google.maps.event.addListener(placeMarker, "mouseout", function(){
         closeInfoWindow();
@@ -199,6 +185,14 @@ function overlayText(name, lat, lng){
         }
     };
     overlayList.push(new NameMarker(map, lat, lng));
+}
+
+function setCurrentPosition(){
+    if(userMarker){
+        map.setCenter(userMarker.getPosition());
+    }else{
+        getLocation();
+    }
 }
 
 $('#loading').fadeOut("quick");
