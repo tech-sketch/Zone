@@ -85,6 +85,7 @@ class Places(object):
     def filter_by_location(self, northeast_lng, northeast_lat, southwest_lng, southwest_lat):
         self._places = self._places.filter(longitude__gt=southwest_lng, longitude__lt=northeast_lng,
                                            latitude__gt=southwest_lat, latitude__lt=northeast_lat)
+
     def filter_by_name(self, place_name):
         self._places = self._places.filter(name__icontains=place_name)
 
