@@ -1,4 +1,3 @@
-import functools
 from django.template import RequestContext
 from django.shortcuts import render, render_to_response, redirect
 from django.core.urlresolvers import reverse
@@ -40,7 +39,7 @@ def recommend_form(request):
                               context_instance=RequestContext(request))
 
 
-def preference_form(request):
+def narrow_down(request):
     if request.method == 'POST':
         place_list = request.POST['place_list'].split(',')
         form = NarrowDownForm(request.POST)
@@ -50,9 +49,8 @@ def preference_form(request):
             places.filter_by_moods(form.cleaned_data['moods'])
             places.filter_by_tools(form.cleaned_data['tools'])
             places.to_picture_list()
-            places.sort_by('total_point')
+            places.sort_by()
             return render(request, 'map.html', {'places': places.get_places()})
-
     return render(request, 'preference_form.html', {'narrow_down_form': NarrowDownForm()})
 
 

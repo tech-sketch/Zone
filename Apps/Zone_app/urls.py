@@ -19,6 +19,6 @@ urlpatterns = [
     url(r'^save_recommend/$', views.save_recommend, name='save_recommend'),
     url(r'^recommend/$', views.recommend, name='recommend'),
     url(r'^recommend_form/$', views.recommend_form, name='recommend_form'),
-    url(r'^preference_form/$', views.preference_form, name='preference_form'),
+    url(r'^narrow_down/$', views.narrow_down, name='narrow_down'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

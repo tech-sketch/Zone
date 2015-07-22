@@ -14,25 +14,24 @@ function showPreference(html){
     $('#preference_form input[type=checkbox]').click(function(){
         if($(this).is(':checked')){
             $(this).parent("label").attr('style', checkedStyle);
-        }
-        else{
+        } else{
             $(this).parent("label").attr('style', "");
         }
 
         itemChecked = $('#preference_form input[type=checkbox]:checked').map(function(){
             return $(this).attr("id");
-        }).get()
+        }).get();
         $("#loading").fadeOut("quick");
-        $.post("/preference_form/", $('#narrow_down').serialize(), loadPlaces);
+        $.post("/narrow_down/", $('#narrow_down').serialize(), loadPlaces);
 });
-}
+};
 
 $(".preference").on("click", function(){
     $("#loading").fadeIn("quick");
-    $.get('/preference_form/', function(html){
+    $.get('/narrow_down/', function(html){
         $("#loading").fadeOut("quick");
         showPreference(html);
-        $('[name=place_list]').attr('value', placeIdList);
+        $('[name=place_list]').attr('value', placeIdList); //formと一緒にplaceIdListをpostするための埋め込み
         $('#preference_form input[type=checkbox]').each(function(i, thisCheckBox){
             rememberChecked(thisCheckBox, itemChecked);
         });
@@ -47,4 +46,4 @@ function rememberChecked(thisCheckBox, checkedList){
         $(thisCheckBox).attr('checked', 'checked');
         $(thisCheckBox).parent("label").attr('style', checkedStyle);
     }
-}
+};

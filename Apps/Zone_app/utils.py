@@ -75,8 +75,8 @@ class GoogleMapAPI(object):
 
 class Places(object):
 
-    def __init__(self, placeID_list=[]):
-        self._places = Place.objects.filter(id__in=placeID_list) if placeID_list else Place.objects.all()
+    def __init__(self, placeID_list=None):
+        self._places = Place.objects.filter(id__in=placeID_list) if placeID_list is not None else Place.objects.all()
         self._picture_list = []
 
     def get_places(self):
