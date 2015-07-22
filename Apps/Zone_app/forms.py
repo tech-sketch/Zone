@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm
 from django import forms
-from .models import NomadUser, Mood, Contact
+from .models import NomadUser, Mood, Tool, Category, Contact
 
 
 class UserForm(ModelForm):
@@ -22,6 +22,15 @@ class UserForm(ModelForm):
         if commit:
             user.save()
         return user
+
+
+class NarrowDownForm(forms.Form):
+    categories = forms.ModelMultipleChoiceField(Category.objects.all(), widget=forms.CheckboxSelectMultiple(),
+                                                required=False, label='Select Category')
+    moods = forms.ModelMultipleChoiceField(Mood.objects.all(), widget=forms.CheckboxSelectMultiple(), required=False,
+                                           label='Select Mood')
+    tools = forms.ModelMultipleChoiceField(Tool.objects.all(), widget=forms.CheckboxSelectMultiple(), required=False,
+                                           label='Select Tool')
 
 
 class MoodForm(forms.Form):

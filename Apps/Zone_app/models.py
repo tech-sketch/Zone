@@ -35,6 +35,12 @@ class NomadUser(AbstractUser):
         return self.icon
 
 
+class Category(models.Model):
+    def __str__(self):
+        return self.jp_title
+    jp_title = models.CharField(max_length=40)
+
+
 class Place(models.Model):
     def __str__(self):
         return self.name + '(' + self.address + ')'
@@ -42,6 +48,7 @@ class Place(models.Model):
     google_id = models.CharField(max_length=100, null=True, blank=True)
     nomad = models.ForeignKey(NomadUser)
     category = models.CharField(max_length=100, null=True, blank=True)
+    categories = models.ManyToManyField(Category, null=True)
     name = models.CharField(max_length=100, null=True, blank=True)
     name_kana = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
@@ -104,7 +111,7 @@ class Picture(models.Model):
 
 class Tool(models.Model):
     def __str__(self):
-        return self.jp_title + "({0})".format(self.en_title)
+        return self.jp_title
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
 
@@ -118,7 +125,7 @@ class Equipment(models.Model):
 
 class Mood(models.Model):
     def __str__(self):
-        return self.jp_title + "({0})".format(self.en_title)
+        return self.jp_title
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
 
@@ -170,3 +177,6 @@ class BrowseHistory(models.Model):
         if commit:
             super(BrowseHistory, self).save()
         return self
+
+
+

@@ -6,7 +6,7 @@ from django.http import HttpResponse, Http404
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from .models import *
-from .forms import UserForm, MoodForm, ContactForm, UserEditForm
+from .forms import UserForm, MoodForm, NarrowDownForm, ContactForm, UserEditForm
 from .utils import Places
 
 
@@ -42,23 +42,26 @@ def recommend_form(request):
 
 def preference_form(request):
     if request.method == 'POST':
-        searched_places = Place.objects.filter(id__in=request.POST.getlist('place_id_list[]'))
-        checked_list = request.POST.getlist('categories[]')
-        searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
-        checked_list = request.POST.getlist('moods[]')
-        place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point')).filter(total_point__gte=2)
-        searched_places = functools.reduce(lambda a, b: a.filter(id__in=[item['place'] for item in place_points.filter(mood__en_title=b)]),
-                                           checked_list, searched_places)
-        checked_list = request.POST.getlist('tools[]')
-        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b),
-                                           checked_list, searched_places)
-        places = get_place_picture_list(searched_places)
-        places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-        return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
-    moods = Mood.objects.all()
-    tools = Tool.objects.all()
-    return render_to_response('preference_form.html', {'moods': moods, 'tools': tools},
-                              context_instance=RequestContext(request))
+        searched_places = Place.objects.all()
+        # searched_places = Place.objects.filter(id__in=request.POST.getlist('place_id_list[]'))
+        narrow_down_form = NarrowDownForm(request.POST)
+        if narrow_down_form.is_valid():
+            #searched_places = searched_places.filter(categories=narrow_down_form.cleaned_data['categories'])
+            print(searched_places)
+            place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point')).filter(total_point__gte=2)
+            searched_places = searched_places.filter(id__in=[item['place'] for item in place_points.filter(mood=narrow_down_form.cleaned_data['moods'])])
+            print(place_points.filter(mood=narrow_down_form.cleaned_data['moods']))
+            print(searched_places)
+            searched_places = searched_places.filter(equipment__tool=narrow_down_form.cleaned_data['tools'])
+            print(searched_places)
+            places = get_place_picture_list(searched_places)
+            places = sorted(places, key=lambda x: x['total_point'], reverse=True)
+
+            return render(request, 'map.html', {'places': places})
+
+    return render(request, 'preference_form.html', {'narrow_down_form': NarrowDownForm()})
+
+
 def maps(request):
     if request.method == 'GET':
         address = request.GET.get('address', '')
