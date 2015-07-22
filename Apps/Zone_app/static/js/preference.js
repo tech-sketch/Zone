@@ -23,7 +23,7 @@ function showPreference(html){
             return $(this).attr("id");
         }).get()
         $("#loading").fadeOut("quick");
-        $.post("/preference_form/", $('#narrow_down').serialize());
+        $.post("/preference_form/", $('#narrow_down').serialize(), loadPlaces);
 });
 }
 
@@ -32,7 +32,7 @@ $(".preference").on("click", function(){
     $.get('/preference_form/', function(html){
         $("#loading").fadeOut("quick");
         showPreference(html);
-
+        $('[name=place_list]').attr('value', placeIdList);
         $('#preference_form input[type=checkbox]').each(function(i, thisCheckBox){
             rememberChecked(thisCheckBox, itemChecked);
         });

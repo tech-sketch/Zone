@@ -42,22 +42,16 @@ def recommend_form(request):
 
 def preference_form(request):
     if request.method == 'POST':
-        searched_places = Place.objects.all()
-        # searched_places = Place.objects.filter(id__in=request.POST.getlist('place_id_list[]'))
-        narrow_down_form = NarrowDownForm(request.POST)
-        if narrow_down_form.is_valid():
-            #searched_places = searched_places.filter(categories=narrow_down_form.cleaned_data['categories'])
-            print(searched_places)
-            place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point')).filter(total_point__gte=2)
-            searched_places = searched_places.filter(id__in=[item['place'] for item in place_points.filter(mood=narrow_down_form.cleaned_data['moods'])])
-            print(place_points.filter(mood=narrow_down_form.cleaned_data['moods']))
-            print(searched_places)
-            searched_places = searched_places.filter(equipment__tool=narrow_down_form.cleaned_data['tools'])
-            print(searched_places)
-            places = get_place_picture_list(searched_places)
-            places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-
-            return render(request, 'map.html', {'places': places})
+        place_list = request.POST['place_list'].split(',')
+        form = NarrowDownForm(request.POST)
+        if form.is_valid():
+            places = Places(place_list)
+            places.filter_by_categories(form.cleaned_data['categories'])
+            places.filter_by_moods(form.cleaned_data['moods'])
+            places.filter_by_tools(form.cleaned_data['tools'])
+            places.to_picture_list()
+            places.sort_by('total_point')
+            return render(request, 'map.html', {'places': places.get_places()})
 
     return render(request, 'preference_form.html', {'narrow_down_form': NarrowDownForm()})
 
@@ -80,11 +74,8 @@ def search(request):
         place_name = request.GET.get('place_name', '')
         places = Places()
         places.filter_by_name(place_name)
-        print(places.get_places())
         places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
-        print(places.get_places())
         places.sort_by()
-        places.to_picture_list()
         return render(request, 'map.html', {'places': places.get_places()})
     else:
         return Http404
