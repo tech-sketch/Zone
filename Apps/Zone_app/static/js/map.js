@@ -6,7 +6,7 @@ var defaultMapOptions = {
     zoom: defaultZoom
 };
 var currentPositionZoom = 17;
-var map = new google.maps.Map(document.getElementById('map-canvas'), defaultMapOptions);
+var map = new google.maps.Map($('#map-canvas').get(0), defaultMapOptions);
 
 var userMarker = null;
 var markerImg = new google.maps.MarkerImage(

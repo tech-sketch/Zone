@@ -31,7 +31,6 @@ function showPreference(html){
         toolsChecked = $('[name=tool]:checked').map(function(index, element){
             return $(this).val();
         }).get()
-
         $("#loading").fadeOut("quick");
         $.post("/preference_form/", {categories: categoriesChecked, moods: moodsChecked, tools: toolsChecked, place_id_list: placeIdList}, loadPlaces);
 });
