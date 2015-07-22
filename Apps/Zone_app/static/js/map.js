@@ -25,12 +25,10 @@ var overlayList = new google.maps.MVCArray();
 var placeIdList = [];
 
 function start(){
+
     if(!$('[name=address]').val())getLocation();
-    if(!map)map = new google.maps.Map($('#map-canvas').get(0), defaultMapOptions);
     geocoder = new google.maps.Geocoder();
-    google.maps.event.addListenerOnce(map, 'bounds_changed', function(){
-        searchPlaces();
-    });
+
 }
 
 function getLocation(){
@@ -38,6 +36,7 @@ function getLocation(){
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
     }else{
+        initMap(defaultMapOptions);
         alert('ブラウザが位置情報取得に対応しておりません。');
     }
     $('#loading').fadeOut("quick");
@@ -45,18 +44,17 @@ function getLocation(){
 
 function successCallback(position){
     var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    if(!map){
-        var mapOptions = {
+    var mapOptions = {
             center: latLng,
             zoom: currentPositionZoom
-        };
-        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    }
+    };
+    initMap(mapOptions)
     map.setCenter(latLng);
     setUserMarker(latLng.lat(), latLng.lng());
 }
 
 function errorCallback(error){
+    initMap(defaultMapOptions);
     alert('位置情報が取得できません。');
 }
 
@@ -107,7 +105,14 @@ function setCurrentPosition(){
     }
 }
 
-
+function initMap(option){
+    if(!map){
+        map = new google.maps.Map($('#map-canvas').get(0), option);
+        google.maps.event.addListenerOnce(map, 'bounds_changed', function(){
+            searchPlaces();
+        });
+    }
+}
 
 $('#loading').fadeOut("quick");
 google.maps.event.addDomListener(window, 'load', start);
