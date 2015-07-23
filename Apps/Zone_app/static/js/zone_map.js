@@ -8,17 +8,15 @@ var __extends = this.__extends || function (d, b) {
 /// <reference path="google.maps.d.ts"/>
 /// <reference path="bootbox.d.ts"/>
 var ZoneMap = (function () {
-    function ZoneMap(map, geocoder, currentPositionZoom, defaultMapOptions) {
+    function ZoneMap(defaultMapOptions, markerImg) {
         var _this = this;
-        this.map = map;
-        this.geocoder = geocoder;
-        this.currentPositionZoom = currentPositionZoom;
         this.defaultMapOptions = defaultMapOptions;
+        this.markerImg = markerImg;
         this.successCallback = function (position) {
             var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             var mapOptions = {
                 center: latLng,
-                zoom: _this.currentPositionZoom
+                zoom: ZoneMap.currentPositionZoom
             };
             _this.initMap(mapOptions);
             _this.map.setCenter(latLng);
@@ -28,18 +26,18 @@ var ZoneMap = (function () {
             _this.initMap(_this.defaultMapOptions);
             alert('位置情報が取得できません。');
         };
-        this.markerImg = new google.maps.MarkerImage(
-        // マーカーの画像URL
-        "/static/images/man.png", 
-        // マーカーのサイズ
-        new google.maps.Size(32, 32), 
-        // 画像の基準位置
-        new google.maps.Point(0, 0), 
-        // Anchorポイント
-        new google.maps.Point(10, 24));
         this.userMarker = null;
-        this.overlayList = [];
+        this.overlayList = new google.maps.MVCArray();
+        this.markerList = new google.maps.MVCArray();
     }
+    ZoneMap.prototype.load = function () {
+        if (!$('[name=address]').val()) {
+            this.getLocation();
+        }
+        else {
+            this.initMap(this.defaultMapOptions);
+        }
+    };
     ZoneMap.prototype.setUserMarker = function (lat, lng) {
         this.userMarker = new google.maps.Marker({
             position: new google.maps.LatLng(lat, lng),
@@ -51,16 +49,12 @@ var ZoneMap = (function () {
             content: "現在地"
         }).open(this.map, this.userMarker);
     };
-    ZoneMap.prototype.start = function () {
-        if (!$('[name=address]').val()) {
-            this.getLocation();
-        }
-    };
     ZoneMap.prototype.initMap = function (option) {
+        var _this = this;
         if (!this.map) {
             this.map = new google.maps.Map($('#map-canvas').get(0), option);
             google.maps.event.addListenerOnce(this.map, 'bounds_changed', function () {
-                searchPlaces();
+                searchPlaces(_this);
             });
         }
     };
@@ -75,7 +69,7 @@ var ZoneMap = (function () {
         }
         $('#loading').fadeOut("quick");
     };
-    ZoneMap.prototype.setCurrentCenter = function () {
+    ZoneMap.prototype.panToCurrentCenter = function () {
         if (this.userMarker) {
             this.map.setCenter(this.userMarker.getPosition());
         }
@@ -84,7 +78,7 @@ var ZoneMap = (function () {
         }
     };
     ZoneMap.prototype.setPlace = function (place) {
-        var placeMaker = new google.maps.Marker({
+        var placeMarker = new google.maps.Marker({
             position: new google.maps.LatLng(place.getLat(), place.getLng()),
             map: this.map,
             title: place.getName()
@@ -94,11 +88,29 @@ var ZoneMap = (function () {
             maxHeight: 250,
             content: place.getName()
         });
-        this.addPlaceListener(placeMaker, placeInfoWindow, place);
+        this.markerList.push(placeMarker);
+        this.addPlaceListener(placeMarker, placeInfoWindow, place);
         this.setOverlayText(name, place.getLat(), place.getLng());
     };
     ZoneMap.prototype.setOverlayText = function (name, lat, lng) {
         this.overlayList.push(new NameMarker(lat, lng, this.map));
+    };
+    ZoneMap.prototype.clearOverlayList = function () {
+        this.overlayList.clear();
+    };
+    ZoneMap.prototype.clearMarkerList = function () {
+        this.markerList.clear();
+    };
+    ZoneMap.prototype.getOverlayList = function () {
+        //ディープコピーして返却
+        return $.extend(true, new google.maps.MVCArray(), this.overlayList);
+    };
+    ZoneMap.prototype.getMarkerList = function () {
+        //ディープコピーして返却
+        return $.extend(true, new google.maps.MVCArray(), this.getMarkerList);
+    };
+    ZoneMap.prototype.getBounds = function () {
+        return this.map.getBounds();
     };
     ZoneMap.prototype.addPlaceListener = function (placeMarker, placeInfoWindow, place) {
         var _this = this;
@@ -112,22 +124,17 @@ var ZoneMap = (function () {
         var closeInfoWindow = function () {
             placeInfoWindow.close(_this.map, placeMarker);
         };
-        var position = place.getLocationCard().offset().top - place.getLocationCard().parent('div').offset().top;
-        place.getLocationCard().on("click", function () {
-            $("#loading").fadeIn("quick");
-            $.get('/detail/' + this.placeId, function (html) {
-                $("#loading").fadeOut("quick");
-                showDetail(html);
-            });
-        });
-        place.getLocationCard().hover(openInfoWindow, closeInfoWindow);
-        google.maps.event.addListener(placeMarker, 'click', function () {
+        var loadDetail = function () {
             $("#loading").fadeIn("quick");
             $.get('/detail/' + place.getId(), function (html) {
                 $("#loading").fadeOut("quick");
                 showDetail(html);
             });
-        });
+        };
+        var position = place.getLocationCard().offset().top - place.getLocationCard().parent('div').offset().top;
+        place.getLocationCard().on("click", loadDetail);
+        place.getLocationCard().hover(openInfoWindow, closeInfoWindow);
+        google.maps.event.addListener(placeMarker, 'click', loadDetail);
         google.maps.event.addListener(placeMarker, "mouseover", function () {
             openInfoWindow();
             place.getLocationCard().parent('div').animate({ scrollTop: position }, 'normal');
@@ -137,11 +144,8 @@ var ZoneMap = (function () {
             closeInfoWindow();
             place.getLocationCard().attr('style', '');
         });
-        /*
-        if(placeIdList.indexOf(placeId) == -1){
-            placeIdList.push(placeId);
-        }*/
     };
+    ZoneMap.currentPositionZoom = 15;
     return ZoneMap;
 })();
 var NameMarker = (function (_super) {
@@ -161,8 +165,9 @@ var NameMarker = (function (_super) {
         this.div_ = document.createElement("div");
         this.div_.style.position = "absolute";
         var zoom_level = this.map.getZoom();
-        if (zoom_level > 14)
+        if (zoom_level > 14) {
             this.div_.style.fontSize = this.map.getZoom() * this.map.getZoom() * 0.4 + "%";
+        }
         this.div_.innerHTML = name;
         // 要素を追加する子を取得
         var panes = this.getPanes();
@@ -193,11 +198,6 @@ var NameMarker = (function (_super) {
     };
     return NameMarker;
 })(google.maps.OverlayView);
-var Places = (function () {
-    function Places() {
-    }
-    return Places;
-})();
 var Place = (function () {
     function Place(id, name, lat, lng, locationCard) {
         this.id = id;
@@ -223,109 +223,37 @@ var Place = (function () {
     };
     return Place;
 })();
-function searchPlaces() {
-}
-function showDetail(html) {
-    bootbox.dialog({
-        title: "",
-        message: html,
-        size: "large",
-        buttons: {
-            checkIn: {
-                label: "チェックイン（10ポイントゲット）",
-                className: "btn-primary",
-                callback: detailCheckIn
-            },
-            recommend: {
-                label: "この場所をおすすめする",
-                className: "btn-primary",
-                callback: detailRecommend
-            },
-        }
-    });
-}
-var checkInPlaceId = 0;
-function checkIn(placeId) {
-    if (navigator.geolocation) {
-        checkInPlaceId = placeId;
-        navigator.geolocation.getCurrentPosition(checkSuccessCallback, checkErrorCallback);
+$('#loading').fadeOut("quick");
+//ここからトップレベル記述
+var defaultLatLng = new google.maps.LatLng(35.682323, 139.765955); //東京駅
+var defaultZoom = 15;
+var defaultMapOptions = {
+    center: defaultLatLng,
+    zoom: defaultZoom
+};
+var markerImg = new google.maps.MarkerImage(
+// マーカーの画像URL
+"/static/images/man.png", 
+// マーカーのサイズ
+new google.maps.Size(32, 32), 
+// 画像の基準位置
+new google.maps.Point(0, 0), 
+// Anchorポイント
+new google.maps.Point(10, 24));
+var zoneMap = new ZoneMap(defaultMapOptions, markerImg);
+zoneMap.load();
+var placeList = [];
+function createPlaces(zoneMap) {
+    var length = $("[id = name]").length;
+    for (var i = 0; i < length; i++) {
+        var name = $($("[id=name]")[i]).attr("value");
+        var lat = Number($($("[id=latitude]")[i]).attr("value"));
+        var lng = Number($($("[id=longitude]")[i]).attr("value"));
+        var placeId = Number($($("[id=place_id]")[i]).attr("value"));
+        var locationCard = $($("[class=location_card]")[i]);
+        var place = new Place(placeId, name, lat, lng, locationCard);
+        placeList.push(place);
+        zoneMap.setPlace(place);
     }
-    else {
-        alert('ブラウザが位置情報取得に対応しておりません');
-    }
-}
-function detailCheckIn() {
-    if ($("#user_auth").attr("value") == "False") {
-        location.href = "/new";
-    }
-    checkIn($("#detail_place_id").attr("value"));
-}
-function addPoint() {
-    $.get('/add_point', { place_id: checkInPlaceId }, function (data) {
-        $("#user_point").text("現在のpoint:" + data.split(",")[0]);
-        bootbox.alert(data.split(',')[1]);
-    });
-}
-function checkSuccessCallback(position) {
-    var placeX = $("#detail_lng").attr("value");
-    var placeY = $("#detail_lat").attr("value");
-    var userX = position.coords.longitude;
-    var userY = position.coords.latitude;
-    if (cal_length(placeX, placeY, userX, userY) < 50) {
-        addPoint();
-    }
-    else {
-        bootbox.alert("その場所にいません");
-    }
-}
-function checkErrorCallback(error) {
-    bootbox.alert("位置情報が取得できませんでした");
-}
-function cal_length(placeX, placeY, userX, userY) {
-    placeX = placeX * Math.PI / 180.0;
-    placeY = placeY * Math.PI / 180.0;
-    userX = userX * Math.PI / 180.0;
-    userY = userY * Math.PI / 180.0;
-    var A = 6378137; // 地球の赤道半径(6378137m)
-    var x = A * (userX - placeX) * Math.cos(placeY);
-    var y = A * (userY - placeY);
-    var L = Math.sqrt(x * x + y * y); // メートル単位の距離
-    return L;
-}
-var recommendPlaceId = 0;
-function showRecommendForm(html, placeId) {
-    recommendPlaceId = placeId;
-    bootbox.dialog({
-        title: "この場所をおすすめする",
-        message: html,
-        buttons: {
-            success: {
-                label: "Save",
-                className: "btn-success",
-                callback: saveRecommend
-            }
-        }
-    });
-}
-function detailRecommend() {
-    if ($("#user_auth").attr("value") == "False") {
-        location.href = "/new";
-    }
-    $.get("/recommend_form/", function (html) {
-        showRecommendForm(html, $("#detail_place_id").attr("value"));
-    });
-}
-function saveRecommend() {
-    var point = $("#point").val();
-    var moods = [];
-    var answer = $("input[name='moods']:checked").each(function (index, element) {
-        moods.push($(element).val());
-    });
-    var place = $("#recommend").attr("value");
-    $.post("/save_recommend/", { point: point, moods: moods, place: recommendPlaceId }, function (data) {
-        $("#user_point").text("現在のpoint:" + data.split(",")[1]);
-        $("#total_point_" + recommendPlaceId).text("合計ポイント:" + data.split(",")[2] + "point");
-        bootbox.alert(data.split(',')[0]);
-    });
 }
 //# sourceMappingURL=map.js.map
