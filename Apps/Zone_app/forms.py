@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm
 from django import forms
-from .models import NomadUser, Mood, Tool, Category, Contact
+from .models import NomadUser, Mood, Tool, Category, Contact, PlacePoint
 
 
 class UserForm(ModelForm):
@@ -36,6 +36,16 @@ class NarrowDownForm(forms.Form):
 class MoodForm(forms.Form):
     moods = forms.ModelMultipleChoiceField(Mood.objects.all(), required=True, widget=forms.CheckboxSelectMultiple(),
                                            label='Select Mood')
+
+
+class PlacePointForm(ModelForm):
+    place = forms.HiddenInput()
+    point = forms.IntegerField(max_value=100, min_value=1)
+
+    class Meta:
+        model = PlacePoint
+        field = ('place', 'point', 'mood')
+
 
 
 class ContactForm(ModelForm):
