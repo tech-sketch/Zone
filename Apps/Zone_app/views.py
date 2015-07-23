@@ -26,11 +26,9 @@ def recommend(request):
     place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
     recommend_rank = place_points.filter(mood=user_preferences).values('place').annotate(total_point=Sum('point')).order_by('-total_point')
     recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
-    picture_url = recommend_place.get_pictures_url()[0]
     wifi = recommend_place.get_wifi_list()
     return render_to_response('detail.html',
-                              {'place': recommend_place, 'picture_url': picture_url,
-                               "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
+                              {'place': recommend_place, "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
 
 
 def recommend_form(request):
@@ -46,9 +44,8 @@ def narrow_down(request):
         if form.is_valid():
             places = Places(place_list)
             places.filter_by_categories(form.cleaned_data['categories'])
-            places.filter_by_moods(form.cleaned_data['moods'])
+            places.filter_by_moods(form.cleaned_data['moods'], point_gte=2)
             places.filter_by_tools(form.cleaned_data['tools'])
-            places.to_picture_list()
             places.sort_by()
             return render(request, 'map.html', {'places': places.get_places()})
     return render(request, 'preference_form.html', {'narrow_down_form': NarrowDownForm()})
@@ -85,10 +82,8 @@ def detail(request, place_id):
     if user.is_authenticated():
         browse_history = BrowseHistory()
         browse_history.save(user, place)
-    picture_url = place.get_pictures_url()[0]
     wifi = place.get_wifi_list()
-    return render(request, 'detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
-                               "picture_url": picture_url})
+    return render(request, 'detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet')})
 
 
 def signup(request):
@@ -182,8 +177,5 @@ def add_point(request):
     CheckInHistory(nomad=request.user, place=place).save()
     return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
 
-
-def get_place_picture_list(places):
-    return [place.get_dict() for place in places]
 
 

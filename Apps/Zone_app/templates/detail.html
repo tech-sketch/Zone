@@ -7,7 +7,7 @@
 <hidden type="input" id="detail_lng" value="{{ place.longitude }}"></hidden>
 
 <div class="top_picture">
-    <img src={{ picture_url }} alt={{ place.name }} style="width: 250pt; height: 250pt; float: left; margin: 0 15pt 0 0;"/>
+    <img src={{ place.get_main_picture_url }} alt={{ place.name }} style="width: 250pt; height: 250pt; float: left; margin: 0 15pt 0 0;"/>
     <div id="detail_info" style="overflow: auto;">
         <div id="detail_total_point">
             <b>合計ポイント:</b>{{place.total_point}}point<br/>
