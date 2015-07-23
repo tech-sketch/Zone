@@ -23,11 +23,7 @@
                 <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
                 <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
                 <div class="place_picture">
-                {%if place.picture%}
-                    <img src="{{ place.picture }}" alt="{{ place.name }}">
-                {% else %}
-                    <img src="/media/no_image.png" alt="{{ place.name }}">
-                {% endif %}
+                <img src="{{ place.get_main_picture_url }}" alt="{{ place.name }}">
                 </div>
                 <div class="place_name">
                         <h4>{{place.name}}</h4>
@@ -36,12 +32,9 @@
                     <div id="total_point_{{place.id}}">
                         合計ポイント:{{place.total_point}}point
                     </div>
-                    wi-fi：
-                    {% if place.wifi %}
-                        {{ place.wifi }}
-                    {% endif %}
+                    wi-fi：{{ place.get_wifi_carrier_list|join:", " }}
                     <br>電源：
-                    {% if place.outlet %}
+                    {% if place.has_outlet %}
                         あり
                     {% endif %}
 

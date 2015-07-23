@@ -12,22 +12,16 @@
         <div id="detail_total_point">
             <b>合計ポイント:</b>{{place.total_point}}point<br/>
         </div>
-        <b>wi-fi：</b>
-        {% if wifi %}
-            {{ wifi }}
-        {% endif %}
+        <b>wi-fi：</b>{{place.get_wifi_carrier_list|join:", "}}
         <br><b>電源：</b>
-        {% if outlet %}
+        {% if place.has_outlet %}
             あり
         {% endif %}
-        <br><b>電話番号:</b>
-        {{place.tell}}
+        <br><b>電話番号:</b>{{place.tell}}
         <br>
-        <b>URL：</b>
-        <a href=" {{place.URL_PC}} " target="_blank"> {{place.url_pc}}</a>
+        <b>URL：</b><a href=" {{place.URL_PC}} " target="_blank"> {{place.url_pc}}</a>
         <br>
-        <b>営業時間:</b>
-        {{place.open_time}}
+        <b>営業時間:</b>{{place.open_time}}
         <br>
         <br>
         <p style="background-color: #EEEEEE; line-height: 18pt;">{{place.pr}}</p>

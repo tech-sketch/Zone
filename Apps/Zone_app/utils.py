@@ -77,7 +77,6 @@ class Places(object):
 
     def __init__(self, placeID_list=None):
         self._places = Place.objects.filter(id__in=placeID_list) if placeID_list is not None else Place.objects.all()
-        self._picture_list = []
 
     def get_places(self):
         return self._places
@@ -93,11 +92,11 @@ class Places(object):
         for category in category_list:
             self._places = self._places.filter(categories=category)
 
-    def filter_by_moods(self, mood_list):
+    def filter_by_moods(self, mood_list, point_gte=1):
         place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
-        place_points = place_points.filter(total_point__gte=2)
+        place_points = place_points.filter(total_point__gte=point_gte)
         for mood in mood_list:
-            id_list=[item['place'] for item in place_points.filter(mood=mood)]
+            id_list = [item['place'] for item in place_points.filter(mood=mood)]
             self._places = self._places.filter(id__in=id_list)
 
     def filter_by_tools(self, tool_list):
@@ -106,6 +105,3 @@ class Places(object):
 
     def sort_by(self, name='total_point'):
         self._places = sorted(self._places, key=attrgetter(name), reverse=True)
-
-    def to_picture_list(self):
-        self._picture_list = [place.get_dict() for place in self._places]

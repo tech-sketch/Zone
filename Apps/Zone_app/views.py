@@ -26,9 +26,8 @@ def recommend(request):
     place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
     recommend_rank = place_points.filter(mood=user_preferences).values('place').annotate(total_point=Sum('point')).order_by('-total_point')
     recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
-    wifi = recommend_place.get_wifi_list()
     return render_to_response('detail.html',
-                              {'place': recommend_place, "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
+                              {'place': recommend_place})
 
 
 def recommend_form(request):
@@ -82,8 +81,7 @@ def detail(request, place_id):
     if user.is_authenticated():
         browse_history = BrowseHistory()
         browse_history.save(user, place)
-    wifi = place.get_wifi_list()
-    return render(request, 'detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet')})
+    return render(request, 'detail.html', {"place": place})
 
 
 def signup(request):
