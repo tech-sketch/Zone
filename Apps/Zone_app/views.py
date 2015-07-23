@@ -2,7 +2,6 @@ from django.template import RequestContext
 from django.shortcuts import render, render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
-from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import UserForm, MoodForm, NarrowDownForm, ContactForm, UserEditForm
@@ -33,10 +32,10 @@ def recommend(request):
 
 
 @login_required
-def recommend_form(request):
+def pay_points(request):
     if request.method == 'GET':
         moods = Mood.objects.all()
-        return render(request, "recommend_form.html", {"user": request.user, "moods": moods})
+        return render(request, "pay_points.html", {"user": request.user, "moods": moods})
     if request.method == 'POST':
         place = Place.objects.get(id=request.POST['place'])
         if request.POST['point'] is "":

@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^detail/(?P<place_id>[0-9]+)$', views.detail, name='detail'),
     url(r'^add_point/$', views.add_point, name='add_point'),
     url(r'^recommend/$', views.recommend, name='recommend'),
-    url(r'^recommend_form/$', views.recommend_form, name='recommend_form'),
+    url(r'^pay_points/$', views.pay_points, name='pay_points'),
     url(r'^narrow_down/$', views.narrow_down, name='narrow_down'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
