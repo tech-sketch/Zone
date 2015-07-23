@@ -2,15 +2,10 @@
 // ======================
 function searchPlaces(){
     $("#loading").fadeIn("quick");
-    var ref = location.pathname;
-    if(ref == "/map/"){
-        if($('[name=address]').val()){
-            codeAddress();
-        } else{
-            fetchPlaces();
-        }
+    if($('[name=address]').val()){
+        codeAddress();
     } else{
-        $('#search_form').submit();
+        fetchPlaces();
     }
     $("#loading").fadeOut("quick");
 }

@@ -25,10 +25,12 @@ var overlayList = new google.maps.MVCArray();
 var placeIdList = [];
 
 function start(){
-
-    if(!$('[name=address]').val())getLocation();
     geocoder = new google.maps.Geocoder();
-
+    if(!$('[name=address]').val()){
+        getLocation();
+    } else{
+        initMap(defaultMapOptions)
+    }
 }
 
 function getLocation(){

@@ -54,8 +54,7 @@ def maps(request):
     if request.method == 'GET':
         address = request.GET.get('address', '')
         place_name = request.GET.get('place_name', '')
-        moods = Mood.objects.all()
-        return render(request, 'map.html', {'address': address, 'place_name': place_name, 'moods': moods})
+        return render(request, 'map.html', {'address': address, 'place_name': place_name})
     return Http404
 
 
