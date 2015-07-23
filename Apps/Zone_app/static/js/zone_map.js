@@ -26,7 +26,6 @@ var ZoneMap = (function () {
             _this.initMap(_this.defaultMapOptions);
             alert('位置情報が取得できません。');
         };
-        this.userMarker = null;
         this.overlayList = new google.maps.MVCArray();
         this.markerList = new google.maps.MVCArray();
     }
@@ -111,6 +110,12 @@ var ZoneMap = (function () {
     };
     ZoneMap.prototype.getBounds = function () {
         return this.map.getBounds();
+    };
+    ZoneMap.prototype.setCenter = function (location) {
+        this.map.setCenter(location);
+    };
+    ZoneMap.prototype.fitBounds = function (bounds) {
+        this.map.fitBounds(bounds);
     };
     ZoneMap.prototype.addPlaceListener = function (placeMarker, placeInfoWindow, place) {
         var _this = this;
@@ -223,8 +228,8 @@ var Place = (function () {
     };
     return Place;
 })();
-$('#loading').fadeOut("quick");
 //ここからトップレベル記述
+$('#loading').fadeOut("quick");
 var defaultLatLng = new google.maps.LatLng(35.682323, 139.765955); //東京駅
 var defaultZoom = 15;
 var defaultMapOptions = {
@@ -244,7 +249,7 @@ var zoneMap = new ZoneMap(defaultMapOptions, markerImg);
 zoneMap.load();
 var placeList = [];
 function createPlaces(zoneMap) {
-    var length = $("[id = name]").length;
+    var length = $("[id=name]").length;
     for (var i = 0; i < length; i++) {
         var name = $($("[id=name]")[i]).attr("value");
         var lat = Number($($("[id=latitude]")[i]).attr("value"));
