@@ -21,13 +21,15 @@ def index(request):
         return render(request, 'index.html', {'contact_form': ContactForm()})
 
 
+@login_required
 def recommend(request):
-    user_preferences = Preference.objects.filter(nomad=request.user).values('mood')
-    place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
-    recommend_rank = place_points.filter(mood=user_preferences).values('place').annotate(total_point=Sum('point')).order_by('-total_point')
-    recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
-    return render_to_response('detail.html',
-                              {'place': recommend_place})
+    user_preferences = Mood.objects.filter(preference__nomad=request.user)
+    places = Places()
+    places.filter_by_moods(user_preferences)
+    if len(places.get_places()) == 0:  # preferenceにマッチするものがなければtotal_pointの最上位をrecommend
+        places = Places()
+    places.sort_by('total_point')
+    return render(request, 'detail.html', {'place': places.get_places()[0]})
 
 
 def recommend_form(request):
@@ -45,7 +47,7 @@ def narrow_down(request):
             places.filter_by_categories(form.cleaned_data['categories'])
             places.filter_by_moods(form.cleaned_data['moods'], point_gte=2)
             places.filter_by_tools(form.cleaned_data['tools'])
-            places.sort_by()
+            places.sort_by('total_point')
             return render(request, 'map.html', {'places': places.get_places()})
     return render(request, 'preference_form.html', {'narrow_down_form': NarrowDownForm()})
 
@@ -68,7 +70,7 @@ def search(request):
         places = Places()
         places.filter_by_name(place_name)
         places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
-        places.sort_by()
+        places.sort_by('total_point')
         return render(request, 'map.html', {'places': places.get_places()})
     else:
         return Http404
