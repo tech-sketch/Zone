@@ -1,6 +1,6 @@
 <div id="preference_form">
     <form method="post" id="narrow_down">
-        <input type="hidden" name="place_list" value="">
+        <input type="hidden" name="place_list">
         {% csrf_token %}
         <dl><dt>ジャンル</dt>
             {% for category in narrow_down_form.categories %}

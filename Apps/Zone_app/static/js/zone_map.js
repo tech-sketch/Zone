@@ -89,15 +89,21 @@ var ZoneMap = (function () {
         });
         this.markerList.push(placeMarker);
         this.addPlaceListener(placeMarker, placeInfoWindow, place);
-        this.setOverlayText(name, place.getLat(), place.getLng());
+        this.setOverlayText(place.getName(), place.getLat(), place.getLng());
     };
     ZoneMap.prototype.setOverlayText = function (name, lat, lng) {
         this.overlayList.push(new NameMarker(lat, lng, this.map));
     };
     ZoneMap.prototype.clearOverlayList = function () {
+        this.overlayList.forEach(function(overlay){
+            overlay.toggleDOM();
+        });
         this.overlayList.clear();
     };
     ZoneMap.prototype.clearMarkerList = function () {
+        this.markerList.forEach(function(marker){
+        marker.setMap(null);
+        });
         this.markerList.clear();
     };
     ZoneMap.prototype.getOverlayList = function () {
@@ -142,6 +148,7 @@ var ZoneMap = (function () {
         google.maps.event.addListener(placeMarker, 'click', loadDetail);
         google.maps.event.addListener(placeMarker, "mouseover", function () {
             openInfoWindow();
+            console.log(place.getLocationCard().offset().top)
             place.getLocationCard().parent('div').animate({ scrollTop: position }, 'normal');
             place.getLocationCard().attr('style', 'background-color: #f5f5f5;');
         });
@@ -245,10 +252,10 @@ new google.maps.Size(32, 32),
 new google.maps.Point(0, 0), 
 // Anchorポイント
 new google.maps.Point(10, 24));
-var zoneMap = new ZoneMap(defaultMapOptions, markerImg);
-zoneMap.load();
-var placeList = [];
-function createPlaces(zoneMap) {
+var map = new ZoneMap(defaultMapOptions, markerImg);
+map.load();
+var placeIdList = [];
+function createPlaces(map) {
     var length = $("[id=name]").length;
     for (var i = 0; i < length; i++) {
         var name = $($("[id=name]")[i]).attr("value");
@@ -257,8 +264,8 @@ function createPlaces(zoneMap) {
         var placeId = Number($($("[id=place_id]")[i]).attr("value"));
         var locationCard = $($("[class=location_card]")[i]);
         var place = new Place(placeId, name, lat, lng, locationCard);
-        placeList.push(place);
-        zoneMap.setPlace(place);
+        placeIdList.push(placeId);
+        map.setPlace(place);
     }
 }
 //# sourceMappingURL=map.js.map

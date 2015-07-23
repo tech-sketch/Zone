@@ -22,7 +22,9 @@ function showPreference(html){
             return $(this).attr("id");
         }).get();
         $("#loading").fadeOut("quick");
-        $.post("/narrow_down/", $('#narrow_down').serialize(), loadPlaces);
+        $.post("/narrow_down/", $('#narrow_down').serialize(), function(response){
+            loadPlaces(response, map);
+        });
 });
 };
 

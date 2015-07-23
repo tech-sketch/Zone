@@ -58,7 +58,7 @@ def recommend_form(request):
 
 def narrow_down(request):
     if request.method == 'POST':
-        place_list = request.POST['place_list'].split(',')
+        place_list = request.POST['place_list'].split(',') if request.POST['place_list'] != '' else []
         form = NarrowDownForm(request.POST)
         if form.is_valid():
             places = Places(place_list)
