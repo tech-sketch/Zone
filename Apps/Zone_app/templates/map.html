@@ -51,18 +51,19 @@
 
 <link href="{% static 'css/map.css' %}" rel="stylesheet">
 <link href="{% static 'css/preference_form.css' %}" rel="stylesheet">
+<script src="{% static 'js/check_in.js' %}"></script>
+<script src="{% static 'js/recommend_logic.js' %}"></script>
 <script src="{% static 'js/show_detail.js' %}"></script>
 <script src="{% static 'js/preference.js' %}"></script>
-<script src="{% static 'js/map.js' %}"></script>
-<script src="{% static 'js/CSRF.js' %}"></script>
+<script src="{% static 'js/zone_map.js' %}"></script>
+
 
 {% if user.is_authenticated %}
 {% if user.display_recommend %}
-<script src="{% static 'js/show_recommend.js'%}"></script>
+
 {% endif %}
 {% endif %}
-<script src="{% static 'js/check_in.js' %}"></script>
-<script src="{% static 'js/recommend_logic.js' %}"></script>
+
 <script>
 $(document).on('click', '.bootbox', function (event) {
     if(event.target == this)bootbox.hideAll()

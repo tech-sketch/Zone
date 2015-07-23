@@ -1,7 +1,4 @@
 .idea
-*.ts
-*.map
-tsconfig.json
 Data/media/*
 !Data/media/icons
 Data/media/icons/*
