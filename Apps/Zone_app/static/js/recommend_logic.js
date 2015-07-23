@@ -17,9 +17,6 @@ function showRecommendForm(html, placeId){
 }
 
 function detailRecommend(){
-    if($("#user_auth").attr("value") == "False"){
-        location.href = "/new"
-    }
     $.get("/recommend_form/", function(html){
         showRecommendForm(html, $("#detail_place_id").attr("value"))
     })
@@ -32,7 +29,7 @@ function saveRecommend() {
         moods.push($(element).val());
     });
     var place = $("#recommend").attr("value");
-    $.post("/save_recommend/",{point: point, moods: moods, place: recommendPlaceId}, function(data){
+    $.post("/recommend_form/",{point: point, moods: moods, place: recommendPlaceId}, function(data){
         $("#user_point").text("現在のpoint:" + data.split(",")[1])
         $("#total_point_" + recommendPlaceId).text("合計ポイント:" + data.split(",")[2] + "point")
         bootbox.alert(data.split(',')[0])

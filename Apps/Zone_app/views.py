@@ -32,10 +32,28 @@ def recommend(request):
     return render(request, 'detail.html', {'place': places.get_places()[0]})
 
 
+@login_required
 def recommend_form(request):
-    moods = Mood.objects.all()
-    return render_to_response("recommend_form.html", {"user": request.user, "moods": moods},
-                              context_instance=RequestContext(request))
+    if request.method == 'GET':
+        moods = Mood.objects.all()
+        return render(request, "recommend_form.html", {"user": request.user, "moods": moods})
+    if request.method == 'POST':
+        place = Place.objects.get(id=request.POST['place'])
+        if request.POST['point'] is "":
+            return HttpResponse("ポイントを入力してください。, {0}, {1}".format(request.user.point, place.total_point))
+        if request.user.point < int(request.POST['point']):
+            return HttpResponse("ポイントが足りません。, {0}, {1}".format(request.user.point, place.total_point))
+        if len(request.POST.getlist('moods[]')) == 0:
+            return HttpResponse("好みを一つ以上選択してください。, {0}, {1}".format(request.user.point, place.total_point))
+        place.total_point += int(request.POST['point'])
+        for mood_en_title in request.POST.getlist('moods[]'):
+            mood = Mood.objects.get(en_title=mood_en_title)
+            PlacePoint(place=place, mood=mood, point=int(request.POST['point'])).save()
+        place.save()
+        request.user.point -= int(request.POST['point'])
+        request.user.save()
+        return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'],
+                                                                   request.user.point, place.total_point))
 
 
 def narrow_down(request):
@@ -145,25 +163,6 @@ def display_recommend(request):
     nomad_user.display_recommend = not nomad_user.display_recommend
     nomad_user.save()
     return redirect('/mypage')
-
-
-def save_recommend(request):
-    place = Place.objects.get(id=request.POST['place'])
-    if request.POST['point'] is "":
-        return HttpResponse("ポイントを入力してください。, {0}, {1}".format(request.user.point, place.total_point))
-    if request.user.point < int(request.POST['point']):
-        return HttpResponse("ポイントが足りません。, {0}, {1}".format(request.user.point, place.total_point))
-    if len(request.POST.getlist('moods[]')) == 0:
-        return HttpResponse("好みを一つ以上選択してください。, {0}, {1}".format(request.user.point, place.total_point))
-    place.total_point += int(request.POST['point'])
-    for mood_en_title in request.POST.getlist('moods[]'):
-        mood = Mood.objects.get(en_title=mood_en_title)
-        PlacePoint(place=place, mood=mood, point=int(request.POST['point'])).save()
-    place.save()
-    request.user.point -= int(request.POST['point'])
-    request.user.save()
-    return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'],
-                                                               request.user.point, place.total_point))
 
 
 def add_point(request):
