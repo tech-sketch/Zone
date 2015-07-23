@@ -41,11 +41,21 @@ class ZoneMap{
                 content: "現在地"
         }).open(this.map, this.userMarker);
     }
+    searchPlaces(){
+        $("#loading").fadeIn("quick");
+        if($('[name=address]').val()){
+            codeAddress(this.map);
+        }else{
+            fetchPlaces(this.map);
+        }
+        $("#loading").fadeOut("quick");
+    }
     private initMap(option: {}){
   		if(!this.map){
+            var self = this;
         	this.map = new google.maps.Map($('#map-canvas').get(0), option);
         	google.maps.event.addListenerOnce(this.map, 'bounds_changed', () => {
-            	searchPlaces(this);
+            	self.searchPlaces();
         	});
     	}
     }
@@ -107,6 +117,7 @@ class ZoneMap{
     fitBounds(bounds){
         this.map.fitBounds(bounds);
     }
+
     addPlaceListener(placeMarker: google.maps.Marker, placeInfoWindow, place: Place){
         var openInfoWindow = () => {
             if(this.currentInfoWindow){

@@ -1,4 +1,4 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -42,18 +42,28 @@ var ZoneMap = (function () {
             position: new google.maps.LatLng(lat, lng),
             map: this.map,
             title: "Your position",
-            icon: this.markerImg,
+            icon: this.markerImg
         });
         new google.maps.InfoWindow({
             content: "現在地"
         }).open(this.map, this.userMarker);
     };
+    ZoneMap.prototype.searchPlaces = function () {
+        $("#loading").fadeIn("quick");
+        if ($('[name=address]').val()) {
+            codeAddress(this.map);
+        }
+        else {
+            fetchPlaces(this.map);
+        }
+        $("#loading").fadeOut("quick");
+    };
     ZoneMap.prototype.initMap = function (option) {
-        var _this = this;
         if (!this.map) {
+            var self = this;
             this.map = new google.maps.Map($('#map-canvas').get(0), option);
             google.maps.event.addListenerOnce(this.map, 'bounds_changed', function () {
-                searchPlaces(_this);
+                self.searchPlaces();
             });
         }
     };
@@ -261,4 +271,3 @@ function createPlaces(zoneMap) {
         zoneMap.setPlace(place);
     }
 }
-//# sourceMappingURL=map.js.map
