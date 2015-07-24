@@ -1,6 +1,6 @@
 #map-canvas {
     overflow: hidden;
-    width: 70%;
+    width: 68%;
     height: 92%;
     margin: 0;
     padding: 0;
@@ -33,7 +33,7 @@
 #select{
     overflow: hidden;
     float: left;
-    width: 30%;
+    width: 32%;
     height: 92%;
     border: 1px #ccc solid;
 
