@@ -3,20 +3,20 @@
 /// <reference path="bootbox.d.ts"/>
 class ZoneMap{
     private static currentPositionZoom: number = 15;
-	private successCallback = (position) => {
-		var latLng: google.maps.LatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    	var mapOptions: {} = {
+    private successCallback = (position) => {
+        var latLng: google.maps.LatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        var mapOptions: {} = {
             center: latLng,
             zoom: ZoneMap.currentPositionZoom
-    	};
-    	this.initMap(mapOptions);
-    	this.map.setCenter(latLng);
-    	this.setUserMarker(latLng.lat(), latLng.lng());
-	};
-	private errorCallback = () => {
-    	this.initMap(this.defaultMapOptions);
-    	alert('位置情報が取得できません。');
-	};
+        };
+        this.initMap(mapOptions);
+        this.map.setCenter(latLng);
+        this.setUserMarker(latLng.lat(), latLng.lng());
+    };
+    private errorCallback = () => {
+        this.initMap(this.defaultMapOptions);
+        alert('位置情報が取得できません。');
+    };
     private map: google.maps.Map;
     private userMarker: google.maps.Marker;
     private overlayList: google.maps.MVCArray = new google.maps.MVCArray();
@@ -44,30 +44,30 @@ class ZoneMap{
     searchPlaces(){
         $("#loading").fadeIn("quick");
         if($('[name=address]').val()){
-            codeAddress(this.map);
+            codeAddress(this);
         }else{
-            fetchPlaces(this.map);
+            fetchPlaces(this);
         }
         $("#loading").fadeOut("quick");
     }
     private initMap(option: {}){
-  		if(!this.map){
+        if(!this.map){
             var self = this;
-        	this.map = new google.maps.Map($('#map-canvas').get(0), option);
-        	google.maps.event.addListenerOnce(this.map, 'bounds_changed', () => {
-            	self.searchPlaces();
-        	});
-    	}
+            this.map = new google.maps.Map($('#map-canvas').get(0), option);
+            google.maps.event.addListenerOnce(this.map, 'bounds_changed', () => {
+                self.searchPlaces();
+            });
+        }
     }
     getLocation(){
-    	$('#loading').fadeIn("quick");
-    	if(navigator.geolocation){
-        	navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback);
-    	}else{
-        	this.initMap(this.defaultMapOptions)
-        	alert('ブラウザが位置情報取得に対応しておりません。');
-    	}
-   		$('#loading').fadeOut("quick");
+        $('#loading').fadeIn("quick");
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(this.successCallback, this.errorCallback);
+        }else{
+            this.initMap(this.defaultMapOptions)
+            alert('ブラウザが位置情報取得に対応しておりません。');
+        }
+        $('#loading').fadeOut("quick");
     }
     panToCurrentCenter(){
         if(this.userMarker){
@@ -89,10 +89,10 @@ class ZoneMap{
             });
         this.markerList.push(placeMarker)
         this.addPlaceListener(placeMarker, placeInfoWindow, place)
-        this.setOverlayText(name, place.getLat(), place.getLng());
+        this.setOverlayText(place.getName(), place.getLat(), place.getLng());
     }
     private setOverlayText(name, lat, lng){
-        this.overlayList.push(new NameMarker(lat, lng, this.map));
+        this.overlayList.push(new NameMarker(name, lat, lng, this.map));
     }
     clearOverlayList(){
         this.overlayList.clear();
@@ -100,13 +100,13 @@ class ZoneMap{
     clearMarkerList(){
         this.markerList.clear();
     }
-    getOverlayList(): google.maps.MVCArray{
+    getOverlayList(){
         //ディープコピーして返却
         return $.extend(true, new google.maps.MVCArray(), this.overlayList);
     }
-    getMarkerList(): google.maps.MVCArray{
+    getMarkerList(){
         //ディープコピーして返却
-        return $.extend(true, new google.maps.MVCArray(), this.getMarkerList);
+        return $.extend(true, new google.maps.MVCArray(), this.markerList);
     }
     getBounds(){
         return this.map.getBounds();
@@ -157,8 +157,10 @@ class ZoneMap{
 
 class NameMarker extends google.maps.OverlayView{
     private div_;
-    constructor(private lat: number,private lng: number, private map: google.maps.Map){
+    constructor(private placeName: string, private lat: number,private lng: number, private map: google.maps.Map){
         super();
+
+        console.log("NameMarker: " + placeName);
         this.setMap(this.map);
     }
     draw() {
@@ -172,7 +174,7 @@ class NameMarker extends google.maps.OverlayView{
         if(zoom_level > 14){
             this.div_.style.fontSize = this.map.getZoom() * this.map.getZoom() * 0.4 + "%";
         }
-        this.div_.innerHTML = name;
+        this.div_.innerHTML = this.placeName;
         // 要素を追加する子を取得
         var panes = this.getPanes();
         // 要素追加
@@ -265,5 +267,6 @@ function createPlaces(zoneMap: ZoneMap){
         var place: Place = new Place(placeId, name, lat, lng, locationCard)
         placeList.push(place);
         zoneMap.setPlace(place);
+        console.log(place);
     }
 }

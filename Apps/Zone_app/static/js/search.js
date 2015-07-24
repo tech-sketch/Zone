@@ -39,6 +39,7 @@ function fetchPlaces(map){
 
 
 function loadPlaces(response, map){
+    console.log(map.getMarkerList);
     map.getMarkerList().forEach(function(marker){
         marker.setMap(null);
     });

@@ -1,4 +1,4 @@
-var __extends = (this && this.__extends) || function (d, b) {
+var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -42,7 +42,7 @@ var ZoneMap = (function () {
             position: new google.maps.LatLng(lat, lng),
             map: this.map,
             title: "Your position",
-            icon: this.markerImg
+            icon: this.markerImg,
         });
         new google.maps.InfoWindow({
             content: "現在地"
@@ -51,10 +51,10 @@ var ZoneMap = (function () {
     ZoneMap.prototype.searchPlaces = function () {
         $("#loading").fadeIn("quick");
         if ($('[name=address]').val()) {
-            codeAddress(this.map);
+            codeAddress(this);
         }
         else {
-            fetchPlaces(this.map);
+            fetchPlaces(this);
         }
         $("#loading").fadeOut("quick");
     };
@@ -99,10 +99,10 @@ var ZoneMap = (function () {
         });
         this.markerList.push(placeMarker);
         this.addPlaceListener(placeMarker, placeInfoWindow, place);
-        this.setOverlayText(name, place.getLat(), place.getLng());
+        this.setOverlayText(place.getName(), place.getLat(), place.getLng());
     };
     ZoneMap.prototype.setOverlayText = function (name, lat, lng) {
-        this.overlayList.push(new NameMarker(lat, lng, this.map));
+        this.overlayList.push(new NameMarker(name, lat, lng, this.map));
     };
     ZoneMap.prototype.clearOverlayList = function () {
         this.overlayList.clear();
@@ -116,7 +116,7 @@ var ZoneMap = (function () {
     };
     ZoneMap.prototype.getMarkerList = function () {
         //ディープコピーして返却
-        return $.extend(true, new google.maps.MVCArray(), this.getMarkerList);
+        return $.extend(true, new google.maps.MVCArray(), this.markerList);
     };
     ZoneMap.prototype.getBounds = function () {
         return this.map.getBounds();
@@ -165,11 +165,13 @@ var ZoneMap = (function () {
 })();
 var NameMarker = (function (_super) {
     __extends(NameMarker, _super);
-    function NameMarker(lat, lng, map) {
+    function NameMarker(placeName, lat, lng, map) {
         _super.call(this);
+        this.placeName = placeName;
         this.lat = lat;
         this.lng = lng;
         this.map = map;
+        console.log("NameMarker: " + placeName);
         this.setMap(this.map);
     }
     NameMarker.prototype.draw = function () {
@@ -183,7 +185,7 @@ var NameMarker = (function (_super) {
         if (zoom_level > 14) {
             this.div_.style.fontSize = this.map.getZoom() * this.map.getZoom() * 0.4 + "%";
         }
-        this.div_.innerHTML = name;
+        this.div_.innerHTML = this.placeName;
         // 要素を追加する子を取得
         var panes = this.getPanes();
         // 要素追加
@@ -269,5 +271,7 @@ function createPlaces(zoneMap) {
         var place = new Place(placeId, name, lat, lng, locationCard);
         placeList.push(place);
         zoneMap.setPlace(place);
+        console.log(place);
     }
 }
+//# sourceMappingURL=map.js.map

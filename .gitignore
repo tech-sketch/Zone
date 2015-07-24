@@ -1,4 +1,5 @@
 .idea
+tsconfig.json
 Data/media/*
 !Data/media/icons
 Data/media/icons/*

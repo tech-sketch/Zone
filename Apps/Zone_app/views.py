@@ -89,6 +89,7 @@ def search(request):
         places.filter_by_name(place_name)
         places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
         places.sort_by('total_point')
+        print(places.get_places())
         return render(request, 'map.html', {'places': places.get_places()})
     else:
         return Http404
