@@ -105,15 +105,9 @@ var ZoneMap = (function () {
         this.overlayList.push(new NameMarker(name, lat, lng, this.map));
     };
     ZoneMap.prototype.clearOverlayList = function () {
-        this.overlayList.forEach(function(overlay){
-            overlay.toggleDOM();
-        });
         this.overlayList.clear();
     };
     ZoneMap.prototype.clearMarkerList = function () {
-        this.markerList.forEach(function(marker){
-        marker.setMap(null);
-        });
         this.markerList.clear();
     };
     ZoneMap.prototype.getOverlayList = function () {
@@ -264,9 +258,9 @@ new google.maps.Size(32, 32),
 new google.maps.Point(0, 0), 
 // Anchorポイント
 new google.maps.Point(10, 24));
-var map = new ZoneMap(defaultMapOptions, markerImg);
-map.load();
-var placeIdList = [];
+var zoneMap = new ZoneMap(defaultMapOptions, markerImg);
+zoneMap.load();
+var placeList = [];
 function createPlaces(map) {
     var length = $("[id=name]").length;
     for (var i = 0; i < length; i++) {

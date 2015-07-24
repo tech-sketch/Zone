@@ -41,7 +41,7 @@ function loadPlaces(response, map){
         marker.setMap(null);
     });
     map.clearMarkerList();
-    this.overlayList.forEach(function(overlay){
+    map.getOverlayList().forEach(function(overlay){
         overlay.toggleDOM();
     });
     map.clearOverlayList();

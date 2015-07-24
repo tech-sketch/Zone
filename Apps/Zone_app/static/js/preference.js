@@ -4,7 +4,7 @@
 var checkedStyle = "cursor: default; background-color: rgb(128, 138, 178); color: rgb(255, 255, 255);";
 var itemChecked =[];
 
-function showPreference(html){
+function showPreference(html, map){
     bootbox.dialog({
         title: "こだわり条件で絞り込む",
         message: html,
@@ -32,7 +32,10 @@ $(".preference").on("click", function(){
     $("#loading").fadeIn("quick");
     $.get('/narrow_down/', function(html){
         $("#loading").fadeOut("quick");
-        showPreference(html);
+        var placeIdList = placeList.map(function(place){
+            return place.getId();
+        })
+        showPreference(html, zoneMap);
         $('[name=place_list]').attr('value', placeIdList); //formと一緒にplaceIdListをpostするための埋め込み
         $('#preference_form input[type=checkbox]').each(function(i, thisCheckBox){
             rememberChecked(thisCheckBox, itemChecked);

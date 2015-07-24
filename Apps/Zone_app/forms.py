@@ -44,7 +44,7 @@ class PlacePointForm(ModelForm):
 
     class Meta:
         model = PlacePoint
-        field = ('place', 'point', 'mood')
+        fields = ('place', 'point')
 
 
 
