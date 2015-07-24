@@ -10,7 +10,7 @@
 <hidden type="input" id="zoom_level" value="{{zoom_level}}"></hidden>
     <div id="select">
         <div id="filter_list">
-            <a class="current_position" onclick="setCurrentPosition();">現在地へ戻る</a>
+            <a class="current_position" onclick="map.panToCurrentCenter();">現在地へ戻る</a>
             <a class="sort">ソート<span class="caret"></span></a>
             <a class="preference">絞り込み<span class="caret"></span></a>
         </div>
@@ -39,8 +39,6 @@
                     {% endif %}
 
                 </div>
-                <!--<br style="clear: both; height: 0;">
-                <hr style="margin: 3pt 0;">-->
             </div>
         {% endfor %}
         </div>
@@ -50,12 +48,14 @@
 </div>
 
 <link href="{% static 'css/map.css' %}" rel="stylesheet">
+<script src="{% static 'js/zone_map.js' %}"></script>
+<script src="{% static 'js/CSRF.js' %}"></script>
+<script src="{% static 'js/search.js'%}"></script>
 <link href="{% static 'css/preference_form.css' %}" rel="stylesheet">
 <script src="{% static 'js/check_in.js' %}"></script>
 <script src="{% static 'js/recommend_logic.js' %}"></script>
 <script src="{% static 'js/show_detail.js' %}"></script>
 <script src="{% static 'js/preference.js' %}"></script>
-<script src="{% static 'js/zone_map.js' %}"></script>
 
 
 {% if user.is_authenticated %}

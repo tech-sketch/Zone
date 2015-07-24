@@ -5,8 +5,8 @@ function startSearch(){
     zoneMap.searchPlaces();
 }
 
+var geocoder = new google.maps.Geocoder();
 function codeAddress(map) {
-    console.log(map);
     var address = document.getElementById('address_searched').value;
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode( { 'address': address, 'region': 'JP'}, function(results, status) {
@@ -30,21 +30,18 @@ function fetchPlaces(map){
     $.get("/search/", {northeast_lng: northeast.lng(), northeast_lat: northeast.lat(), southwest_lng: southwest.lng(),
                         southwest_lat: southwest.lat(), place_name: $('[name=place_name]').val()}, function(response){
         placeIdList = [];
-        categoriesChecked = [];
-        moodsChecked = [];
-        toolsChecked = [];
+        itemChecked = [];　//検索後は絞り込みダイアログのcheckboxのチェックを外す
         loadPlaces(response, map);
     });
 }
 
 
 function loadPlaces(response, map){
-    console.log(map.getMarkerList);
     map.getMarkerList().forEach(function(marker){
         marker.setMap(null);
     });
     map.clearMarkerList();
-    map.getOverlayList().forEach(function(overlay){
+    this.overlayList.forEach(function(overlay){
         overlay.toggleDOM();
     });
     map.clearOverlayList();
