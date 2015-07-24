@@ -51,10 +51,10 @@ var ZoneMap = (function () {
     ZoneMap.prototype.searchPlaces = function () {
         $("#loading").fadeIn("quick");
         if ($('[name=address]').val()) {
-            codeAddress(this);
+            codeAddress();
         }
         else {
-            fetchPlaces(this);
+            fetchPlaces();
         }
         $("#loading").fadeOut("quick");
     };
@@ -127,6 +127,16 @@ var ZoneMap = (function () {
     ZoneMap.prototype.fitBounds = function (bounds) {
         this.map.fitBounds(bounds);
     };
+    ZoneMap.prototype.clear = function () {
+        this.getMarkerList().forEach(function (marker) {
+            marker.setMap(null);
+        });
+        this.clearMarkerList();
+        this.getOverlayList().forEach(function (overlay) {
+            overlay.toggleDOM();
+        });
+        this.clearOverlayList();
+    };
     ZoneMap.prototype.addPlaceListener = function (placeMarker, placeInfoWindow, place) {
         var _this = this;
         var openInfoWindow = function () {
@@ -152,7 +162,6 @@ var ZoneMap = (function () {
         google.maps.event.addListener(placeMarker, 'click', loadDetail);
         google.maps.event.addListener(placeMarker, "mouseover", function () {
             openInfoWindow();
-            console.log(place.getLocationCard().offset().top)
             place.getLocationCard().parent('div').animate({ scrollTop: position }, 'normal');
             place.getLocationCard().attr('style', 'background-color: #f5f5f5;');
         });
@@ -261,7 +270,7 @@ new google.maps.Point(10, 24));
 var zoneMap = new ZoneMap(defaultMapOptions, markerImg);
 zoneMap.load();
 var placeList = [];
-function createPlaces(map) {
+function createPlaces(zoneMap) {
     var length = $("[id=name]").length;
     for (var i = 0; i < length; i++) {
         var name = $($("[id=name]")[i]).attr("value");
@@ -271,7 +280,8 @@ function createPlaces(map) {
         var locationCard = $($("[class=location_card]")[i]);
         var place = new Place(placeId, name, lat, lng, locationCard);
         placeList.push(place);
-        map.setPlace(place);
+        zoneMap.setPlace(place);
+        console.log(place);
     }
 }
-//# sourceMappingURL=map.js.map
+//# sourceMappingURL=zone_map.js.map

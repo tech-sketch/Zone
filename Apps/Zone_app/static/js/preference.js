@@ -23,7 +23,7 @@ function showPreference(html, map){
         }).get();
         $("#loading").fadeOut("quick");
         $.post("/narrow_down/", $('#narrow_down').serialize(), function(response){
-            loadPlaces(response, map);
+            searcher.loadPlaces(response, map);
         });
 });
 };
