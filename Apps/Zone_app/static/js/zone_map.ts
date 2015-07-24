@@ -40,13 +40,13 @@ class ZoneMap{
         new google.maps.InfoWindow({
                 content: "現在地"
         }).open(this.map, this.userMarker);
-    }
+    }  
     searchPlaces(){
         $("#loading").fadeIn("quick");
         if($('[name=address]').val()){
-            codeAddress(this);
+            codeAddress();
         }else{
-            fetchPlaces(this);
+            fetchPlaces();
         }
         $("#loading").fadeOut("quick");
     }
@@ -117,7 +117,16 @@ class ZoneMap{
     fitBounds(bounds){
         this.map.fitBounds(bounds);
     }
-
+    clear(){
+        this.getMarkerList().forEach(function(marker){
+            marker.setMap(null);
+        });
+        this.clearMarkerList();
+        this.getOverlayList().forEach(function(overlay){
+            overlay.toggleDOM();
+        });
+        this.clearOverlayList();
+    }
     addPlaceListener(placeMarker: google.maps.Marker, placeInfoWindow, place: Place){
         var openInfoWindow = () => {
             if(this.currentInfoWindow){
