@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from .models import *
-from .forms import UserForm, MoodForm, NarrowDownForm, ContactForm, UserEditForm
+from .forms import UserForm, MoodForm, NarrowDownForm, ContactForm, UserEditForm, PlacePointForm
 from .utils import Places
 
 
@@ -34,9 +34,31 @@ def recommend(request):
 @login_required
 def pay_points(request):
     if request.method == 'GET':
-        moods = Mood.objects.all()
-        return render(request, "pay_points.html", {"user": request.user, "moods": moods})
+        place_id = request.GET.get('place_id', '')  # TODO idのvalidationが必要
+        place_point_form = PlacePointForm(initial={'place': place_id, 'nomad': request.user})
+        return render(request, "pay_points.html", {"mood_form": MoodForm(), "place_point_form": place_point_form})
     if request.method == 'POST':
+        mood_form = MoodForm(request.POST)
+        place_point_form = PlacePointForm(request.POST)
+        if mood_form.is_valid() and place_point_form.is_valid():
+            place = place_point_form.cleaned_data['place']
+            print(place)
+            point = place_point_form.cleaned_data['point']
+
+            place.total_point += point
+            place.save()
+            user = request.user
+            user.point -= point
+            user.save()
+            place_point = place_point_form.save(commit=False)
+            for mood in mood_form.cleaned_data['moods']:
+                place_point.mood = mood
+                place_point.save()
+            return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, point,
+                                                                           user.point, place.total_point))
+        return render(request, "pay_points.html", {"mood_form": mood_form, "place_point_form": place_point_form})
+
+        """
         place = Place.objects.get(id=request.POST['place'])
         if request.POST['point'] is "":
             return HttpResponse("ポイントを入力してください。, {0}, {1}".format(request.user.point, place.total_point))
@@ -44,15 +66,8 @@ def pay_points(request):
             return HttpResponse("ポイントが足りません。, {0}, {1}".format(request.user.point, place.total_point))
         if len(request.POST.getlist('moods[]')) == 0:
             return HttpResponse("好みを一つ以上選択してください。, {0}, {1}".format(request.user.point, place.total_point))
-        place.total_point += int(request.POST['point'])
-        for mood_en_title in request.POST.getlist('moods[]'):
-            mood = Mood.objects.get(en_title=mood_en_title)
-            PlacePoint(place=place, mood=mood, point=int(request.POST['point'])).save()
-        place.save()
-        request.user.point -= int(request.POST['point'])
-        request.user.save()
-        return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'],
-                                                                   request.user.point, place.total_point))
+        """
+
 
 
 def narrow_down(request):
@@ -88,7 +103,6 @@ def search(request):
         places.filter_by_name(place_name)
         places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
         places.sort_by('total_point')
-        print(places.get_places())
         return render(request, 'map.html', {'places': places.get_places()})
     else:
         return Http404

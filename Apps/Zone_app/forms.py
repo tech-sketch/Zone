@@ -39,12 +39,25 @@ class MoodForm(forms.Form):
 
 
 class PlacePointForm(ModelForm):
-    place = forms.HiddenInput()
-    point = forms.IntegerField(max_value=100, min_value=1)
+    point = forms.IntegerField(max_value=100, min_value=1, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = PlacePoint
-        fields = ('place', 'point')
+        fields = ('place', 'nomad', 'point')
+        widgets = {
+            'place': forms.HiddenInput(),
+            'nomad': forms.HiddenInput(),
+        }
+
+    def clean(self):
+        cleaned_data = super(PlacePointForm, self).clean()
+        point = cleaned_data.get('point')
+        nomad = cleaned_data.get('nomad')
+        if nomad.point < point:
+            raise forms.ValidationError(
+                "%(value)s ポイント以下で入力してください。",
+                params={'value': str(nomad.point)},
+            )
 
 
 

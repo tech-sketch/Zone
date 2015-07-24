@@ -139,7 +139,8 @@ class Preference(models.Model):
 class PlacePoint(models.Model):
     def __str__(self):
         return self.place.name + ':{0}({1}point)'.format(self.mood.jp_title, self.point)
-    place = models.ForeignKey(Place, related_name="related_place_point")
+    place = models.ForeignKey(Place)
+    nomad = models.ForeignKey(NomadUser, null=True)
     mood = models.ForeignKey(Mood)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0)
 
