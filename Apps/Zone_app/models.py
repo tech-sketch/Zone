@@ -142,7 +142,7 @@ class PlacePoint(models.Model):
     place = models.ForeignKey(Place)
     nomad = models.ForeignKey(NomadUser, null=True)
     mood = models.ForeignKey(Mood)
-    point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0)
+    point = models.IntegerField(validators=[MinValueValidator(0)], default=0)
 
 
 class CheckInHistory(models.Model):

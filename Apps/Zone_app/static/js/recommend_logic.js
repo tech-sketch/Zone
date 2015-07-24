@@ -1,6 +1,4 @@
-var recommendPlaceId  = 0;
-
-
+//zoneMapクラスのaddPlaceListenerメソッドでリスナー登録される関数
 function showRecommendForm(html){
     bootbox.dialog({
         title: "この場所をおすすめする",
@@ -22,17 +20,9 @@ function detailRecommend(){
 }
 
 function saveRecommend() {
-/*
-    var point = $("#point").val();
-    moods = [];
-    var answer = $("input[name='moods']:checked").each(function(index, element){
-        moods.push($(element).val());
-    });
-    var place = $("#recommend").attr("value");
-    */
     $.post("/pay_points/", $('#pay_points_form').serialize(), function(data){
         $("#user_point").text("現在のpoint:" + data.split(",")[1])
-        $("#total_point_" + recommendPlaceId).text("合計ポイント:" + data.split(",")[2] + "point")
+        $("#total_point_" + $('#detail_place_id').attr('value')).text("合計ポイント:" + data.split(",")[2] + "point")
         bootbox.alert(data.split(',')[0])
     });
 }

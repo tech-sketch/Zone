@@ -42,32 +42,16 @@ def pay_points(request):
         place_point_form = PlacePointForm(request.POST)
         if mood_form.is_valid() and place_point_form.is_valid():
             place = place_point_form.cleaned_data['place']
-            print(place)
             point = place_point_form.cleaned_data['point']
-
             place.total_point += point
             place.save()
-            user = request.user
-            user.point -= point
-            user.save()
-            place_point = place_point_form.save(commit=False)
+            request.user.point -= point
+            request.user.save()
             for mood in mood_form.cleaned_data['moods']:
-                place_point.mood = mood
-                place_point.save()
+                PlacePoint(mood=mood, nomad=request.user, place=place, point=point).save()
             return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, point,
-                                                                           user.point, place.total_point))
-        return render(request, "pay_points.html", {"mood_form": mood_form, "place_point_form": place_point_form})
-
-        """
-        place = Place.objects.get(id=request.POST['place'])
-        if request.POST['point'] is "":
-            return HttpResponse("ポイントを入力してください。, {0}, {1}".format(request.user.point, place.total_point))
-        if request.user.point < int(request.POST['point']):
-            return HttpResponse("ポイントが足りません。, {0}, {1}".format(request.user.point, place.total_point))
-        if len(request.POST.getlist('moods[]')) == 0:
-            return HttpResponse("好みを一つ以上選択してください。, {0}, {1}".format(request.user.point, place.total_point))
-        """
-
+                                                                           request.user.point, place.total_point))
+        return HttpResponse("おすすめできませんでした。")
 
 
 def narrow_down(request):
