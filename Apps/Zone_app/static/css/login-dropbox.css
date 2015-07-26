@@ -1,10 +1,20 @@
 @charset "utf-8";
 
-#login-dp{
-    min-width: 250px;
+#login-dp, #my-dp {
+    min-width: 200px;
     padding: 14px 14px 0;
     overflow:hidden;
     background-color:rgba(255,255,255,.8);
+}
+
+#my-dp {
+    padding: 14pt 14pt;
+}
+
+#my-dp .divider {
+    height: 1pt;
+    margin: 8px -10px;
+    background-color: #ccc;
 }
 
 #login-dp .help-block{

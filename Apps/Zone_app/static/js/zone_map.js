@@ -51,10 +51,10 @@ var ZoneMap = (function () {
     ZoneMap.prototype.searchPlaces = function () {
         $("#loading").fadeIn("quick");
         if ($('[name=address]').val()) {
-            codeAddress(this);
+            codeAddress(this.map);
         }
         else {
-            fetchPlaces(this);
+            fetchPlaces(this.map);
         }
         $("#loading").fadeOut("quick");
     };
