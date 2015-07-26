@@ -11,7 +11,7 @@
 <h3>閲覧履歴</h3>
 <table width="50%" style="table-layout: auto;" border="1">
 <td>店舗名</td><td>閲覧日</td>
-{% for browse_history in browse_historys %}
+{% for browse_history in browse_histories %}
     <tr>
         <td>{{browse_history.place.name}}</td>
         <td>{{browse_history.create_at}}</td>
@@ -23,7 +23,7 @@
 <h3>チェックイン履歴</h3>
 <table width="50%" style="table-layout: auto;" border="1">
 <td>店舗名</td><td>チェックイン日</td>
-{% for check_in in check_in_historys %}
+{% for check_in in check_in_histories %}
     <tr>
         <td><a href=" {{check_in.place.url_pc}} " target="_blank" style="color: blue;">{{check_in.place.name}}</a></td>
         <td>{{check_in.create_at}}</td>

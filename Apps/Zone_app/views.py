@@ -80,7 +80,6 @@ def detail(request, place_id):
 def add_point(request):
     if not request.user.can_check_in(request.GET['place_id']):
         return HttpResponse("{0},{1}".format(request.user.point, "同じ場所では一日一回までです。"))
-
     request.user.point += 10
     request.user.save()
     place = Place.objects.get(id=request.GET['place_id'])
@@ -153,21 +152,18 @@ def user_edit(request):
     return redirect('/')
 
 
-@login_required(login_url='/')
-def mypage(request):
-    check_in_historys = CheckInHistory.objects.filter(nomad_id=request.user.id)
-    check_in_historys = check_in_historys.order_by('-create_at')[:10]
-    browse_historys = BrowseHistory.objects.filter(nomad=request.user.id)
-    browse_historys = browse_historys.order_by('-create_at')[:10]
-
-    return render_to_response('mypage.html',
-                              {'check_in_historys': check_in_historys, 'browse_historys': browse_historys},
-                              context_instance=RequestContext(request))
+@login_required
+def my_page(request):
+    check_in_histories = CheckInHistory.objects.filter(nomad_id=request.user.id)
+    check_in_histories = check_in_histories.order_by('-create_at')[:10]
+    browse_histories = BrowseHistory.objects.filter(nomad=request.user.id)
+    browse_histories = browse_histories.order_by('-create_at')[:10]
+    return render(request, 'my_page.html', {'check_in_histories': check_in_histories, 'browse_histories': browse_histories})
 
 
-@login_required(login_url='/')
+@login_required
 def display_recommend(request):
     nomad_user = NomadUser.objects.get(id=request.user.id)
     nomad_user.display_recommend = not nomad_user.display_recommend
     nomad_user.save()
-    return redirect('/mypage')
+    return redirect('/my_page')
