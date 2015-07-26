@@ -152,7 +152,6 @@ var ZoneMap = (function () {
         google.maps.event.addListener(placeMarker, 'click', loadDetail);
         google.maps.event.addListener(placeMarker, "mouseover", function () {
             openInfoWindow();
-            console.log(place.getLocationCard().offset().top)
             place.getLocationCard().parent('div').animate({ scrollTop: position }, 'normal');
             place.getLocationCard().attr('style', 'background-color: #f5f5f5;');
         });
@@ -172,7 +171,6 @@ var NameMarker = (function (_super) {
         this.lat = lat;
         this.lng = lng;
         this.map = map;
-        console.log("NameMarker: " + placeName);
         this.setMap(this.map);
     }
     NameMarker.prototype.draw = function () {
@@ -274,4 +272,3 @@ function createPlaces(map) {
         map.setPlace(place);
     }
 }
-//# sourceMappingURL=map.js.map

@@ -20,54 +20,6 @@ def index(request):
         return render(request, 'index.html', {'contact_form': ContactForm()})
 
 
-@login_required
-def recommend(request):
-    user_preferences = Mood.objects.filter(preference__nomad=request.user)
-    places = Places()
-    places.filter_by_moods(user_preferences)
-    if len(places.get_places()) == 0:  # preferenceにマッチするものがなければtotal_pointの最上位をrecommend
-        places = Places()
-    places.sort_by('total_point')
-    return render(request, 'detail.html', {'place': places.get_places()[0]})
-
-
-@login_required
-def pay_points(request):
-    if request.method == 'GET':
-        place_id = request.GET.get('place_id', '')  # TODO idのvalidationが必要
-        place_point_form = PlacePointForm(initial={'place': place_id, 'nomad': request.user})
-        return render(request, "pay_points.html", {"mood_form": MoodForm(), "place_point_form": place_point_form})
-    if request.method == 'POST':
-        mood_form = MoodForm(request.POST)
-        place_point_form = PlacePointForm(request.POST)
-        if mood_form.is_valid() and place_point_form.is_valid():
-            place = place_point_form.cleaned_data['place']
-            point = place_point_form.cleaned_data['point']
-            place.total_point += point
-            place.save()
-            request.user.point -= point
-            request.user.save()
-            for mood in mood_form.cleaned_data['moods']:
-                PlacePoint(mood=mood, nomad=request.user, place=place, point=point).save()
-            return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, point,
-                                                                           request.user.point, place.total_point))
-        return HttpResponse("おすすめできませんでした。")
-
-
-def narrow_down(request):
-    if request.method == 'POST':
-        place_list = request.POST['place_list'].split(',') if request.POST['place_list'] != '' else []
-        form = NarrowDownForm(request.POST)
-        if form.is_valid():
-            places = Places(place_list)
-            places.filter_by_categories(form.cleaned_data['categories'])
-            places.filter_by_moods(form.cleaned_data['moods'], point_gte=2)
-            places.filter_by_tools(form.cleaned_data['tools'])
-            places.sort_by('total_point')
-            return render(request, 'map.html', {'places': places.get_places()})
-    return render(request, 'preference_form.html', {'narrow_down_form': NarrowDownForm()})
-
-
 def maps(request):
     if request.method == 'GET':
         address = request.GET.get('address', '')
@@ -92,13 +44,71 @@ def search(request):
         return Http404
 
 
+def narrow_down(request):
+    if request.method == 'POST':
+        place_list = request.POST['place_list'].split(',') if request.POST['place_list'] != '' else []
+        form = NarrowDownForm(request.POST)
+        if form.is_valid():
+            places = Places(place_list)
+            places.filter_by_categories(form.cleaned_data['categories'])
+            places.filter_by_moods(form.cleaned_data['moods'], point_gte=2)
+            places.filter_by_tools(form.cleaned_data['tools'])
+            places.sort_by('total_point')
+            return render(request, 'map.html', {'places': places.get_places()})
+    return render(request, 'preference_form.html', {'narrow_down_form': NarrowDownForm()})
+
+
+@login_required
+def recommend(request):
+    user_preferences = Mood.objects.filter(preference__nomad=request.user)
+    places = Places()
+    places.filter_by_moods(user_preferences)
+    if len(places.get_places()) == 0:  # preferenceにマッチするものがなければtotal_pointの最上位をrecommend
+        places = Places()
+    places.sort_by('total_point')
+    return render(request, 'detail.html', {'place': places.get_places()[0]})
+
+
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
     user = request.user
     if user.is_authenticated():
-        browse_history = BrowseHistory()
-        browse_history.save(user, place)
-    return render(request, 'detail.html', {"place": place})
+        BrowseHistory(nomad=user, place=place).save()
+    return render(request, 'detail.html', {'place': place})
+
+
+def add_point(request):
+    if not request.user.can_check_in(request.GET['place_id']):
+        return HttpResponse("{0},{1}".format(request.user.point, "同じ場所では一日一回までです。"))
+
+    request.user.point += 10
+    request.user.save()
+    place = Place.objects.get(id=request.GET['place_id'])
+    CheckInHistory(nomad=request.user, place=place).save()
+    return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
+
+
+@login_required
+def pay_points(request):
+    if request.method == 'GET':
+        place_id = request.GET.get('place_id', '')  # TODO idのvalidationが必要
+        place_point_form = PlacePointForm(initial={'place': place_id, 'nomad': request.user})
+        return render(request, "pay_points.html", {"mood_form": MoodForm(), "place_point_form": place_point_form})
+    if request.method == 'POST':
+        mood_form = MoodForm(request.POST)
+        place_point_form = PlacePointForm(request.POST)
+        if mood_form.is_valid() and place_point_form.is_valid():
+            place = place_point_form.cleaned_data['place']
+            point = place_point_form.cleaned_data['point']
+            place.total_point += point
+            place.save()
+            request.user.point -= point
+            request.user.save()
+            for mood in mood_form.cleaned_data['moods']:
+                PlacePoint(mood=mood, nomad=request.user, place=place, point=point).save()
+            return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, point,
+                                                                       request.user.point, place.total_point))
+        return HttpResponse("おすすめできませんでした。")
 
 
 def signup(request):
@@ -161,17 +171,3 @@ def display_recommend(request):
     nomad_user.display_recommend = not nomad_user.display_recommend
     nomad_user.save()
     return redirect('/mypage')
-
-
-def add_point(request):
-    if not request.user.can_check_in(request.GET['place_id']):
-        return HttpResponse("{0},{1}".format(request.user.point, "同じ場所では一日一回までです。"))
-
-    request.user.point += 10
-    request.user.save()
-    place = Place.objects.get(id=request.GET['place_id'])
-    CheckInHistory(nomad=request.user, place=place).save()
-    return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
-
-
-
