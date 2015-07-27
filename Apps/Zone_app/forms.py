@@ -4,15 +4,15 @@ from .models import NomadUser, Mood, Tool, Category, Contact, PlacePoint
 
 
 class UserForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'required': 'true'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'required': 'true'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'required': 'true',
-                                                            'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
-    age = forms.IntegerField(widget=forms.NumberInput(attrs={'min': 7, 'max': 99}))
+    age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'min': 7, 'max': 99}))
 
     class Meta:
         model = NomadUser
         fields = ('username', 'password', 'email', 'age', 'gender', 'job', 'icon')
+        widgets = {
+            'email': forms.EmailInput(
+                attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'})
+        }
 
     def save(self, commit=True):
         # Save the provided password in hashed format
@@ -33,7 +33,7 @@ class NarrowDownForm(forms.Form):
 
 
 class MoodForm(forms.Form):
-    moods = forms.ModelMultipleChoiceField(Mood.objects.all(), required=True, widget=forms.CheckboxSelectMultiple(),
+    moods = forms.ModelMultipleChoiceField(Mood.objects.all(), widget=forms.CheckboxSelectMultiple(),
                                            label='Select Mood')
 
 
@@ -85,10 +85,12 @@ class ContactForm(forms.ModelForm):
 
 
 class UserEditForm(forms.ModelForm):
-    email = forms.EmailField(widget=forms.EmailInput(
-        attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
-    age = forms.IntegerField(widget=forms.NumberInput(attrs={'min': 7, 'max': 99}))
+    age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'min': 7, 'max': 99}))
 
     class Meta:
         model = NomadUser
         fields = ('email', 'age', 'gender', 'job', 'icon')
+        widgets = {
+            'email': forms.EmailInput(
+                attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'})
+        }

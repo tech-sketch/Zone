@@ -1,5 +1,4 @@
-from django.template import RequestContext
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
@@ -77,10 +76,11 @@ def detail(request, place_id):
     return render(request, 'detail.html', {'place': place})
 
 
+@login_required
 def add_point(request):
     if not request.user.can_check_in(request.GET['place_id']):
         return HttpResponse("{0},{1}".format(request.user.point, "同じ場所では一日一回までです。"))
-    request.user.point += 10
+    request.user.point += 10  # TODO ハードコーディングをやめる
     request.user.save()
     place = Place.objects.get(id=request.GET['place_id'])
     CheckInHistory(nomad=request.user, place=place).save()
@@ -125,31 +125,19 @@ def signup(request):
         return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
 
 
-@login_required(login_url='/')
-def user_edit(request):
+@login_required
+def edit_user(request):
     nomad_user = request.user
-
     if request.method == 'GET':
-        user_form = UserEditForm(initial={'email': nomad_user.email, 'age': nomad_user.age,
-                                          'gender': nomad_user.gender, 'job': nomad_user.job})
-        return render_to_response('edit.html', {'user_form': user_form},
-                                  context_instance=RequestContext(request))
+        user_form = UserEditForm(instance=nomad_user)
+        return render(request, 'edit.html', {'user_form': user_form})
     elif request.method == 'POST':
-        nomad_user = NomadUser.objects.get(id=request.user.id)
-        user_form = UserEditForm(request.POST, request.FILES)
-
+        user_form = UserEditForm(request.POST, request.FILES, instance=nomad_user)
         if user_form.is_valid():
-            nomad_user.email = user_form.cleaned_data['email']
-            nomad_user.age = user_form.cleaned_data['age']
-            nomad_user.gender = user_form.cleaned_data['gender']
-            nomad_user.job = user_form.cleaned_data['job']
-            if request.FILES:
-                nomad_user.icon = user_form.cleaned_data['icon']
-            nomad_user.save()
+            user_form.save()
         else:
-            return render_to_response('edit.html', {'user_form': user_form},
-                                      context_instance=RequestContext(request))
-    return redirect('/')
+            return render(request, 'edit.html', {'user_form': user_form})
+    return redirect(reverse('index'))
 
 
 @login_required
@@ -158,7 +146,8 @@ def my_page(request):
     check_in_histories = check_in_histories.order_by('-create_at')[:10]
     browse_histories = BrowseHistory.objects.filter(nomad=request.user.id)
     browse_histories = browse_histories.order_by('-create_at')[:10]
-    return render(request, 'my_page.html', {'check_in_histories': check_in_histories, 'browse_histories': browse_histories})
+    return render(request, 'my_page.html', {'check_in_histories': check_in_histories,
+                                            'browse_histories': browse_histories})
 
 
 @login_required
@@ -166,4 +155,4 @@ def display_recommend(request):
     nomad_user = NomadUser.objects.get(id=request.user.id)
     nomad_user.display_recommend = not nomad_user.display_recommend
     nomad_user.save()
-    return redirect('/my_page')
+    return redirect(reverse('/my_page'))
