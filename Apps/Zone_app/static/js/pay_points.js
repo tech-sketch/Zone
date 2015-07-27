@@ -11,7 +11,17 @@ function showRecommendForm(html){
             }
         }
     });
+
+    var checkedStyle = "cursor: default; background-color: rgb(128, 138, 178); color: rgb(255, 255, 255);";
+    $('#pay_points input[type=checkbox]').click(function(){
+        if($(this).is(':checked')){
+            $(this).parent("label").attr('style', checkedStyle);
+        } else{
+            $(this).parent("label").attr('style', "");
+        }
+    });
 }
+
 
 function detailRecommend(){
     $.get("/pay_points/", {place_id: $('#detail_place_id').attr('value')},  function(html){
