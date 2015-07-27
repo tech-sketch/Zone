@@ -21,8 +21,10 @@ function detailRecommend(){
 
 function saveRecommend() {
     $.post("/pay_points/", $('#pay_points_form').serialize(), function(data){
-        $("#user_point").text("現在のpoint:" + data.split(",")[1])
-        $("#total_point_" + $('#detail_place_id').attr('value')).text("合計ポイント:" + data.split(",")[2] + "point")
-        bootbox.alert(data.split(',')[0])
+        if(data.user_point && data.place_point){
+            $("#user_point").text("現在のpoint:" + data.user_point);
+            $("#total_point_" + $('#detail_place_id').attr('value')).text("合計ポイント:" + data.place_point + "point");
+        }
+        bootbox.alert(data.message);
     });
 }

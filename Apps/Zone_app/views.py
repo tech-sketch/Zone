@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404
+from django.http import Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import UserForm, MoodForm, NarrowDownForm, ContactForm, UserEditForm, PlacePointForm
@@ -20,6 +20,7 @@ def index(request):
 
 
 def maps(request):
+    # map.htmlを返却。場所情報はsearch()が返却する。
     if request.method == 'GET':
         address = request.GET.get('address', '')
         place_name = request.GET.get('place_name', '')
@@ -28,6 +29,7 @@ def maps(request):
 
 
 def search(request):
+    # 検索結果のデータを返却
     if request.method == 'GET':
         northeast_lng = request.GET.get('northeast_lng', 180)
         northeast_lat = request.GET.get('northeast_lat', 90)
@@ -79,12 +81,12 @@ def detail(request, place_id):
 @login_required
 def add_point(request):
     if not request.user.can_check_in(request.GET['place_id']):
-        return HttpResponse("{0},{1}".format(request.user.point, "同じ場所では一日一回までです。"))
+        return JsonResponse({'message': "同じ場所では一日一回までです", 'user_point': request.user.point})
     request.user.point += 10  # TODO ハードコーディングをやめる
     request.user.save()
     place = Place.objects.get(id=request.GET['place_id'])
     CheckInHistory(nomad=request.user, place=place).save()
-    return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
+    return JsonResponse({'message': "ポイントが加算されました", 'user_point': request.user.point})
 
 
 @login_required
@@ -105,9 +107,9 @@ def pay_points(request):
             request.user.save()
             for mood in mood_form.cleaned_data['moods']:
                 PlacePoint(mood=mood, nomad=request.user, place=place, point=point).save()
-            return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, point,
-                                                                       request.user.point, place.total_point))
-        return HttpResponse("おすすめできませんでした。")
+            return JsonResponse({'message': "「{0}」に{1}ポイントを入れました！".format(place.name, point),
+                                 'user_point': request.user.point, 'place_point': place.total_point})
+        return JsonResponse({'message': "おすすめできませんでした"})
 
 
 def signup(request):
@@ -155,4 +157,4 @@ def display_recommend(request):
     nomad_user = NomadUser.objects.get(id=request.user.id)
     nomad_user.display_recommend = not nomad_user.display_recommend
     nomad_user.save()
-    return redirect(reverse('/my_page'))
+    return redirect(reverse('my_page'))
