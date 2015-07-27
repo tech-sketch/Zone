@@ -144,7 +144,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 centered">
         <p>私たちは目的を達成するまでサービスの改善を続けます。お気づきのことがありましたらご意見をお聞かせください。</p>
-        <form id="contact" method="post" action="{% url 'index' %}" class="form" role="form">
+        <form id="contact_form" method="post" action="{% url 'index' %}" class="form" role="form">
           {% csrf_token %}
           <div class="row">
             <div class="col-xs-6 col-md-6 form-group">
@@ -169,9 +169,10 @@
   </div>
 </div>
 <!-- container -->
+</div>
 
 <div id="footerwrap">
-  <div class="container">
+  <!--<div class="container">
     <div class="row">
       <div class="col-md-8"> </div>
       <div class="col-md-4">
@@ -183,7 +184,7 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div>-->
 </div>
 
 <!-- Bootstrap core JavaScript

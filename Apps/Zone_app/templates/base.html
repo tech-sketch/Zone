@@ -5,7 +5,7 @@
     <title>{% block title %}Zone{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-    <link href="{% static 'css/login-dropbox.css' %}" rel="stylesheet">
+    <link href="{% static 'css/topbar-dropbox.css' %}" rel="stylesheet">
     <link href="{% static 'top/css/font-awesome.min.css' %}" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
@@ -74,14 +74,16 @@
                         <li>
                             <div class="row">
                                 <div class="col-md-12">
-                                    Login via
+                                    <!--Login via
                                     <div class="social-buttons">
                                         <a href="#"><i class="fa fa-facebook text-center"></i></a>
                                         <a href="#"><i class="fa fa-twitter text-center"></i></a>
                                         <a href="#"><i class="fa fa-google-plus text-center"></i></a>
                                         <a href="#"><i class="fa fa-linkedin text-center"></i></a>
                                     </div>
-                                    or
+                                    or-->
+                                    Login:
+                                    <br><br>
                                     <form class="form" role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}"  accept-charset="UTF-8" id="login-nav">
                                           {% csrf_token %}
                                             <div class="form-group">
@@ -96,11 +98,12 @@
                                             <div class="form-group">
                                                  <button type="submit" class="btn btn-primary btn-block">Sign in</button>
                                             </div>
+                                            <!--
                                             <div class="checkbox">
                                                  <label>
                                                  <input type="checkbox"> keep me logged-in
                                                  </label>
-                                            </div>
+                                            </div>-->
                                      </form>
                                 </div>
                                 <div class="bottom text-center">
