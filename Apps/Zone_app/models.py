@@ -24,12 +24,11 @@ class NomadUser(AbstractUser):
     display_recommend = models.BooleanField(default=True)
 
     def can_check_in(self, place_id):
-        check_in_historys = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
-                                                          create_at__month=datetime.now().strftime("%m"),
-                                                          create_at__year=datetime.now().strftime("%Y"),
-                                                          nomad_id=self.id,
-                                                          place_id=place_id)
-        return len(check_in_historys) == 0
+        check_in_histories = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
+                                                           create_at__month=datetime.now().strftime("%m"),
+                                                           create_at__year=datetime.now().strftime("%Y"),
+                                                           nomad_id=self.id, place_id=place_id)
+        return len(check_in_histories) == 0
 
     def __unicode__(self):
         return self.icon
@@ -106,14 +105,10 @@ class WiFi(Tool):
         return self.carrier_name
     carrier_name = models.CharField(max_length=40)
 
-    def save(self, carrier_name=None, commit=True):
-        if carrier_name is not None:
-            self.carrier_name = carrier_name
-            self.jp_title = 'Wi-Fi（{0}）'.format(carrier_name)
-            self.en_title = 'wifi_{0}'.format(carrier_name)
-        if commit:
-            super(WiFi, self).save()
-        return self
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.jp_title = 'Wi-Fi（{0}）'.format(self.carrier_name)
+        self.en_title = 'wifi_{0}'.format(self.carrier_name)
+        super(WiFi, self).save(force_insert, force_update, using, update_fields)
 
 class Equipment(models.Model):
     def __str__(self):

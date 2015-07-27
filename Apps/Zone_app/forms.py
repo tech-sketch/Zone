@@ -4,14 +4,20 @@ from .models import NomadUser, Mood, Tool, Category, Contact, PlacePoint
 
 
 class UserForm(forms.ModelForm):
-    age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'min': 7, 'max': 99}))
+    age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 7,
+                                                                             'max': 99}))
 
     class Meta:
         model = NomadUser
         fields = ('username', 'password', 'email', 'age', 'gender', 'job', 'icon')
         widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'max': 40}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(
-                attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'})
+                attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$',
+                       'class': 'form-control'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'job': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def save(self, commit=True):
@@ -38,7 +44,7 @@ class MoodForm(forms.Form):
 
 
 class PlacePointForm(forms.ModelForm):
-    point = forms.IntegerField(min_value=1)
+    point = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = PlacePoint
@@ -52,8 +58,7 @@ class PlacePointForm(forms.ModelForm):
     def __init__(self, user_point=100, *args, **kwargs):
         super(PlacePointForm, self).__init__(*args, **kwargs)
         print(user_point)
-        self.fields['point'].widget=forms.NumberInput(attrs={'class': 'form-control', 'required': 'true',
-                                                                 'max': user_point})
+        self.fields['point'].widget=forms.NumberInput(attrs={'class': 'form-control', 'max': user_point})
     '''
 
     def clean(self):
@@ -69,28 +74,30 @@ class PlacePointForm(forms.ModelForm):
         return cleaned_data
 
 
-
 class ContactForm(forms.ModelForm):
-    name = forms.CharField(
-        widget=forms.TextInput(attrs={'required': 'true', 'placeholder': 'Name', 'class': 'form-control'}))
-    email = forms.EmailField(widget=forms.EmailInput(
-        attrs={'required': 'true', 'placeholder': 'Email', 'class': 'form-control',
-               'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'}))
-    message = forms.CharField(
-        widget=forms.Textarea(attrs={'required': 'true', 'placeholder': 'Message', 'class': 'form-control'}))
-
     class Meta:
         model = Contact
         fields = ('name', 'email', 'message')
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Name', 'class': 'form-control'}),
+            'email': forms.EmailInput(
+                attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$',
+                       'placeholder': 'Email', 'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'placeholder': 'Message', 'class': 'form-control'})
+        }
 
 
 class UserEditForm(forms.ModelForm):
-    age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'min': 7, 'max': 99}))
+    age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 7,
+                                                                             'max': 99}))
 
     class Meta:
         model = NomadUser
         fields = ('email', 'age', 'gender', 'job', 'icon')
         widgets = {
             'email': forms.EmailInput(
-                attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$'})
+                attrs={'pattern': '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)?$',
+                       'class': 'form-control'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'job': forms.Select(attrs={'class': 'form-control'}),
         }
