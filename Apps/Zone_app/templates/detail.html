@@ -2,9 +2,9 @@
 <div id="detail_name" style="margin-top: -12pt; margin-bottom: 10pt;">
     <h3>{{ place.name }}</h3>
 </div>
-<hidden type="input" id="detail_place_id" value="{{ place.id }}"></hidden>
-<hidden type="input" id="detail_lat" value="{{ place.latitude }}"></hidden>
-<hidden type="input" id="detail_lng" value="{{ place.longitude }}"></hidden>
+<input type="hidden" id="detail_place_id" value="{{ place.id }}">
+<input type="hidden" id="detail_lat" value="{{ place.latitude }}">
+<input type="hidden" id="detail_lng" value="{{ place.longitude }}">
 
 <div class="top_picture">
     <img src={{ place.get_main_picture_url }} alt={{ place.name }} style="width: 250pt; height: 250pt; float: left; margin: 0 15pt 0 0;"/>

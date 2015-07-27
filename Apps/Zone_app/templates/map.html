@@ -4,10 +4,10 @@
 {% block content %}
 
 <div class="map_box">
-<hidden type="input" id="user_auth" value="{{ user.is_authenticated }}"></hidden>
-<hidden type="input" id="location_lat" value="{{location.lat}}"></hidden>
-<hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
-<hidden type="input" id="zoom_level" value="{{zoom_level}}"></hidden>
+<input type="hidden" id="user_auth" value="{{ user.is_authenticated }}">
+<input type="hidden" id="location_lat" value="{{location.lat}}">
+<input type="hidden" id="location_lng" value="{{location.lng}}">
+<input type="hidden" id="zoom_level" value="{{zoom_level}}">
     <div id="select">
         <div id="filter_list">
             <a class="current_position" onclick="zoneMap.panToCurrentCenter();">現在地へ戻る</a>
@@ -18,10 +18,10 @@
         {% for message in messages%}{{ message }} {% endfor %}
         {% for place in places %}
             <div class="location_card">
-                <hidden type="input" id="name" value="{{place.name}}"></hidden>
-                <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
-                <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
-                <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
+                <input type="hidden" id="name" value="{{place.name}}">
+                <input type="hidden" id="longitude" value="{{place.longitude}}">
+                <input type="hidden" id="latitude" value="{{place.latitude}}">
+                <input type="hidden" id="place_id" value="{{place.id}}">
                 <div class="place_picture">
                 <img src="{{ place.get_main_picture_url }}" alt="{{ place.name }}">
                 </div>
