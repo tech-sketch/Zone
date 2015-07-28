@@ -60,6 +60,7 @@ function initialize(x, y) {
             zoom: zoom_level
     };
 
+
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     var markerImg = new google.maps.MarkerImage(
         // マーカーの画像URL
