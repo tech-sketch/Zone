@@ -106,7 +106,7 @@ class WiFi(Tool):
     carrier_name = models.CharField(max_length=40)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        self.jp_title = 'Wi-Fi（{0}）'.format(self.carrier_name)
+        self.jp_title = 'Wi-Fi ({0}) '.format(self.carrier_name)
         self.en_title = 'wifi_{0}'.format(self.carrier_name)
         super(WiFi, self).save(force_insert, force_update, using, update_fields)
 
