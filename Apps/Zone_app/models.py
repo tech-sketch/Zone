@@ -6,13 +6,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class NomadUser(AbstractUser):
     GENDER_CHOICES = (
-        ('M', '男'),
-        ('F', '女'),
+        ('M', 'Male'),
+        ('F', 'Female'),
     )
     JOB_CHOICES = (
-        ('Designer', 'デザイナー'),
-        ('Engineer', 'エンジニア'),
-        ('Other', 'その他')
+        ('Designer', 'Designer'),
+        ('Engineer', 'Engineer'),
+        ('Other', 'Other')
     )
 
     nickname = models.CharField(max_length=40,  null=True, blank=True)
