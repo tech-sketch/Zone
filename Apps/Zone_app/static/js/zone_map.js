@@ -51,10 +51,10 @@ var ZoneMap = (function () {
     ZoneMap.prototype.searchPlaces = function () {
         $("#loading").fadeIn("quick");
         if ($('[name=address]').val()) {
-            codeAddress();
+            codeAddress(this);
         }
         else {
-            fetchPlaces();
+            fetchPlaces(this);
         }
         $("#loading").fadeOut("quick");
     };
@@ -280,7 +280,6 @@ function createPlaces(zoneMap) {
         var place = new Place(placeId, name, lat, lng, locationCard);
         placeList.push(place);
         zoneMap.setPlace(place);
-        console.log(place);
     }
 }
 
