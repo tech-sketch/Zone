@@ -23,7 +23,6 @@ function codeAddress(map) {
 
 
 function fetchPlaces(map){
-    console.log(map)
     var latlngBounds = map.getBounds();
     var northeast = latlngBounds.getNorthEast();
     var southwest = latlngBounds.getSouthWest();

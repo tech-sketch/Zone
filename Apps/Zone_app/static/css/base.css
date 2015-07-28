@@ -77,7 +77,7 @@ body .header {
 .btn-search {
     background-color: #ffbf00;
     color: white;
-    text-shadow: 0 0 3px #bf9004;
+    //text-shadow: 0 0 3px #bf9004;
 }
 
 .btn-search:focus, .btn-search:hover {

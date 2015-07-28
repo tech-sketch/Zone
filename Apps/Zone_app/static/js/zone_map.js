@@ -181,7 +181,6 @@ var NameMarker = (function (_super) {
         this.lat = lat;
         this.lng = lng;
         this.map = map;
-        console.log("NameMarker: " + placeName);
         this.setMap(this.map);
     }
     NameMarker.prototype.draw = function () {
@@ -284,4 +283,4 @@ function createPlaces(zoneMap) {
         console.log(place);
     }
 }
-//# sourceMappingURL=zone_map.js.map
+
