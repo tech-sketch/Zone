@@ -1,31 +1,4 @@
-html, button, input, select, textarea {
-	color: #222;
-}
-/*
-body {
-	font-size: 1em;
-	line-height: 1.4;
-}
-*/
 
-/*
- * Remove text-shadow in selection highlight: h5bp.com/i
- * These selection rule sets have to be separate.
- * Customize the background color to match your design.
- */
-
-/*
-::-moz-selection {
- background: #f2c2c9;
- color: #a4003a;
- text-shadow: none;
-}
-::selection {
-	background: #16a085;
-	color: #a4003a;
-	text-shadow: none;
-}
-*/
 /*
  * A better looking default horizontal rule
  */
@@ -46,23 +19,12 @@ hr {
 	border: none;
 }
 
-img {
-	vertical-align: middle;
-}
-/*
- * Allow only vertical resizing of textareas.
- */
 
-textarea {
-	resize: vertical;
-}
 /* ==========================================================================
    General styles
    ========================================================================== */
 
-html, body {
-	height: 100%;
-}
+
 /*
 body {
 	font-family: "Lato";
@@ -91,27 +53,7 @@ body {
 .modal-footer {
 	background: #2b2b2b;
 }
-/*
-.navbar-default {
-	border-color: transparent;
-	background-color: #dadada;
-}
-.navbar-inverse .navbar-brand {
-	font-weight: 500;
-	font-size: 20px;
-}
-.navbar-toggle {
-	border-color: transparent;
-	border: 0px solid transparent;
-}
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-	background-color: #16a085;
-	color: white;
-}
-*/
-a img {
-	background: white;
-}
+
 .odd a img {
 	background: #f5f5f5;
 }
@@ -186,35 +128,14 @@ blockquote cite:before {
 .overflow-image {
 	margin-top: -65px;
 }
-/* Links */
-a {
-	color: #4abcc5;
-	word-wrap: break-word;
-	-webkit-transition: color 0.1s ease-in, background 0.1s ease-in;
-	-moz-transition: color 0.1s ease-in, background 0.1s ease-in;
-	-ms-transition: color 0.1s ease-in, background 0.1s ease-in;
-	-o-transition: color 0.1s ease-in, background 0.1s ease-in;
-	transition: color 0.1s ease-in, background 0.1s ease-in;
-}
-a:hover, a:focus {
-	color: #c0392b;
-	text-decoration: none;
-	outline: 0;
-}
-a:before, a:after {
-	-webkit-transition: color 0.1s ease-in, background 0.1s ease-in;
-	-moz-transition: color 0.1s ease-in, background 0.1s ease-in;
-	-ms-transition: color 0.1s ease-in, background 0.1s ease-in;
-	-o-transition: color 0.1s ease-in, background 0.1s ease-in;
-	transition: color 0.1s ease-in, background 0.1s ease-in;
-}
+
 /* ==========================================================================
    Wrap Sections
    ========================================================================== */
 
 #headerwrap {
 	background: url(../img/header_bg.jpg) no-repeat center top;
-	margin-top: -50px;
+	margin-top: -20px;
 	padding-top: 120px;
 	text-align: center;
 	background-attachment: relative;
@@ -232,6 +153,7 @@ a:before, a:after {
 	padding-bottom: 100px;
 }
 #headerwrap h1 {
+
 	color: #ffffff;
 	font-size: 50px;
 	font-weight: 400;
@@ -385,7 +307,7 @@ a:before, a:after {
 	margin-right: 4px;
 }
 #footerwrap {
-	background: #2b2b2b;
+	background: #332600;
 	padding: 25px 0 15px 0;
 	border-bottom: 1px solid #ddd;
 	text-align: center;
@@ -406,17 +328,7 @@ a:before, a:after {
 #footerwrap h4 {
 	color: white;
 }
-ul.social-buttons {
-	margin: 0;
-}
-ul.social-buttons li a {
-	font-size: 24px;
-	outline: 0;
-	color: #999;
-}
-ul.social-buttons li a:hover, ul.social-buttons li a:focus, ul.social-buttons li a:active {
-	color: #ffbf00;
-}
+
 /* ==========================================================================
    Box Sections
    ========================================================================== */
@@ -515,28 +427,11 @@ ul.social-buttons li a:hover, ul.social-buttons li a:focus, ul.social-buttons li
 	right: 30px;
 }
 
-/* ==========================================================================
-   MEDIA QUERIES
-   ========================================================================== */
-
-
-@media screen and (max-width:1050px), screen and (max-device-width:1050px) {
-body .header {
-	background-attachment: scroll;
-}
-}
-
-/*ipad portrait*/
-@media only screen and (min-device-width:768px) and (max-device-width : 1024px) and (orientation : portrait) {
-.header {
-	background-attachment: scroll;
-}
-}
-
 @media screen and (max-width:769px) {
 #headerwrap h1 {
 	font-size: 80px;
 }
+
 #headerwrap p {
 	font-size: 30px;
 	line-height: 38px;

@@ -1,0 +1,22 @@
+<div id="pay_points" class="row">
+    <div class="col-md-12">
+        <form id="pay_points_form" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-4 control-label">おすすめするポイント(半角)</label>
+                <div class="col-md-4">
+                    {{place_point_form.as_p}}
+                    <span class="help-block">あなたのポイント:{{user.point}}</span></div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label">その場所の良かった所を一つ以上教えてください</label>
+                <div id="mood_form" class="col-md-7">
+                {% for mood in mood_form.moods %}
+
+                    {{ mood }}
+
+                {% endfor %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

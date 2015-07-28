@@ -22,16 +22,17 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-</head>
 
 <!--<div data-spy="scroll" data-offset="0" data-target="#navbar-main">-->
 
 <!-- ==== HEADERWRAP ==== -->
 <div id="headerwrap" name="home">
   <header class="clearfix">
+    <br>
+    <br>
     <h1>Zone</h1>
     <p>リモートワーカの方に最適な作業環境を提供します。</p>
-    <a href="/maps" class="smoothScroll btn btn-lg">Start Application</a>
+    <a href="/map" class="smoothScroll btn btn-lg">Start Application</a>
   </header>
 </div>
 <!-- /headerwrap -->
@@ -128,6 +129,7 @@
     <div class="row">
       <h2 class="centered">CONTACT US</h2>
       <hr>
+      <!--
       <div class="col-md-4 centered"> <i class="fa fa-map-marker fa-2x"></i>
         <p>321 Awesome Street<br>
           New York, NY 17022</p>
@@ -138,20 +140,21 @@
       <div class="col-md-4"> <i class="fa fa-phone fa-2x"></i>
         <p> +1 800 123 1234</p>
       </div>
-    </div>
+    </div>-->
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 centered">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p>
-        <form id="contact" method="post" class="form" role="form">
+        <p>私たちは目的を達成するまでサービスの改善を続けます。お気づきのことがありましたらご意見をお聞かせください。</p>
+        <form id="contact_form" method="post" action="{% url 'index' %}" class="form" role="form">
+          {% csrf_token %}
           <div class="row">
             <div class="col-xs-6 col-md-6 form-group">
-              <input class="form-control" id="name" name="name" placeholder="Name" type="text" required />
+              {{ contact_form.name }}
             </div>
             <div class="col-xs-6 col-md-6 form-group">
-              <input class="form-control" id="email" name="email" placeholder="Email" type="email" required />
+              {{ contact_form.email }}
             </div>
           </div>
-          <textarea class="form-control" id="message" name="message" placeholder="Message" rows="5"></textarea>
+          {{ contact_form.message }}
           <div class="row">
             <div class="col-xs-12 col-md-12">
               <button class="btn btn btn-lg" type="submit">Send Message</button>
@@ -166,9 +169,10 @@
   </div>
 </div>
 <!-- container -->
+</div>
 
 <div id="footerwrap">
-  <div class="container">
+  <!--<div class="container">
     <div class="row">
       <div class="col-md-8"> </div>
       <div class="col-md-4">
@@ -180,7 +184,7 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div>-->
 </div>
 
 <!-- Bootstrap core JavaScript
@@ -191,6 +195,6 @@
 <script type="text/javascript" src="{% static 'top/js/jquery.easing.1.3.js' %}"></script>
 <script type="text/javascript" src="{% static 'top/js/smoothscroll.js' %}"></script>
 <script type="text/javascript" src="{% static 'top/js/jquery-func.js' %}"></script>
-</div>
+
 
 {% endblock content %}

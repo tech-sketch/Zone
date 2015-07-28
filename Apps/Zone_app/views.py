@@ -1,181 +1,163 @@
-
-from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render, redirect
+from django.core.urlresolvers import reverse
+from django.http import Http404, JsonResponse
+from django.contrib.auth.decorators import login_required
 from .models import *
-from django.shortcuts import redirect
-from django.contrib import messages
-from django.http import HttpResponse
-from .forms import UserForm
-import requests, functools
-from django.db.models import Sum, Count
-
-# Create your views here.
-LAT_FROM_CEN = 0.002265
-LNG_FROM_CEN = 0.00439
-DEFAULT_LAT_SIZE = 0.002697960583020631
-DEFAULT_ZOOM_LEVEL = 17
+from .forms import UserForm, MoodForm, NarrowDownForm, ContactForm, UserEditForm, PlacePointForm
+from .utils import Places
 
 
 def index(request):
-    return render_to_response('index.html', {}, context_instance=RequestContext(request))
-
-def recommend(request):
-    user_preferences = Preference.objects.filter(nomad=request.user).values('mood')
-    place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point'))
-    recommend_rank = place_points.filter(mood=user_preferences).values('place').annotate(total_point=Sum('point')).order_by('-total_point')
-    recommend_place = Place.objects.get(id=recommend_rank[0]['place'])
-    picture_url = recommend_place.get_pictures_url()[0]
-    wifi = recommend_place.get_wifi_list()
-    return render_to_response('detail.html', {'place': recommend_place, 'picture_url': picture_url,
-                                                        "wifi": ' '.join(wifi), 'outlet': recommend_place.has_tool('outlet')})
-
-def recommend_form(request):
-    moods = Mood.objects.all()
-    return render_to_response("recommend_form.html", {"user": request.user, "moods": moods}, context_instance=RequestContext(request))
-
-def preference_form(request):
     if request.method == 'POST':
-        searched_places = Place.objects.filter(id__in=request.POST.getlist('place_id_list[]'))
-        checked_list = request.POST.getlist('categories[]')
-        searched_places = functools.reduce(lambda a, b: a.filter(category__icontains=b), checked_list, searched_places)
-        checked_list = request.POST.getlist('moods[]')
-        place_points = PlacePoint.objects.values('place', 'mood').annotate(total_point=Sum('point')).filter(total_point__gte=2)
-        searched_places = functools.reduce(lambda a, b: a.filter(id__in=[item['place'] for item in place_points.filter(mood__en_title=b)]),
-                                           checked_list, searched_places)
-        checked_list = request.POST.getlist('tools[]')
-        searched_places = functools.reduce(lambda a, b: a.filter(equipment__tool__en_title__contains=b), checked_list, searched_places)
-        places = get_place_picture_list(searched_places)
-        places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-        return render_to_response('map.html', {'places': places}, context_instance=RequestContext(request))
-    moods = Mood.objects.all()
-    tools = Tool.objects.all()
-    return render_to_response('preference_form.html', {'moods': moods, 'tools': tools}, context_instance=RequestContext(request))
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+        else:
+            return render(request, 'index.html', {'contact_form': form})
+    else:
+        return render(request, 'index.html', {'contact_form': ContactForm()})
+
 
 def maps(request):
-    if request.POST:
-        return search(request)
-    zoom_level = DEFAULT_ZOOM_LEVEL
-    moods = Mood.objects.all()
-    places = get_place_picture_list(Place.objects.all())
-    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    return render_to_response('map.html', {'places': places, 'moods': moods, 'zoom_level': zoom_level},
-                                                context_instance=RequestContext(request))
+    # map.htmlを返却。場所情報はsearch()が返却する。
+    if request.method == 'GET':
+        address = request.GET.get('address', '')
+        place_name = request.GET.get('place_name', '')
+        return render(request, 'map.html', {'address': address, 'place_name': place_name})
+    return Http404
+
+
 def search(request):
-    location = {}
-    if 'zoom_level' in request.POST:
-        zoom_level = int(request.POST['zoom_level'])
+    # 検索結果のデータを返却
+    if request.method == 'GET':
+        northeast_lng = request.GET.get('northeast_lng', 180)
+        northeast_lat = request.GET.get('northeast_lat', 90)
+        southwest_lng = request.GET.get('southwest_lng', -90)
+        southwest_lat = request.GET.get('southwest_lat', -180)
+        place_name = request.GET.get('place_name', '')
+        places = Places()
+        places.filter_by_name(place_name)
+
+        # TODO northeast < southwestのときの　処理が必要
+        places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
+        places.sort_by('total_point')
+        print(places.get_places())
+        return render(request, 'map.html', {'places': places.get_places()})
     else:
-        zoom_level = DEFAULT_ZOOM_LEVEL
-    all_place = Place.objects.all()
-    address = request.POST['address']
-    place_name = request.POST['place_name']
-    result = connect_geocode_api(address)
-    if result['status'] == 'OK':
-        location = result['results'][0]['geometry']['location']
-        northeast = result['results'][0]['geometry']['viewport']['northeast']
-        southwest = result['results'][0]['geometry']['viewport']['southwest']
-        zoom_level = get_zoom_level(northeast['lat'], southwest['lat'])
-        rate = pow(2, (DEFAULT_ZOOM_LEVEL - zoom_level))
-        all_place = all_place.filter(longitude__gt=location['lng']-rate*LNG_FROM_CEN,
-                                     longitude__lt=location['lng']+rate*LNG_FROM_CEN,
-                                     latitude__gt=location['lat']-rate*LAT_FROM_CEN,
-                                     latitude__lt=location['lat']+rate*LAT_FROM_CEN)
-    else:
-        pass
-    all_place = all_place.filter(name__icontains=place_name)
-    places = get_place_picture_list(all_place)
-    places = sorted(places, key=lambda x: x['total_point'], reverse=True)
-    moods = Mood.objects.all()
-    return render_to_response('map.html', {'places': places, 'moods': moods, 'address': address,
-                                           'place_name': place_name, 'location': location, 'zoom_level': zoom_level},
-                              context_instance=RequestContext(request))
+        return Http404
+
+
+def narrow_down(request):
+    if request.method == 'POST':
+        place_list = request.POST['place_list'].split(',') if request.POST['place_list'] != '' else []
+        form = NarrowDownForm(request.POST)
+        if form.is_valid():
+            places = Places(place_list)
+            places.filter_by_categories(form.cleaned_data['categories'])
+            places.filter_by_moods(form.cleaned_data['moods'], point_gte=2)
+            places.filter_by_tools(form.cleaned_data['tools'])
+            places.sort_by('total_point')
+            return render(request, 'map.html', {'places': places.get_places()})
+    return render(request, 'preference_form.html', {'narrow_down_form': NarrowDownForm()})
+
+
+@login_required
+def recommend(request):
+    user_preferences = Mood.objects.filter(preference__nomad=request.user)
+    places = Places()
+    places.filter_by_moods(user_preferences)
+    if len(places.get_places()) == 0:  # preferenceにマッチするものがなければtotal_pointの最上位をrecommend
+        places = Places()
+    places.sort_by('total_point')
+    return render(request, 'detail.html', {'place': places.get_places()[0]})
+
 
 def detail(request, place_id):
     place = Place.objects.get(id=place_id)
-    if not request.user.is_authenticated():
-        # メッセージの削除
-        storage = messages.get_messages(request)
-        if len(storage):
-            del storage._loaded_messages[0]
-        messages.warning(request, 'チェックイン・おすすめ機能を使うにはログインが必要です。')
-    picture_url = place.get_pictures_url()[0]
-    wifi = place.get_wifi_list()
-    return render_to_response('detail.html', {"place": place, "wifi": ' '.join(wifi), 'outlet': place.has_tool('outlet'),
-                                                  "picture_url": picture_url}, context_instance=RequestContext(request))
+    user = request.user
+    if user.is_authenticated():
+        BrowseHistory(nomad=user, place=place).save()
+    return render(request, 'detail.html', {'place': place})
 
-def new(request):
-    user_form = UserForm()
-    moods = Mood.objects.all()
-    return render_to_response('new.html', {'user_form': user_form, 'moods': moods}, context_instance=RequestContext(request))
 
-def create(request):
-    nomad_user = UserForm(request.POST)
-    new_nomad_user = nomad_user.save()
-    new_nomad_user.set_password(new_nomad_user.password)
-    new_nomad_user.save()
-
-    for mood in Mood.objects.all():
-        if mood.en_title in request.POST:
-            preference = Preference()
-            preference.nomad = new_nomad_user
-            preference.mood = mood
-            preference.save()
-    return redirect('/')
-
-def save_recommend(request):
-    place = Place.objects.get(id=request.POST['place'])
-    if request.POST['point'] is "":
-        return HttpResponse("ポイントを入力してください。, {0}, {1}".format(request.user.point, place.total_point))
-    if request.user.point < int(request.POST['point']):
-        return HttpResponse("ポイントが足りません。, {0}, {1}".format(request.user.point, place.total_point))
-    if len(request.POST.getlist('moods[]')) == 0:
-        return HttpResponse("好みを一つ以上選択してください。, {0}, {1}".format(request.user.point, place.total_point))
-    place.total_point += int(request.POST['point'])
-    for mood_en_title in request.POST.getlist('moods[]'):
-        mood = Mood.objects.get(en_title=mood_en_title)
-        place_point = PlacePoint()
-        place_point.place = place
-        place_point.mood = mood
-        place_point.point = int(request.POST['point'])
-        place_point.save()
-    place.save()
-    request.user.point -= int(request.POST['point'])
-    request.user.save()
-    return HttpResponse("「{0}」に{1}ポイントを入れました！,{2}, {3}".format(place.name, request.POST['point'], request.user.point, place.total_point))
-
+@login_required
 def add_point(request):
     if not request.user.can_check_in(request.GET['place_id']):
-        return HttpResponse("{0},{1}".format(request.user.point, "同じ場所では一日一回までです。"))
-
-    request.user.point += 10
+        return JsonResponse({'message': "同じ場所では一日一回までです", 'user_point': request.user.point})
+    request.user.point += 10  # TODO ハードコーディングをやめる
     request.user.save()
     place = Place.objects.get(id=request.GET['place_id'])
-    check_in_history = CheckInHistory()
-    check_in_history.nomad = request.user
-    check_in_history.place = place
-    check_in_history.save()
-    return HttpResponse("{0},{1}".format(request.user.point, "ポイントが加算されました"))
-
-def get_place_picture_list(places):
-    place_picture__list = []
-    for place in places:
-        total_point = place.total_point
-        picture = place.get_pictures_url()[0]
-        wifi = place.get_wifi_list()
-        place_picture__list.append({'picture': picture, 'name': place.name, 'address': place.address, 'longitude': place.longitude,
-                           'latitude': place.latitude, 'wifi': ' '.join(wifi), 'outlet': place.has_tool('outlet'), 'id': place.id, 'total_point': total_point})
-    return place_picture__list
+    CheckInHistory(nomad=request.user, place=place).save()
+    return JsonResponse({'message': "ポイントが加算されました", 'user_point': request.user.point})
 
 
-def get_zoom_level(lat_east, lat_west):
-    rate = round((lat_east-lat_west)/(DEFAULT_LAT_SIZE/16), 0)
-    zoom_level = 21
-    n = 2
-    while rate >= n:
-        n *= 2
-        zoom_level -= 1
-    return zoom_level
+@login_required
+def pay_points(request):
+    if request.method == 'GET':
+        place_id = request.GET.get('place_id', '')  # TODO idのvalidationが必要
+        place_point_form = PlacePointForm(initial={'place': place_id, 'nomad': request.user})
+        return render(request, "pay_points.html", {"mood_form": MoodForm(), "place_point_form": place_point_form})
+    if request.method == 'POST':
+        mood_form = MoodForm(request.POST)
+        place_point_form = PlacePointForm(request.POST)
+        if mood_form.is_valid() and place_point_form.is_valid():
+            place = place_point_form.cleaned_data['place']
+            point = place_point_form.cleaned_data['point']
+            place.total_point += point
+            place.save()
+            request.user.point -= point
+            request.user.save()
+            for mood in mood_form.cleaned_data['moods']:
+                PlacePoint(mood=mood, nomad=request.user, place=place, point=point).save()
+            return JsonResponse({'message': "「{0}」に{1}ポイントを入れました！".format(place.name, point),
+                                 'user_point': request.user.point, 'place_point': place.total_point})
+        return JsonResponse({'message': "おすすめできませんでした"})
 
-def connect_geocode_api(address):
-    url = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&sensor=false&language=ja&key=AIzaSyBLB765ZTWj_KaYASkZVlCx_EcWZTGyw18'
-    return requests.get(url).json()
+
+def signup(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, request.FILES)
+        mood_form = MoodForm(request.POST)
+        if user_form.is_valid() and mood_form.is_valid():
+            user = user_form.save()
+            for mood in mood_form.cleaned_data['moods']:
+                Preference(nomad=user, mood=mood).save()
+            return redirect(reverse('index'))
+        else:
+            return render(request, 'signup.html', {'user_form': user_form, 'mood_form': mood_form})
+    else:
+        return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
+
+
+@login_required
+def edit_user(request):
+    nomad_user = request.user
+    if request.method == 'GET':
+        user_form = UserEditForm(instance=nomad_user)
+        return render(request, 'edit.html', {'user_form': user_form})
+    elif request.method == 'POST':
+        user_form = UserEditForm(request.POST, request.FILES, instance=nomad_user)
+        if user_form.is_valid():
+            user_form.save()
+        else:
+            return render(request, 'edit.html', {'user_form': user_form})
+    return redirect(reverse('index'))
+
+
+@login_required
+def my_page(request):
+    check_in_histories = CheckInHistory.objects.filter(nomad_id=request.user.id)
+    check_in_histories = check_in_histories.order_by('-create_at')[:10]
+    browse_histories = BrowseHistory.objects.filter(nomad=request.user.id)
+    browse_histories = browse_histories.order_by('-create_at')[:10]
+    return render(request, 'my_page.html', {'check_in_histories': check_in_histories,
+                                            'browse_histories': browse_histories})
+
+
+@login_required
+def display_recommend(request):
+    nomad_user = NomadUser.objects.get(id=request.user.id)
+    nomad_user.display_recommend = not nomad_user.display_recommend
+    nomad_user.save()
+    return redirect(reverse('my_page'))

@@ -2,11 +2,9 @@
 // ======================
 
 var checkedStyle = "cursor: default; background-color: rgb(128, 138, 178); color: rgb(255, 255, 255);";
-var categoriesChecked = [];
-var moodsChecked = [];
-var toolsChecked = [];
+var itemChecked =[];
 
-function showPreference(html){
+function showPreference(html, map){
     bootbox.dialog({
         title: "こだわり条件で絞り込む",
         message: html,
@@ -16,43 +14,31 @@ function showPreference(html){
     $('#preference_form input[type=checkbox]').click(function(){
         if($(this).is(':checked')){
             $(this).parent("label").attr('style', checkedStyle);
-        }
-        else{
+        } else{
             $(this).parent("label").attr('style', "");
         }
-        var length = $('[name=category]:checked').length;
-        categoriesChecked = [];
-        for(var i=0; i<length; i++){
-            categoriesChecked.push($($('[name=category]:checked')[i]).val());
-        }
-        var length = $('[name=mood]:checked').length;
-        moodsChecked = [];
-        for(var i=0; i<length; i++){
-            moodsChecked.push($($('[name=mood]:checked')[i]).val());
-        }
-        var length = $('[name=tool]:checked').length;
-        toolsChecked = [];
-        for(var i=0; i<length; i++){
-            toolsChecked.push($($('[name=tool]:checked')[i]).val());
-        }
-        $("#loading").fadeOut("quick");
-        $.post("/preference_form/", {categories: categoriesChecked, moods: moodsChecked, tools: toolsChecked, place_id_list: placeIdList}, loadPlaces);
-});
-}
 
-$("#preference").on("click", function(){
-    $("#loading").fadeIn("quick");
-    $.get('/preference_form/', function(html){
+        itemChecked = $('#preference_form input[type=checkbox]:checked').map(function(){
+            return $(this).attr("id");
+        }).get();
         $("#loading").fadeOut("quick");
-        showPreference(html);
-        $('#preference_form input[name=category]').each(function(i, thisCheckBox){
-            rememberChecked(thisCheckBox, categoriesChecked);
+        $.post("/narrow_down/", $('#narrow_down').serialize(), function(response){
+            loadPlaces(response, map);
         });
-        $('#preference_form input[name=mood]').each(function(i, thisCheckBox){
-            rememberChecked(thisCheckBox, moodsChecked);
-        });
-        $('#preference_form input[name=tool]').each(function(i, thisCheckBox){
-            rememberChecked(thisCheckBox, toolsChecked);
+});
+};
+
+$(".preference").on("click", function(){
+    $("#loading").fadeIn("quick");
+    $.get('/narrow_down/', function(html){
+        $("#loading").fadeOut("quick");
+        var placeIdList = placeList.map(function(place){
+            return place.getId();
+        })
+        showPreference(html, zoneMap);
+        $('[name=place_list]').attr('value', placeIdList); //formと一緒にplaceIdListをpostするための埋め込み
+        $('#preference_form input[type=checkbox]').each(function(i, thisCheckBox){
+            rememberChecked(thisCheckBox, itemChecked);
         });
     });
 });
@@ -60,9 +46,9 @@ $("#preference").on("click", function(){
 
 function rememberChecked(thisCheckBox, checkedList){
     if(checkedList.some(function(element){
-        return ($(thisCheckBox).val()==element);
+        return ($(thisCheckBox).attr("id")==element);
     })){
         $(thisCheckBox).attr('checked', 'checked');
         $(thisCheckBox).parent("label").attr('style', checkedStyle);
     }
-}
+};

@@ -31,7 +31,7 @@
   margin-left: 122px;
 }
 
-#preference_form dd label {
+#preference_form dd label, #pay_points #mood_form label {
   float: left;
   border-radius: 3px;
   background: #fff;
@@ -47,7 +47,10 @@
  }
 
 
-#preference_form dd label input {
+#preference_form dd label input, #pay_points #mood_form input {
   display: none;
 }
 
+.top_picture {
+
+}

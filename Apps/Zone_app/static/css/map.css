@@ -1,52 +1,103 @@
 #map-canvas {
-    width: 70%;
-    height: 100%;
+    overflow: hidden;
+    width: 68%;
+    height: 92%;
     margin: 0;
     padding: 0;
 }
-#total_point {
 
-}
-#info{
-    color:#999;
-}
 .location_card{
-    position: relative;
     width: 99%;
-    height: 100pt;
-    margin: 1px 0 3px 0;
+    height: 105pt;
+    margin: 0 0 0px 0;
     padding: 3px;
-    background-color: #fefefe;
-    border-right: 1px solid #ccc;
-    border-left: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    border-top: 1px solid #ccc;
-    box-shadow: 1px 1px 2px 0 #ddd;
-}
-.location_card img{
-    float: left;
-    overflow: hidden;
-    width: 94pt;
-    height: 94pt;
-    margin: 0 8px 0 0;
+    background-color: #fff;
+    /*border-right: 1px solid #ccc;*/
+    /*border-left: 1px solid #ccc;*/
+    /*border-bottom: 1px solid #ccc;*/
+    /*border-top: 1px solid #ccc;*/
+    /*box-shadow: 0 0 2px 0 #fff;*/
 }
 
-.location_card h3{
-    margin-top: 0px;
+.location_card h4 {
+    margin-top: 3px;
+    margin-bottom 0pt;
+    line-height: 14pt;
 }
 
 
 .location_card:hover {
-    background-color: #f1f1f1;
+    background-color: #f5f5f5;
     box-shadow: 0 0px 0px 0 #ddd;
 }
 #select{
+    overflow: hidden;
     float: left;
-    overflow: auto;
-    width: 30%;
-    height: 100%;
+    width: 32%;
+    height: 92%;
     border: 1px #ccc solid;
 
+}
+
+#filter_list {
+    overflow: hidden;
+    min-height: 10;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #eee;
+}
+
+#filter_list .current_position {
+    margin-left: 10pt;
+}
+
+#filter_list .preference {
+    display:block;
+    float: right;
+    margin-right: 10pt;
+}
+
+#filter_list .sort {
+    display:block;
+    float: right;
+    margin-right: 10pt;
+}
+
+#location_list{
+    overflow: scroll;
+    height: 97%;
+}
+
+#location_list .place_picture {
+    height: 90pt;
+    width: 90pt;
+    float: left;
+    overflow: hidden;
+    margin: 5pt 10px 0 0;
+}
+
+.place_picture img{
+    width: 90pt;
+    height: 90pt;
+}
+
+#location_list .place_name {
+    height: 30pt;
+    margin-top: 6pt;
+    margin-bottom: 0pt;
+}
+
+#location_list .total_point {
+
+}
+
+#location_list .info{
+    height: 61pt;
+    width: 195pt;
+    float: left;
+    display: block;
+    color:#999;
+    margin-bottom: 0;
+    border-bottom: 1px solid #ccc;
 }
 
 #overlay_text{
