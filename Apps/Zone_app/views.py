@@ -81,7 +81,7 @@ def detail(request, place_id):
 def add_point(request):
     if not request.user.can_check_in(request.GET['place_id']):
         return JsonResponse({'message': "同じ場所では一日一回までです", 'user_point': request.user.point})
-    request.user.point += 10  # TODO ハードコーディングをやめる
+    request.user.point += 5  # TODO ハードコーディングをやめる
     request.user.save()
     place = Place.objects.get(id=request.GET['place_id'])
     CheckInHistory(nomad=request.user, place=place).save()
@@ -91,9 +91,10 @@ def add_point(request):
 @login_required
 def pay_points(request):
     if request.method == 'GET':
-        place_id = request.GET.get('place_id', '')  # TODO idのvalidationが必要
-        place_point_form = PlacePointForm(initial={'place': place_id, 'nomad': request.user})
-        return render(request, "pay_points.html", {"mood_form": MoodForm(), "place_point_form": place_point_form})
+        place_id = request.GET.get('place_id', 0)
+        if Place.objects.filter(pk=place_id).exists():
+            place_point_form = PlacePointForm(initial={'place': place_id, 'nomad': request.user})
+            return render(request, "pay_points.html", {"mood_form": MoodForm(), "place_point_form": place_point_form})
     if request.method == 'POST':
         mood_form = MoodForm(request.POST)
         place_point_form = PlacePointForm(request.POST)
