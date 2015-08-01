@@ -25,7 +25,7 @@ def maps(request):
         address = request.GET.get('address', '')
         place_name = request.GET.get('place_name', '')
         return render(request, 'map.html', {'address': address, 'place_name': place_name})
-    return Http404
+    raise Http404
 
 
 def search(request):
@@ -41,7 +41,7 @@ def search(request):
         places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
         places.sort_by('total_point')
         return render(request, 'map.html', {'places': places.get_places()})
-    return Http404
+    raise Http404
 
 
 def narrow_down(request):
@@ -110,7 +110,7 @@ def pay_points(request):
             return JsonResponse({'message': "「{0}」に{1}ポイントを入れました！".format(place.name, point),
                                  'user_point': request.user.point, 'place_point': place.total_point})
         return JsonResponse({'message': "おすすめできませんでした"})
-    return Http404
+    raise Http404
 
 
 def signup(request):
