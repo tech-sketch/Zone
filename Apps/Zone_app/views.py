@@ -38,8 +38,6 @@ def search(request):
         place_name = request.GET.get('place_name', '')
         places = Places()
         places.filter_by_name(place_name)
-
-        # TODO northeast < southwestのときの　処理が必要
         places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
         places.sort_by('total_point')
         return render(request, 'map.html', {'places': places.get_places()})
