@@ -42,10 +42,8 @@ def search(request):
         # TODO northeast < southwestのときの　処理が必要
         places.filter_by_location(northeast_lng, northeast_lat, southwest_lng, southwest_lat)
         places.sort_by('total_point')
-        print(places.get_places())
         return render(request, 'map.html', {'places': places.get_places()})
-    else:
-        return Http404
+    return Http404
 
 
 def narrow_down(request):
@@ -113,6 +111,7 @@ def pay_points(request):
             return JsonResponse({'message': "「{0}」に{1}ポイントを入れました！".format(place.name, point),
                                  'user_point': request.user.point, 'place_point': place.total_point})
         return JsonResponse({'message': "おすすめできませんでした"})
+    return Http404
 
 
 def signup(request):
@@ -126,23 +125,20 @@ def signup(request):
             return redirect(reverse('index'))
         else:
             return render(request, 'signup.html', {'user_form': user_form, 'mood_form': mood_form})
-    else:
-        return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
+    return render(request, 'signup.html', {'user_form': UserForm(), 'mood_form': MoodForm()})
 
 
 @login_required
 def edit_user(request):
     nomad_user = request.user
-    if request.method == 'GET':
-        user_form = UserEditForm(instance=nomad_user)
-        return render(request, 'edit.html', {'user_form': user_form})
-    elif request.method == 'POST':
+    if request.method == 'POST':
         user_form = UserEditForm(request.POST, request.FILES, instance=nomad_user)
         if user_form.is_valid():
             user_form.save()
         else:
             return render(request, 'edit.html', {'user_form': user_form})
-    return redirect(reverse('index'))
+    user_form = UserEditForm(instance=nomad_user)
+    return render(request, 'edit.html', {'user_form': user_form})
 
 
 @login_required
