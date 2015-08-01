@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-# Create your models here.
+
 class NomadUser(AbstractUser):
     GENDER_CHOICES = (
         ('M', '男'),
@@ -20,14 +20,24 @@ class NomadUser(AbstractUser):
     age = models.IntegerField(null=True, blank=True)
     job = models.CharField(max_length=20, choices=JOB_CHOICES, null=True, blank=True)
     point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], default=0)
+    icon = models.ImageField(upload_to='icons/', default='icons/no_image.png')
+    display_recommend = models.BooleanField(default=True)
 
     def can_check_in(self, place_id):
-        check_in_historys = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
-                                                      create_at__month=datetime.now().strftime("%m"),
-                                                      create_at__year=datetime.now().strftime("%Y"),
-                                                      nomad_id=self.id,
-                                                      place_id=place_id)
-        return len(check_in_historys) == 0
+        check_in_histories = CheckInHistory.objects.filter(create_at__day=datetime.now().strftime("%d"),
+                                                           create_at__month=datetime.now().strftime("%m"),
+                                                           create_at__year=datetime.now().strftime("%Y"),
+                                                           nomad_id=self.id, place_id=place_id)
+        return len(check_in_histories) == 0
+
+    def __unicode__(self):
+        return self.icon
+
+
+class Category(models.Model):
+    def __str__(self):
+        return self.jp_title
+    jp_title = models.CharField(max_length=40)
 
 
 class Place(models.Model):
@@ -37,6 +47,7 @@ class Place(models.Model):
     google_id = models.CharField(max_length=100, null=True, blank=True)
     nomad = models.ForeignKey(NomadUser)
     category = models.CharField(max_length=100, null=True, blank=True)
+    categories = models.ManyToManyField(Category, null=True)
     name = models.CharField(max_length=100, null=True, blank=True)
     name_kana = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
@@ -55,23 +66,13 @@ class Place(models.Model):
     def has_tool(self, tool):
         return Equipment.objects.filter(place_id=self.id, tool__en_title__exact=tool).exists()
 
-    def get_wifi_list(self):
-        self.wifi_list = []
-        if self.has_tool('wifi_free'):
-            self.wifi_list.append('Free')
-        if self.has_tool('wifi_docomo'):
-            self.wifi_list.append('docomo')
-        if self.has_tool('wifi_au'):
-            self.wifi_list.append('au')
-        if self.has_tool('wifi_softbank'):
-            self.wifi_list.append('SoftBank')
-        if self.has_tool('wifi_wi2'):
-            self.wifi_list.append('wi2')
-        if self.has_tool('wifi_flets'):
-            self.wifi_list.append('Flet\'s')
-        if self.has_tool('wifi_BB'):
-            self.wifi_list.append('BB')
-        return self.wifi_list
+    def has_outlet(self):
+        return self.has_tool('outlet')
+
+    def get_wifi_carrier_list(self):
+        wifis = WiFi.objects.filter(equipment__place_id=self.id)
+        wifi_list = [wifi.carrier_name for wifi in wifis]
+        return wifi_list
 
     def get_pictures_url(self):
         pictures = Picture.objects.filter(place_id=self.id)
@@ -79,6 +80,10 @@ class Place(models.Model):
             return [x.data.url for x in pictures]
         else:
             return ["/media/no_image.png"]
+
+    def get_main_picture_url(self):
+        return self.get_pictures_url()[0]
+
 
 class Picture(models.Model):
     def __str__(self):
@@ -91,9 +96,19 @@ class Picture(models.Model):
 
 class Tool(models.Model):
     def __str__(self):
-        return self.jp_title + "({0})".format(self.en_title)
+        return self.jp_title
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
+
+class WiFi(Tool):
+    def __str__(self):
+        return self.carrier_name
+    carrier_name = models.CharField(max_length=40)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.jp_title = 'Wi-Fi（{0}）'.format(self.carrier_name)
+        self.en_title = 'wifi_{0}'.format(self.carrier_name)
+        super(WiFi, self).save(force_insert, force_update, using, update_fields)
 
 class Equipment(models.Model):
     def __str__(self):
@@ -101,11 +116,13 @@ class Equipment(models.Model):
     place = models.ForeignKey(Place)
     tool = models.ForeignKey(Tool)
 
+
 class Mood(models.Model):
     def __str__(self):
-        return self.jp_title + "({0})".format(self.en_title)
+        return self.jp_title
     jp_title = models.CharField(max_length=40)
     en_title = models.CharField(max_length=40)
+
 
 class Preference(models.Model):
     def __str__(self):
@@ -113,12 +130,15 @@ class Preference(models.Model):
     nomad = models.ForeignKey(NomadUser)
     mood = models.ForeignKey(Mood)
 
+
 class PlacePoint(models.Model):
     def __str__(self):
         return self.place.name + ':{0}({1}point)'.format(self.mood.jp_title, self.point)
-    place = models.ForeignKey(Place, related_name="related_place_point")
-    mood = models.ForeignKey(Mood, null=True, blank=True)
-    point = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100000)], null=True, blank=True, default=0)
+    place = models.ForeignKey(Place)
+    nomad = models.ForeignKey(NomadUser, null=True)
+    mood = models.ForeignKey(Mood)
+    point = models.IntegerField(validators=[MinValueValidator(0)], default=0)
+
 
 class CheckInHistory(models.Model):
     def __str__(self):
@@ -126,3 +146,25 @@ class CheckInHistory(models.Model):
     nomad = models.ForeignKey(NomadUser)
     place = models.ForeignKey(Place)
     create_at = models.DateTimeField(default=datetime.now)
+
+
+class Contact(models.Model):
+
+    def __str__(self):
+        return 'By {name}: {message}'.format(name=self.name, message=self.message)
+
+    name = models.CharField(max_length=40, blank=False)
+    email = models.EmailField(blank=False)
+    message = models.TextField(blank=False)
+
+
+class BrowseHistory(models.Model):
+    def __str__(self):
+        return self.create_at.strftime('%Y/%m/%d %H:%M:%S') + ' {0}'.format(self.place.name) + '({0})'.format(self.nomad.username)
+    nomad = models.ForeignKey(NomadUser)
+    place = models.ForeignKey(Place)
+    create_at = models.DateTimeField(default=datetime.now)
+
+
+
+

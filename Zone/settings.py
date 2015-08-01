@@ -15,12 +15,12 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'jas83w-$-_5f9c$cl1ijjs9!hbopqm2xib(d*-&d#buvc%-l9z'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'jas83w-$-_5f9c$cl1ijjs9!hbopqm2xib(d*-&d#buvc%-l9z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -73,7 +73,7 @@ WSGI_APPLICATION = 'Zone.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+# https://docs.djangoproject.com/en/1.8/ref/settings/#databases../
 
 DATABASES = {
     'default': {
@@ -83,6 +83,7 @@ DATABASES = {
         'PASSWORD': 'admin',
     }
 }
+
 
 
 # Internationalization
@@ -111,5 +112,9 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'Data', 'media')
 MEDIA_URL = '/media/'
 
+<<<<<<< HEAD
 LOGIN_REDIRECT_URL = '/maps/'
 
+=======
+LOGIN_REDIRECT_URL = '/map/'
+>>>>>>> 06ae6a76eb9527588c52fdf30a42b661197d27a3

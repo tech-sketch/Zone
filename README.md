@@ -12,24 +12,28 @@
 
 ##使い方
 ###Top画面およびLogin
-以下がtop画面となります。
+以下がTop画面となります。
 右上のある、ナビゲーションバーのLoginから認証を通してください。（スーパーユーザで認証できます）
-![top_login](https://github.com/Takatymo/Zone/wiki/README_images/login_top.png "top_login")
+![top_login](https://github.com/Takatymo/Zone/wiki/README_images/top_login.png "top_login")
 
 ### システムからのレコメンド機能
-ログイン後、	メインのアプリケーション画面に移動しユーザの好みに合わせた場所がおすすめされます。
+ログイン後、メインのアプリケーション画面に移動しユーザの好みに合わせた場所がおすすめされます。
 ダイアログ外クリックか右上の**×**を押すとレコメンドwindowが閉じます。
 ![recommend](https://github.com/Takatymo/Zone/wiki/README_images/recommend.png "recommend")
 
 ### メインアプリケーション画面
-登録されている場所がすべて左側のリストに表示されます。
-また、上のナビゲーションバーにある検索フォームから場所を絞り込むことができます。
+地図画面内の場所が左側のリストに表示されます。
+また、上のナビゲーションバーのフォームで場所を検索できます。
 ![map](https://github.com/Takatymo/Zone/wiki/README_images/search.png "map")
+
+### 絞り込み画面
+場所リスト上部の「絞り込み」をクリックするとダイアログが表示されます。タグをチェックすることで場所を絞り込むことができます。
+![narrow_down](https://github.com/Takatymo/Zone/wiki/README_images/narrow_down.png "narrow_down")
 
 ### 詳細画面
 左側のリストから気になる場所をクリックするとその場所の詳細画面が表示されます。
 
-* **「現在この場所にいる」**を押すとチェックインを行うことができます。チェックインをすることによってポイントを取得できます。このポイントはユーザから場所をおすすめする際に使えます。（その場所にいなかったり、その日に一度チェックインをしている場合はこの機能は使えません）
+* **「チェックイン」**を押すとポイントを取得できます。このポイントはユーザから場所をおすすめする際に使えます。（ログイン前、その場所にいない、その日に一度チェックインをしている場合はこの機能は使えません）
 *  **「この場所をおすすめする」**を押すと、ユーザから場所のおすすめをする画面が表示されます。
 ![detail](https://github.com/Takatymo/Zone/wiki/README_images/detail.png "detail")
 
@@ -82,7 +86,7 @@ $ python manage.py makemigrations
 $ python manage.py migrate
 ```
 スーパユーザを作成
-usernameとpaswordの入力が必須となります。
+usernameとpasswordの入力が必須となります。
 ```shell
 $ python manage.py createsuperuser
 ```
@@ -96,56 +100,20 @@ $ python manage.py runserver
 にアクセスします。
 
 ##初期データの登録
-ブラウザでhttp://127.0.0.1:8000/admin
-にアクセスします。
+comming soon
 
-### Place
- - Nomad:  作成したスーパーユーザを選択
- - Name: 新宿区役所
- - Address: 東京都新宿区歌舞伎町１−４−１
- - Longitude: 139.7030634
- - Latitude: 35.6933473
-
-### Mood
--  jp_title: 店員が気さく
-   en_title: frank
-
--  jp_title: メニューが豊富
-   en_title: menu
-
--  jp_title: おいしいコーヒー
-   en_title: coffee
-
--  jp_title: おしゃれ
-   en_title: fashionable
-
--  jp_title: 落ちつていている
-   en_title: relax
-
-- jp_title: レトロ
-   en_title: retro
-
-
-### Preference
-- Nomad: 作成したスーパーユーザを選択
-- Mood: 作成したMoodの中から適当に選択
-
-
-### Tool
-coming soon.
-
-### Equipment
-coming soon
 
 ##画面
-* TOP画面
+* Top画面
 * Map画面
 * ユーザ登録画面
+* マイページ画面
+* ユーザ情報編集画面
 * ログイン画面
 
 ##機能
 * ログイン/ログアウト
-* ユーザ登録
+* ユーザ情報登録・編集
 * 地図機能
 * 住所および場所から検索
 * ジャンル・雰囲気・設備で絞り込み

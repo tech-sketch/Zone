@@ -1,62 +1,37 @@
 <div id="preference_form">
-<form method="post" id="categories">
-{% csrf_token %}
-<dl><dt>ジャンル</dt>
+    <form method="post" id="narrow_down">
+        <input type="hidden" name="place_list">
+        {% csrf_token %}
+        <dl><dt>ジャンル</dt>
+            {% for category in narrow_down_form.categories %}
+            <dd>
+                {{ category }}
+            </dd>
+            {% endfor %}
+        </dl>
 
-    <dd>
-        <label for="genre_btn_01">カフェ
-			<input type='checkbox' id='genre_btn_01' name='category' value='cafe'></label>
-    </dd>
-	<dd>
-        <label for="genre_btn_02">レストラン
-			<input type='checkbox' id='genre_btn_02' name='category' value='restaurant'></label>
-    </dd>
-    <dd>
-        <label for="genre_btn_03">バー
-			<input type='checkbox' id='genre_btn_03' name='category' value='bar'></label>
-    </dd>
-    <dd>
-        <label for="genre_btn_04">コワーキングスペース
-			<input type='checkbox' id='genre_btn_04' name='category' value='co-working'></label>
-    </dd>
-	<dd>
-        <label for="genre_btn_05">図書館
-			<input type='checkbox' id='genre_btn_05' name='category' value='library'></label>
-    </dd>
-    <dd>
-        <label for="genre_btn_06">公園
-			<input type='checkbox' id='genre_btn_06' name='category' value='park'></label>
-    </dd>
+        <br clear="left">
 
-</dl>
-</form>
+        {% csrf_token %}
+        <dl><dt>雰囲気</dt>
+            {% for mood in narrow_down_form.moods %}
+            <dd>
+                {{ mood }}
+            </dd>
+            {% endfor %}
+        </dl>
 
-<br clear="left">
+        <br clear="left">
 
-<form method="post" id="moods">
-{% csrf_token %}
-<dl><dt>雰囲気</dt>
-    {% for mood in moods %}
-    <dd>
-        <label for="{{ mood.en_title }}">{{ mood.jp_title }}
-			<input type='checkbox' id='{{ mood.en_title }}' name='mood' value='{{ mood.en_title }}'></label>
-    </dd>
-    {% endfor %}
-</dl>
-</form>
+        {% csrf_token %}
+        <dl><dt>ツール</dt>
+            {% for tool in narrow_down_form.tools %}
+            <dd>
+                {{ tool }}
+            </dd>
+            {% endfor %}
+        </dl>
 
-<br clear="left">
-
-<form method="post" id="tools">
-{% csrf_token %}
-<dl><dt>ツール</dt>
-    {% for tool in tools %}
-    <dd>
-        <label for="{{ tool.en_title }}">{{ tool.jp_title }}
-			<input type='checkbox' id='{{ tool.en_title }}' name='tool' value='{{ tool.en_title }}'></label>
-    </dd>
-    {% endfor %}
-</dl>
-</form>
-<br clear="left">
+        <br clear="left">
+    </form>
 </div>

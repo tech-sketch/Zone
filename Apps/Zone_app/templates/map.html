@@ -2,61 +2,68 @@
 {% load staticfiles %}
 {% block title %}MAP{% endblock title %}
 {% block content %}
-<div style="margin-top:-10pt; margin-left: 1%;">
-    <a id="preference"> あなたのこだわりで絞り込む　></a>
-</div>
 
 <div class="map_box">
-<hidden type="input" id="user_auth" value="{{ user.is_authenticated }}"></hidden>
-<hidden type="input" id="location_lat" value="{{location.lat}}"></hidden>
-<hidden type="input" id="location_lng" value="{{location.lng}}"></hidden>
-<hidden type="input" id="zoom_level" value="{{zoom_level}}"></hidden>
+<input type="hidden" id="user_auth" value="{{ user.is_authenticated }}">
+<input type="hidden" id="location_lat" value="{{location.lat}}">
+<input type="hidden" id="location_lng" value="{{location.lng}}">
+<input type="hidden" id="zoom_level" value="{{zoom_level}}">
     <div id="select">
+        <div id="filter_list">
+            <a class="current_position" onclick="zoneMap.panToCurrentCenter();">現在地へ戻る</a>
+            <a class="sort">ソート<span class="caret"></span></a>
+            <a class="preference">絞り込み<span class="caret"></span></a>
+        </div>
+        <div id="location_list">
         {% for message in messages%}{{ message }} {% endfor %}
         {% for place in places %}
             <div class="location_card">
-                <hidden type="input" id="name" value="{{place.name}}"></hidden>
-                <hidden type="input" id="longitude" value="{{place.longitude}}"></hidden>
-                <hidden type="input" id="latitude" value="{{place.latitude}}"></hidden>
-                <hidden type="input" id="place_id" value="{{place.id}}"></hidden>
-                {%if place.picture%}
-                    <img src="{{ place.picture }}" alt="{{ place.name }}">
-                {% else %}
-                    <img src="/media/no_image.png" alt="{{ place.name }}">
-                {% endif %}
-                <h3>{{place.name}}</h3>
-                <div id="info">
+                <input type="hidden" id="name" value="{{place.name}}">
+                <input type="hidden" id="longitude" value="{{place.longitude}}">
+                <input type="hidden" id="latitude" value="{{place.latitude}}">
+                <input type="hidden" id="place_id" value="{{place.id}}">
+                <div class="place_picture">
+                <img src="{{ place.get_main_picture_url }}" alt="{{ place.name }}">
+                </div>
+                <div class="place_name">
+                        <h4>{{place.name}}</h4>
+                </div>
+                <div class="info">
                     <div id="total_point_{{place.id}}">
                         合計ポイント:{{place.total_point}}point
                     </div>
-                    wi-fi：
-                    {% if place.wifi %}
-                        {{ place.wifi }}
-                    {% endif %}
+                    wi-fi：{{ place.get_wifi_carrier_list|join:", " }}
                     <br>電源：
-                    {% if place.outlet %}
+                    {% if place.has_outlet %}
                         あり
                     {% endif %}
 
                 </div>
             </div>
         {% endfor %}
+        </div>
     </div>
     <div id="map-canvas"></div>
     <img id="loading" src="/media/loading.gif" style="position: absolute; top: 50%; left: 50%;"/>
 </div>
 
 <link href="{% static 'css/map.css' %}" rel="stylesheet">
-<link href="{% static 'css/preference_form.css' %}" rel="stylesheet">
+<script src="{% static 'js/zone_map.js' %}"></script>
+<script src="{% static 'js/CSRF.js' %}"></script>
+<script src="{% static 'js/search.js'%}"></script>
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet">
+<script src="{% static 'js/check_in.js' %}"></script>
+<script src="{% static 'js/pay_points.js' %}"></script>
 <script src="{% static 'js/show_detail.js' %}"></script>
 <script src="{% static 'js/preference.js' %}"></script>
-<script src="{% static 'js/map.js' %}"></script>
-<script src="{% static 'js/CSRF.js' %}"></script>
+
+
 {% if user.is_authenticated %}
-<script src="{% static 'js/show_recommend.js'%}"></script>
+{% if user.display_recommend %}
+<script src="{% static 'js/show_recommend.js' %}"></script>
 {% endif %}
-<script src="{% static 'js/check_in.js' %}"></script>
-<script src="{% static 'js/recommend_logic.js' %}"></script>
+{% endif %}
+
 <script>
 $(document).on('click', '.bootbox', function (event) {
     if(event.target == this)bootbox.hideAll()
