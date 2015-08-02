@@ -27,13 +27,13 @@
     margin: 0 0;
 }
 
-.btn-search-now {
-    background-color: #fbf481;
+.btn-search-here {
+    background-color: #ffbf00;
     color: white;
 }
 
-.btn-search-now:focus, .btn-back:hover {
-    background-color: #e0d271;
+.btn-search-here:focus, .btn-search-here:hover {
+    background-color: #efaf10;
     color: white;
 }
 
@@ -47,22 +47,22 @@
     color: white;
 }
 
-.btn-check-in {
+.btn-recommend {
     background-color: #7db7db;
     color: white;
 }
 
-.btn-check-in:focus, .btn-check-in:hover {
+.btn-recommend:focus, .btn-recommend:hover {
     background-color: #62a3c4;
     color: white;
 }
 
-.btn-favorite {
+.btn-create-place {
     background-color: #d27eb3;
     color: white;
 }
 
-.btn-favorite:focus, .btn-favorite:hover {
+.btn-create-place:focus, .btn-create-place:hover {
     background-color: #bc70a0;
     color: white;
 }
@@ -82,7 +82,7 @@
 
 .location_card h4 {
     margin-top: 3px;
-    margin-bottom 0pt;
+    margin-bottom: 0;
     line-height: 14pt;
 }
 

@@ -21,10 +21,12 @@ var ZoneMap = (function () {
             _this.initMap(mapOptions);
             _this.map.setCenter(latLng);
             _this.setUserMarker(latLng.lat(), latLng.lng());
+            $('#loading').fadeOut("quick");
         };
         this.errorCallback = function () {
             _this.initMap(_this.defaultMapOptions);
             alert('位置情報が取得できません。');
+            $('#loading').fadeOut("quick");
         };
         this.overlayList = new google.maps.MVCArray();
         this.markerList = new google.maps.MVCArray();
@@ -75,8 +77,8 @@ var ZoneMap = (function () {
         else {
             this.initMap(this.defaultMapOptions);
             alert('ブラウザが位置情報取得に対応しておりません。');
+            $('#loading').fadeOut("quick");
         }
-        $('#loading').fadeOut("quick");
     };
     ZoneMap.prototype.panToCurrentCenter = function () {
         if (this.userMarker) {
@@ -250,7 +252,6 @@ var Place = (function () {
     return Place;
 })();
 //ここからトップレベル記述
-$('#loading').fadeOut("quick");
 var defaultLatLng = new google.maps.LatLng(35.682323, 139.765955); //東京駅
 var defaultZoom = 15;
 var defaultMapOptions = {

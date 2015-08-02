@@ -1,14 +1,25 @@
-//action when search places with search-form of top-var
-// ======================
-
-function startSearch(){
-    zoneMap.searchPlaces();
-}
-
 var geocoder = new google.maps.Geocoder();
+var $functions = $('#function-list')
+
+$functions.find('.btn-back').on('click', function(){
+    zoneMap.panToCurrentCenter();
+});
+
+$functions.find('.btn-search-here').on('click', function(){
+    searchThisArea();
+});
+
+$functions.find('.btn-recommend').on('click', function(){
+
+});
+
+$functions.find('.btn-create-place').on('click', function(){
+
+});
+
+
 function codeAddress(map) {
     var address = document.getElementById('address_searched').value;
-    var geocoder = new google.maps.Geocoder();
     geocoder.geocode( { 'address': address, 'region': 'JP'}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             map.setCenter(results[0].geometry.location);
@@ -47,4 +58,9 @@ function loadPlaces(response, map){
     $('#location_list').html('')
     $('#location_list').append($(response).find('#location_list').children());
     createPlaces(map);
+}
+
+function searchThisArea(){
+    $('[name=address]').val("");
+    startSearch();
 }
