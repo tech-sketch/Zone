@@ -4,6 +4,67 @@
     height: 92%;
     margin: 0;
     padding: 0;
+    z-index: 0;
+}
+
+#function-list{
+    position: absolute;
+    width: 68%;
+    height: 10%;
+    z-index: 1;
+    bottom: -0.5%;
+    right: 0;
+    background-color: rgba(255,255,255,0.9)
+}
+
+#function-list button {
+    display:block;
+    float: left;
+    border: none;
+    border-radius: 0;
+    width: 25%;
+    height: 100%;
+    margin: 0 0;
+}
+
+.btn-search-now {
+    background-color: #fbf481;
+    color: white;
+}
+
+.btn-search-now:focus, .btn-back:hover {
+    background-color: #e0d271;
+    color: white;
+}
+
+.btn-back {
+    background-color: #81a7d5;
+    color: white;
+}
+
+.btn-back:focus, .btn-back:hover {
+    background-color: #7c94bf;
+    color: white;
+}
+
+.btn-check-in {
+    background-color: #7db7db;
+    color: white;
+}
+
+.btn-check-in:focus, .btn-check-in:hover {
+    background-color: #62a3c4;
+    color: white;
+}
+
+.btn-favorite {
+    background-color: #d27eb3;
+    color: white;
+}
+
+.btn-favorite:focus, .btn-favorite:hover {
+    background-color: #bc70a0;
+    color: white;
 }
 
 .location_card{
