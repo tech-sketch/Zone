@@ -40,13 +40,13 @@ class Searcher{
     	var self: Searcher = this;
     	$.get("/search/", {northeast_lng: northeast.lng(), northeast_lat: northeast.lat(), southwest_lng: southwest.lng(),
                         southwest_lat: southwest.lat(), place_name: $('[name=place_name]').val()}, (response) => {
-        	placeIdList = [];
+        	placeList = [];
         	itemChecked = [];　//検索後は絞り込みダイアログのcheckboxのチェックを外す
         	self.loadPlaces(response);
     	});
 	}
 	loadPlaces(response){
-		zoneMap.clear();
+		this.zoneMap.clear();
     	$('#location_list').html('')
     	$('#location_list').append($(response).find('#location_list').children());
     	createPlaces(this.zoneMap);

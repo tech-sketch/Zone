@@ -168,8 +168,6 @@ class NameMarker extends google.maps.OverlayView{
     private div_;
     constructor(private placeName: string, private lat: number,private lng: number, private map: google.maps.Map){
         super();
-
-        console.log("NameMarker: " + placeName);
         this.setMap(this.map);
     }
     draw() {
@@ -276,6 +274,5 @@ function createPlaces(zoneMap: ZoneMap){
         var place: Place = new Place(placeId, name, lat, lng, locationCard)
         placeList.push(place);
         zoneMap.setPlace(place);
-        console.log(place);
     }
 }

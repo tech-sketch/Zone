@@ -45,7 +45,7 @@
     <div id="map-canvas">
     </div>
     <div id="function-list">
-        <button class=" btn-search" onclick="" ><i class="fa fa-search"></i> このエリアを検索</button>
+        <button class=" btn-search" onclick="searchThisArea();" ><i class="fa fa-search"></i> このエリアを検索</button>
         <button class="btn-back" onclick="zoneMap.panToCurrentCenter();" ><i class="fa fa-user"></i> 現在地へ戻る</button>
         <button class=" btn-check-in" onclick="" ><i class="fa fa-thumbs-up"></i> 本日のおすすめ場所へ</button>
         <button class=" btn-favorite" onclick="" ><i class="fa fa-plus"></i> 見つけた場所を作成</button>
@@ -74,5 +74,10 @@
 $(document).on('click', '.bootbox', function (event) {
     if(event.target == this)bootbox.hideAll()
 });
+
+function searchThisArea(){
+    $('[name=address]').val("");
+    startSearch();
+}
 </script>
 {% endblock content %}
