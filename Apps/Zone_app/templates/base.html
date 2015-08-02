@@ -42,11 +42,11 @@
                 <input type="text" onkeypress="if(event.keyCode==13)startSearch();" class="form-control" id="place_name_searched" name="place_name" placeholder="場所の名前" value="{{place_name}}" style="margin:-5pt 0 0 5pt;">
             </form>
             </li>
-            <li><button id="form_btn" onclick="startSearch();" class="btn btn-search" style="margin:7pt 0 0 0;">Search</button></li>
+            <li><button id="form_btn" onclick="startSearch();" class="btn btn-search" style="margin:7pt 0 0 0;"><i class="fa fa-search"></i> Search</button></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-                <li><p class="navbar-text" id="user_point">point:{{ user.point }}</p></li>
+                <li><p class="navbar-text" id="user_point"><i class="fa fa-plus-circle"></i> {{ user.point }}point</p></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         {% if user.icon %}
