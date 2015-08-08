@@ -125,7 +125,7 @@
     function startSearch(){
         var ref = location.pathname;
         if(ref == "{% url 'maps' %}"){
-            zoneMap.searchPlaces();
+            searcher.searchPlaces();
         } else{
             $('#search_form').submit();
         }

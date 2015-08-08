@@ -4,7 +4,7 @@
 var checkedStyle = "cursor: default; background-color: rgb(128, 138, 178); color: rgb(255, 255, 255);";
 var itemChecked =[];
 
-function showPreference(html, map){
+function showPreference(html){
     bootbox.dialog({
         title: "こだわり条件で絞り込む",
         message: html,
@@ -23,7 +23,8 @@ function showPreference(html, map){
         }).get();
         $("#loading").fadeOut("quick");
         $.post("/narrow_down/", $('#narrow_down').serialize(), function(response){
-            loadPlaces(response, map);
+            placesMaker.updatePage(response);
+            placesMaker.updatePlaces();
         });
 });
 };
@@ -32,11 +33,8 @@ $(".preference").on("click", function(){
     $("#loading").fadeIn("quick");
     $.get('/narrow_down/', function(html){
         $("#loading").fadeOut("quick");
-        var placeIdList = placeList.map(function(place){
-            return place.getId();
-        })
-        showPreference(html, zoneMap);
-        $('[name=place_list]').attr('value', placeIdList); //formと一緒にplaceIdListをpostするための埋め込み
+        showPreference(html);
+        $('[name=place_list]').attr('value', placesMaker.getPlaceIdList()); //formと一緒にplaceIdListをpostするための埋め込み
         $('#preference_form input[type=checkbox]').each(function(i, thisCheckBox){
             rememberChecked(thisCheckBox, itemChecked);
         });

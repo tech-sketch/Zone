@@ -1,12 +1,12 @@
-var __extends = this.__extends || function (d, b) {
+/// <reference path="jquery.d.ts"/>
+/// <reference path="google.maps.d.ts"/>
+/// <reference path="bootbox.d.ts"/>
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="jquery.d.ts" />
-/// <reference path="google.maps.d.ts"/>
-/// <reference path="bootbox.d.ts"/>
 var ZoneMap = (function () {
     function ZoneMap(defaultMapOptions, markerImg) {
         var _this = this;
@@ -21,13 +21,12 @@ var ZoneMap = (function () {
             _this.initMap(mapOptions);
             _this.map.setCenter(latLng);
             _this.setUserMarker(latLng.lat(), latLng.lng());
-            $('#loading').fadeOut("quick");
         };
         this.errorCallback = function () {
             _this.initMap(_this.defaultMapOptions);
             alert('位置情報が取得できません。');
-            $('#loading').fadeOut("quick");
         };
+        this.actionOnceBoundChanged = function () { };
         this.overlayList = new google.maps.MVCArray();
         this.markerList = new google.maps.MVCArray();
     }
@@ -44,30 +43,24 @@ var ZoneMap = (function () {
             position: new google.maps.LatLng(lat, lng),
             map: this.map,
             title: "Your position",
-            icon: this.markerImg,
+            icon: this.markerImg
         });
         new google.maps.InfoWindow({
             content: "現在地"
         }).open(this.map, this.userMarker);
     };
-    ZoneMap.prototype.searchPlaces = function () {
-        $("#loading").fadeIn("quick");
-        if ($('[name=address]').val()) {
-            codeAddress(this);
-        }
-        else {
-            fetchPlaces(this);
-        }
-        $("#loading").fadeOut("quick");
-    };
     ZoneMap.prototype.initMap = function (option) {
+        var _this = this;
         if (!this.map) {
             var self = this;
             this.map = new google.maps.Map($('#map-canvas').get(0), option);
             google.maps.event.addListenerOnce(this.map, 'bounds_changed', function () {
-                self.searchPlaces();
+                _this.actionOnceBoundChanged();
             });
         }
+    };
+    ZoneMap.prototype.addActionOnceBoundChanged = function (func) {
+        this.actionOnceBoundChanged = func;
     };
     ZoneMap.prototype.getLocation = function () {
         $('#loading').fadeIn("quick");
@@ -77,8 +70,8 @@ var ZoneMap = (function () {
         else {
             this.initMap(this.defaultMapOptions);
             alert('ブラウザが位置情報取得に対応しておりません。');
-            $('#loading').fadeOut("quick");
         }
+        $('#loading').fadeOut("quick");
     };
     ZoneMap.prototype.panToCurrentCenter = function () {
         if (this.userMarker) {
@@ -251,36 +244,3 @@ var Place = (function () {
     };
     return Place;
 })();
-//ここからトップレベル記述
-var defaultLatLng = new google.maps.LatLng(35.682323, 139.765955); //東京駅
-var defaultZoom = 15;
-var defaultMapOptions = {
-    center: defaultLatLng,
-    zoom: defaultZoom
-};
-var markerImg = new google.maps.MarkerImage(
-// マーカーの画像URL
-"/static/images/man.png", 
-// マーカーのサイズ
-new google.maps.Size(32, 32), 
-// 画像の基準位置
-new google.maps.Point(0, 0), 
-// Anchorポイント
-new google.maps.Point(10, 24));
-var zoneMap = new ZoneMap(defaultMapOptions, markerImg);
-zoneMap.load();
-var placeList = [];
-function createPlaces(zoneMap) {
-    var length = $("[id=name]").length;
-    for (var i = 0; i < length; i++) {
-        var name = $($("[id=name]")[i]).attr("value");
-        var lat = Number($($("[id=latitude]")[i]).attr("value"));
-        var lng = Number($($("[id=longitude]")[i]).attr("value"));
-        var placeId = Number($($("[id=place_id]")[i]).attr("value"));
-        var locationCard = $($("[class=location_card]")[i]);
-        var place = new Place(placeId, name, lat, lng, locationCard);
-        placeList.push(place);
-        zoneMap.setPlace(place);
-    }
-}
-

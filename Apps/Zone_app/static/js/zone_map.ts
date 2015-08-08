@@ -1,6 +1,7 @@
-/// <reference path="jquery.d.ts" />
+/// <reference path="jquery.d.ts"/>
 /// <reference path="google.maps.d.ts"/>
 /// <reference path="bootbox.d.ts"/>
+
 class ZoneMap{
     private static currentPositionZoom: number = 15;
     private successCallback = (position) => {
@@ -18,6 +19,7 @@ class ZoneMap{
         alert('位置情報が取得できません。');
     };
     private map: google.maps.Map;
+    private actionOnceBoundChanged:() => void = () => {};
     private userMarker: google.maps.Marker;
     private overlayList: google.maps.MVCArray = new google.maps.MVCArray();
     private markerList: google.maps.MVCArray = new google.maps.MVCArray();
@@ -41,24 +43,21 @@ class ZoneMap{
                 content: "現在地"
         }).open(this.map, this.userMarker);
     }  
-    searchPlaces(){
-        $("#loading").fadeIn("quick");
-        if($('[name=address]').val()){
-            codeAddress();
-        }else{
-            fetchPlaces();
-        }
-        $("#loading").fadeOut("quick");
-    }
+
     private initMap(option: {}){
         if(!this.map){
             var self = this;
             this.map = new google.maps.Map($('#map-canvas').get(0), option);
             google.maps.event.addListenerOnce(this.map, 'bounds_changed', () => {
-                self.searchPlaces();
+                this.actionOnceBoundChanged()
             });
         }
     }
+
+    addActionOnceBoundChanged(func:()=>void){
+        this.actionOnceBoundChanged = func;
+    }
+
     getLocation(){
         $('#loading').fadeIn("quick");
         if(navigator.geolocation){
@@ -158,10 +157,7 @@ class ZoneMap{
             closeInfoWindow();
             place.getLocationCard().attr('style', '');
         });
-        
     }
-
-
 }
 
 class NameMarker extends google.maps.OverlayView{
@@ -232,47 +228,4 @@ class Place{
         return this.locationCard;
     }
 
-}
-
-
-
-
-
-//ここからトップレベル記述
-
-$('#loading').fadeOut("quick");
-var defaultLatLng = new google.maps.LatLng(35.682323, 139.765955);　//東京駅
-var defaultZoom = 15;
-var defaultMapOptions = {
-    center: defaultLatLng,
-    zoom: defaultZoom
-};
-var markerImg: google.maps.MarkerImage = new google.maps.MarkerImage(
-        // マーカーの画像URL
-        "/static/images/man.png",
-        // マーカーのサイズ
-        new google.maps.Size(32, 32),
-        // 画像の基準位置
-        new google.maps.Point(0, 0),
-        // Anchorポイント
-        new google.maps.Point(10, 24)
-);
-
-var zoneMap: ZoneMap = new ZoneMap(defaultMapOptions, markerImg);
-zoneMap.load();
-var placeList: Array<Place> = [];
-
-function createPlaces(zoneMap: ZoneMap){
-    var length = $("[id=name]").length;
-
-    for(var i = 0; i < length; i++){
-        var name: string = $($("[id=name]")[i]).attr("value");
-        var lat: number = Number($($("[id=latitude]")[i]).attr("value"));
-        var lng: number = Number($($("[id=longitude]")[i]).attr("value"));
-        var placeId: number = Number($($("[id=place_id]")[i]).attr("value"));
-        var locationCard: JQuery = $($("[class=location_card]")[i]);
-        var place: Place = new Place(placeId, name, lat, lng, locationCard)
-        placeList.push(place);
-        zoneMap.setPlace(place);
-    }
 }

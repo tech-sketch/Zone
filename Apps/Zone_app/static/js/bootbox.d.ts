@@ -3,7 +3,7 @@
 // Definitions by: Vincent Bortone <https://github.com/vbortone/>, Kon Pik <https://github.com/konpikwastaken/>, Anup Kattel <https://github.com/kanup/>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-/// <reference path="../jquery/jquery.d.ts" />
+/// <reference path="jquery.d.ts"/>
 interface BootboxAlertOptions {
 	size?: string;
 	message: string;
